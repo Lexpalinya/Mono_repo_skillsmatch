@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["ES2022", "DOM"],
+    "paths": {
+      "@skillsmatch/dto": ["../../packages/dto/src/index.ts"],
+      "@utils/*": ["./src/utils/*"],
+      "@lib/*": ["./src/lib/*"]
+    }
+  }
+}

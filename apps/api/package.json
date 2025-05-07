@@ -1,0 +1,10 @@
+{
+  "name": "@skillsmatch/api",
+  "version": "0.0.1",
+  "scripts": {
+    "dev":"bun run --watch /src/index.ts"
+  },
+  "dependencies": {
+    "@skillsmatch/dto": "workspace:*"
+  }
+}

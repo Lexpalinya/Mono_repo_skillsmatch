@@ -1,0 +1,153 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ECurrency {
+  KIP
+  USD
+  THB
+  CNY
+}
+
+enum EGender {
+  male
+  female
+  transgender
+}
+
+enum EUserRole {
+  company
+  admin
+  jobber
+}
+
+//-----------Account-----------------------------
+
+model Member {
+  id           String    @id @default(uuid()) @db.VarChar(36)
+  isActive     Boolean   @default(true)
+  visible      Boolean   @default(true)
+  username     String
+  email        String
+  phoneNumber  String
+  password     String
+  profile      String?
+  background  String?
+  role         EUserRole
+  block        Boolean   @default(false)
+  loginVersion Int       @default(1)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  Jobber       Jobber?
+}
+
+model Course {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  isActive  Boolean  @default(true)
+  visible   Boolean  @default(false)
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Major {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  isActive  Boolean  @default(true)
+  visible   Boolean  @default(false)
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EducationalInstitution {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  isActive  Boolean  @default(true)
+  visible   Boolean  @default(false)
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EducationLevel {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  isActive  Boolean  @default(true)
+  visible   Boolean  @default(false)
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Skill {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  isActive  Boolean  @default(true)
+  visible   Boolean  @default(false)
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model JobPosition {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  isActive  Boolean  @default(true)
+  visible   Boolean  @default(false)
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BusinessModel {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  isActive  Boolean  @default(true)
+  visible   Boolean  @default(false)
+  name      String  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model JobberStatus {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  isActive  Boolean  @default(true)
+  visible   Boolean  @default(false)
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Jobber    Jobber[]
+}
+
+//-----------Jobber Role----------------------------------------------
+model Jobber {
+  id          String       @id @default(uuid()) @db.VarChar(36)
+  isVerify    Boolean      @default(false)
+  statusId    String
+  status      JobberStatus @relation(fields: [statusId], references: [id])
+  userId      String       @unique
+  member      Member       @relation(fields: [userId], references: [id])
+  gender      EGender
+  firstName   String
+  lastName    String
+  birthday    DateTime     @db.Date
+  nationality String
+  ethnicity   String 
+  religion    String
+  bProvince    String
+  bDistrict   String
+  bVillage    String
+  cProvince    String
+  cDistrict   String
+  cVillage    String
+  docImage    String[]
+  reason      String?      @db.Text
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
