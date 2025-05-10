@@ -12,8 +12,9 @@ export * from './jobber-status/jobber-status.dto'
 export * from './major/major.dto'
 export * from './member/member.dto'
 export * from './skill/skill.dto'
-
-
-
+export * from './apply-for-job/apply-for-job.dto'
+export * from './attend-interview/attend-interview.dto'
+export * from './company/company.dto'
+export * from "./post/post.dto"
 
 
