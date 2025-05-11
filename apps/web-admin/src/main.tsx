@@ -3,7 +3,8 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import loginRoute from "./modules/auth/router";
 import { rootRoute } from "./routes/__root";
-
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ThemeProvider} from "@skillsmatch/ui";
 declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router;
@@ -13,9 +14,14 @@ declare module "@tanstack/react-router" {
 const routeTree = rootRoute.addChildren([...loginRoute]);
 
 const router = createRouter({ routeTree });
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router}></RouterProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </ThemeProvider>
   </StrictMode>
 );
