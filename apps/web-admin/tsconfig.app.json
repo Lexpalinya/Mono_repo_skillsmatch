@@ -6,10 +6,11 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-   "baseUrl": ".",
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@skillsmatch/ui": ["../../packages/ui/src/index.ts"]
+      "@skillsmatch/ui": ["../../packages/ui/src/index.ts"],
+      "@skillsmatch/dto": ["../../packages/dto/src/index.ts"]
     },
     /* Bundler mode */
     "moduleResolution": "bundler",

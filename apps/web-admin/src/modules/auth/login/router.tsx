@@ -4,6 +4,6 @@ import { rootRoute } from "@/routes/__root";
 const loginRoute = createRoute({
   path: "/auth/login",
   getParentRoute: () => rootRoute,
-  component: lazyRouteComponent(() => import("./Login")),
+  component: lazyRouteComponent(() => import("./page/LoginPage")),
 });
 export default [loginRoute];
