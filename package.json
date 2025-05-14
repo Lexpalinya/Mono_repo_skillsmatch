@@ -2,6 +2,10 @@
   "name": "fullstack-starter-kit",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "api":"cd apps/api; bun dev",
+      "web":"cd apps/web-admin; bun dev"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"

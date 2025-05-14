@@ -1,7 +1,18 @@
 import { rootRoute } from "@/routes/__root";
-import { cn, UnauthorizedError } from "@skillsmatch/ui";
-import { createRoute, Outlet, useNavigate, useRouter } from "@tanstack/react-router";
-import { SiteHeader } from "./components/site-header";
+import {
+  cn,
+  SidebarInset,
+  SidebarProvider,
+  UnauthorizedError,
+} from "@skillsmatch/ui";
+import {
+  createRoute,
+  Outlet,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
+import { SideHeader } from "./components/side-header";
+import { AppSidebar } from "./components/app-sidebar";
 
 export const appLayoutRoute = createRoute({
   path: "/app",
@@ -19,20 +30,25 @@ const AppLayout = () => {
     />;
 
   return (
-    <div
-      id="content"
-      className={cn(
-        "ml-auto w-full max-w-full border-1 m-2 shadow rounded-3xl bg-card",
-        "peer-data-[state=collapsed]:w-[calc(100%-var(--sidebar-width-icon)-1rem)]",
-        "peer-data-[state=expanded]:w-[calc(100%-var(--sidebar-width))]",
-        "sm:transition-[width] sm:duration-200 sm:ease-linear",
-        "flex flex-col",
-        "group-data-[scroll-locked=1]/body:h-full",
-        "has-[main.fixed-main]:group-data-[scroll-locked=1]/body:h-svh"
-      )}
-    >
-      {/* <SiteHeader /> */}
-      <Outlet />
-    </div>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <div
+          id="content"
+          className={cn(
+            "ml-auto w-full max-w-full border-1 m-2 shadow rounded-3xl bg-card",
+            "peer-data-[state=collapsed]:w-[calc(100%-var(--sidebar-width-icon)-1rem)]",
+            "peer-data-[state=expanded]:w-[calc(100%-var(--sidebar-width))]",
+            "sm:transition-[width] sm:duration-200 sm:ease-linear",
+            "flex flex-col",
+            "group-data-[scroll-locked=1]/body:h-full",
+            "has-[main.fixed-main]:group-data-[scroll-locked=1]/body:h-svh"
+          )}
+        >
+          <SideHeader />
+          <Outlet />
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 };

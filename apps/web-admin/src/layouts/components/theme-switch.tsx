@@ -32,7 +32,6 @@ export function ThemeSwitch() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light{" "}
           <CheckIcon
             size={14}
             className={cn("ml-auto", theme !== "light" && "hidden")}

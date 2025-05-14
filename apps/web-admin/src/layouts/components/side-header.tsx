@@ -7,7 +7,7 @@ interface HeaderProps extends React.HTMLAttributes<HTMLElement> {
   ref?: React.Ref<HTMLElement>;
 }
 
-export function SiteHeader({ className, fixed, ...props }: HeaderProps) {
+export function SideHeader({ className, fixed, ...props }: HeaderProps) {
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
@@ -32,9 +32,8 @@ export function SiteHeader({ className, fixed, ...props }: HeaderProps) {
       )}
       {...props}
     >
-      <SidebarTrigger variant="outline" className="scale-125 sm:scale-100" />
-      <Separator orientation="vertical" className="h-6" />
-
+      <SidebarTrigger className="-ml-1" />
+      <Separator orientation="vertical" className="mr-2 h-4" />{" "}
       <div className="ml-auto flex items-center space-x-4">
         <ThemeSwitch />
       </div>
