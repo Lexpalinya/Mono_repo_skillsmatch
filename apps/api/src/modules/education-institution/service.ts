@@ -1,7 +1,9 @@
 import { IEducationalInstitutionCreateDtoType, IEducationalInstitutionUpdateDtoType } from "@skillsmatch/dto";
-import { ensureRecordExists, ensureUniqueRecord } from "@utils/ensure";
-import prisma from "@lib/prisma-client";
-import { QueryOptions, queryTable } from "@utils/pagination";
+
+import { Major } from "@prisma/client";
+import { ensureRecordExists, ensureUniqueRecord } from "../../utils/ensure";
+import prisma from "../../lib/prisma-client";
+import { QueryOptions, queryTable } from "../../utils/pagination";
 import { EducationalInstitution } from "@prisma/client";
 
 export const CreateEducationalInstitution = async (data: IEducationalInstitutionCreateDtoType) => {

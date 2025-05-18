@@ -8,7 +8,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@skillsmatch/ui": ["../../packages/ui/src/index.ts"]
+      "@skillsmatch/api": ["./../api/src/route.ts"],
+      "@skillsmatch/ui": ["../../packages/ui/src"],
+      "@skillsmatch/dto": ["../../packages/dto/src/index.ts"]
     }
   }
 }

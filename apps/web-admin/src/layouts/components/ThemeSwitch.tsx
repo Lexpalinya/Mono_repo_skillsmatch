@@ -13,8 +13,6 @@ import { useEffect } from "react";
 export function ThemeSwitch() {
   const { theme, setTheme } = useTheme();
 
-  /* Update theme-color meta tag
-   * when theme is updated */
   useEffect(() => {
     const themeColor = theme === "dark" ? "#020817" : "#fff";
     const metaThemeColor = document.querySelector("meta[name='theme-color']");
@@ -32,6 +30,7 @@ export function ThemeSwitch() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
+          Light
           <CheckIcon
             size={14}
             className={cn("ml-auto", theme !== "light" && "hidden")}

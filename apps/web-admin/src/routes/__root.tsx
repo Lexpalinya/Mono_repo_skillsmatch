@@ -4,7 +4,6 @@ export const rootRoute = createRootRoute({
   component: () => (
     <>
       <Outlet />
-      
     </>
   ),
 });

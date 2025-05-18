@@ -54,23 +54,27 @@ model Member {
 }
 
 model Course {
-  id          String        @id @default(uuid()) @db.VarChar(36)
-  isActive    Boolean       @default(true)
-  visible     Boolean       @default(false)
-  name        String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  PostCourseP PostCourseP[]
+  id               String        @id @default(uuid()) @db.VarChar(36)
+  isActive         Boolean       @default(true)
+  visible          Boolean       @default(false)
+  name             String
+  postUsageCount   Int           @default(0)
+  jobberUsageCount Int           @default(0)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  PostCourseP      PostCourseP[]
 }
 
 model Major {
-  id        String      @id @default(uuid()) @db.VarChar(36)
-  isActive  Boolean     @default(true)
-  visible   Boolean     @default(false)
-  name      String
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  PostMajor PostMajor[]
+  id               String      @id @default(uuid()) @db.VarChar(36)
+  isActive         Boolean     @default(true)
+  visible          Boolean     @default(false)
+  name             String
+  postUsageCount   Int         @default(0)
+  jobberUsageCount Int         @default(0)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  PostMajor        PostMajor[]
 }
 
 model EducationalInstitution {
@@ -78,6 +82,8 @@ model EducationalInstitution {
   isActive                 Boolean                    @default(true)
   visible                  Boolean                    @default(false)
   name                     String
+  postUsageCount           Int                        @default(0)
+  jobberUsageCount         Int                        @default(0)
   createdAt                DateTime                   @default(now())
   updatedAt                DateTime                   @updatedAt
   PostEducationInstitution PostEducationInstitution[]
@@ -88,6 +94,8 @@ model EducationLevel {
   isActive           Boolean              @default(true)
   visible            Boolean              @default(false)
   name               String
+  postUsageCount     Int                  @default(0)
+  jobberUsageCount   Int                  @default(0)
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
   PostEducationLevel PostEducationLevel[]
@@ -98,6 +106,8 @@ model Skill {
   isActive                   Boolean                      @default(true)
   visible                    Boolean                      @default(false)
   name                       String
+  postUsageCount             Int                          @default(0)
+  jobberUsageCount           Int                          @default(0)
   createdAt                  DateTime                     @default(now())
   updatedAt                  DateTime                     @updatedAt
   PostJobPositionDetailSkill PostJobPositionDetailSkill[]
@@ -108,29 +118,33 @@ model JobPosition {
   isActive              Boolean                 @default(true)
   visible               Boolean                 @default(false)
   name                  String
+  postUsageCount        Int                     @default(0)
+  jobberUsageCount      Int                     @default(0)
   createdAt             DateTime                @default(now())
   updatedAt             DateTime                @updatedAt
   PostJobPositionDetail PostJobPositionDetail[]
 }
 
 model BusinessModel {
-  id        String    @id @default(uuid()) @db.VarChar(36)
-  isActive  Boolean   @default(true)
-  visible   Boolean   @default(false)
-  name      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Company   Company[]
+  id                String    @id @default(uuid()) @db.VarChar(36)
+  isActive          Boolean   @default(true)
+  visible           Boolean   @default(false)
+  name              String
+  companyUsageCount Int       @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  Company           Company[]
 }
 
 model JobberStatus {
-  id        String   @id @default(uuid()) @db.VarChar(36)
-  isActive  Boolean  @default(true)
-  visible   Boolean  @default(false)
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Jobber    Jobber[]
+  id               String   @id @default(uuid()) @db.VarChar(36)
+  isActive         Boolean  @default(true)
+  visible          Boolean  @default(false)
+  name             String
+  jobberUsageCount Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  Jobber           Jobber[]
 }
 
 model Jobber {

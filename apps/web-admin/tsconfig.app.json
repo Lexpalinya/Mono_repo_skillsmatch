@@ -9,6 +9,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@skillsmatch/api": ["./../api/src/router.ts"],
       "@skillsmatch/ui": ["../../packages/ui/src/index.ts"],
       "@skillsmatch/dto": ["../../packages/dto/src/index.ts"]
     },
@@ -28,5 +29,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src", "src/utils/StatsCard.tsx"]
 }

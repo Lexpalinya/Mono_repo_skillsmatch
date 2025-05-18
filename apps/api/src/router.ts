@@ -8,19 +8,20 @@ import { majorRouter } from "./modules/major/router";
 import { memberAuthRouter, memberRouter } from "./modules/member/router";
 import { skillRouter } from "./modules/skill/router";
 
+export const appRouter = router({
+  businessModel: businessModelRouter,
+  course: courseRouter,
+  educationLevel: educationLevelRouter,
+  educationInstitution: educationalInstitutionRouter,
+  jobPosition: jobPositionRouter,
+  major: majorRouter,
+  skill: skillRouter,
+  member: memberRouter,
+  auth: memberAuthRouter,
+});
 
-export const appRouter = router(
-    {
-        businessModel: businessModelRouter,
-        course: courseRouter,
-        educationLevel: educationLevelRouter,
-        educationInstitution: educationalInstitutionRouter,
-        jobPosition: jobPositionRouter,
-        major: majorRouter,
-        skill: skillRouter,
-        member: memberRouter,
-        auth: memberAuthRouter,
-    }
-)
+export default appRouter;
+export type AppRouter = typeof appRouter;
 
-export default appRouter
+console.log("🧭 Routes:", Object.keys(appRouter._def.procedures));
+

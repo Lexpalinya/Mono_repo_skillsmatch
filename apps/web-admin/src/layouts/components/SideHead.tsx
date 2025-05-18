@@ -1,13 +1,13 @@
 import { cn, Separator, SidebarTrigger } from "@skillsmatch/ui";
 import { useEffect, useState } from "react";
-import { ThemeSwitch } from "./theme-switch";
+import { ThemeSwitch } from "./ThemeSwitch";
 
 interface HeaderProps extends React.HTMLAttributes<HTMLElement> {
   fixed?: boolean;
   ref?: React.Ref<HTMLElement>;
 }
 
-export function SideHeader({ className, fixed, ...props }: HeaderProps) {
+export function SiteHeader({ className, fixed, ...props }: HeaderProps) {
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
@@ -25,15 +25,15 @@ export function SideHeader({ className, fixed, ...props }: HeaderProps) {
   return (
     <header
       className={cn(
-        "flex h-16 items-center gap-3 p-4 sm:gap-4 rounded-t-3xl bg-card",
+        "flex w-full h-16 items-center gap-3 p-4 sm:gap-4 rounded-t-3xl bg-card",
         fixed && "header-fixed peer/header fixed z-50 w-[inherit] rounded-md",
         offset > 10 && fixed ? "shadow-sm" : "shadow-none",
         className
       )}
       {...props}
     >
-      <SidebarTrigger className="-ml-1" />
-      <Separator orientation="vertical" className="mr-2 h-4" />{" "}
+      <SidebarTrigger variant="outline" className="scale-125 sm:scale-100" />
+      <Separator orientation="vertical" className="h-6" />
       <div className="ml-auto flex items-center space-x-4">
         <ThemeSwitch />
       </div>
