@@ -25,8 +25,14 @@ export const SkillAdminDto = z.object({
 export const SkillPaginationDto = QueryDto.extend({
   visible: z.boolean().optional(),
 });
+export const SkillStatsDto = z.object({
+  id: z.string(),
+  name: z.string(),
+  jobberUsageCount: z.number(),
+});
 
 export type ISkillCreateDtoType = z.infer<typeof SkillCreateDto>;
 export type ISkillUpdateDtoType = z.infer<typeof SkillUpdateDto>;
 export type ISkillAdminDtoType = z.infer<typeof SkillAdminDto>;
 export type ISkillPaginationDtoType = z.infer<typeof SkillPaginationDto>;
+export type ISkillStatsDtoType = z.infer<typeof SkillStatsDto>;

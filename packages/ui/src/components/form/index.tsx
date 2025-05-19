@@ -35,6 +35,7 @@ interface BaseFormProps<TVariables extends FieldValues = FieldValues> {
   saveButtonText?: string;
   children: React.ReactNode;
   className?: string;
+  classNameDialog?: string;
   showButton?: boolean;
   id?: string;
 }
@@ -45,6 +46,7 @@ export const Form = <TVariables extends FieldValues>({
   saveButtonText = "save",
   children,
   className,
+
   showButton = true,
   id,
 }: BaseFormProps<TVariables>) => {
@@ -82,6 +84,7 @@ export const FormDialog = <TVariables extends FieldValues>({
   formInstance,
   onSubmit,
   children,
+  classNameDialog,
   className,
   id = "form-dialog",
   open,
@@ -102,7 +105,9 @@ export const FormDialog = <TVariables extends FieldValues>({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent
+        className={cn("max-w-4xl max-h-[90vh] overflow-y-auto", classNameDialog)}
+      >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
@@ -142,7 +147,6 @@ const InputGroup = {
   Textarea,
   Switch,
   Select,
-
   Radio: RadioGroupField,
   Checkbox: CheckboxFormField,
   FormCheckbox: FormCheckbox,

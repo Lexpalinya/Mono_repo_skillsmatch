@@ -47,7 +47,7 @@ export const FormField = <
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="mt-2">
           {label && (
             <FormLabel className="flex items-center text-gray-800 dark:text-gray-200">
               <span className="font-medium">{label}</span>

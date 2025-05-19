@@ -2,6 +2,7 @@ import { formatDateTime } from "@/utils/formatDateTime";
 import type { ISkillAdminDtoType } from "@skillsmatch/dto";
 import { Badge, Checkbox, cn, DataTableColumnHeader } from "@skillsmatch/ui";
 import type { ColumnDef } from "@tanstack/react-table";
+import SkillAction from "./Action";
 
 export const SkillColumn: ColumnDef<ISkillAdminDtoType>[] = [
   {
@@ -97,5 +98,10 @@ export const SkillColumn: ColumnDef<ISkillAdminDtoType>[] = [
         {formatDateTime(row.original.updatedAt)}
       </div>
     ),
+  },
+
+  {
+    id: "actions",
+    cell: SkillAction,
   },
 ];

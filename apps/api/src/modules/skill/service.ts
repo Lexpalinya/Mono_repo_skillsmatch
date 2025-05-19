@@ -65,7 +65,7 @@ export const GetSkill = async ({
         mode: "insensitive",
       };
     if (typeof visible === "boolean") where.visible = visible;
-    console.log('where :>> ', where);
+    console.log("where :>> ", where);
     const members = await queryTable("skill", {
       page,
       limit,
@@ -76,6 +76,30 @@ export const GetSkill = async ({
     });
 
     return members;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const GetStatsSkill = async () => {
+  try {
+    const total = await prisma.skill.count({
+      where: {
+        isActive: true,
+      },
+    });
+    const active = await prisma.skill.count({
+      where: {
+        isActive: true,
+        visible: true,
+      },
+    });
+    const [mostUsed] = await prisma.skill.findMany({
+      orderBy: { jobberUsageCount: "desc" },
+      select: { id: true, name: true, jobberUsageCount: true },
+      take: 1,
+    });
+    return { total, active, mostUsed };
   } catch (error) {
     throw error;
   }

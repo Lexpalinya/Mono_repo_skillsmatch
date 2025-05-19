@@ -1,6 +1,5 @@
 import React, { forwardRef } from "react";
 import { Checkbox, Label } from "../../index";
-import { FormControl, FormLabel, } from "./react-hook-form";
 import { cn } from "../../lib/utils";
 
 export interface Option {

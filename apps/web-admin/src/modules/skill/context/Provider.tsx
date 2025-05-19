@@ -2,16 +2,14 @@ import { useState, type PropsWithChildren } from "react";
 import { SkillContext, type ISkillDialogType } from "./Context";
 import { useTableSearchParams } from "tanstack-table-search-params";
 import type { ISkillAdminDtoType } from "@skillsmatch/dto";
-import {
-  keepPreviousData,
-  useQuery,
-} from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { skillRoute } from "../router";
 import { fetchAllSkill } from "../services/fetchAll";
+import { fetchStats } from "../services/fetchStats";
 
 const SkillProvider = ({ children }: PropsWithChildren) => {
   const navigate = skillRoute.useNavigate();
-  const query = skillRoute.useParams();
+  const query = skillRoute.useSearch();
 
   const [open, setOpen] = useState<ISkillDialogType | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -32,6 +30,7 @@ const SkillProvider = ({ children }: PropsWithChildren) => {
     setRowSelection({});
     setSelectedIds([]);
   };
+
   const tableQuery = useQuery({
     queryKey: [
       "listSkill",
@@ -40,14 +39,28 @@ const SkillProvider = ({ children }: PropsWithChildren) => {
       stateAndOnChanges.state.pagination,
       stateAndOnChanges.state.sorting,
     ],
-    queryFn: () =>   fetchAllSkill({
+    queryFn: () =>
+      fetchAllSkill({
         columnFilters: stateAndOnChanges.state.columnFilters,
         globalFilter: stateAndOnChanges.state.globalFilter,
         pagination: stateAndOnChanges.state.pagination,
         sorting: stateAndOnChanges.state.sorting,
       }),
     initialData: { data: [], total: 0 },
-    placeholderData: keepPreviousData});
+    placeholderData: keepPreviousData,
+  });
+
+  const statsQuery = useQuery({
+    queryKey: ["statsSkill"],
+    queryFn: () => fetchStats(),
+    initialData: {
+      total: 0,
+      active: 0,
+      mostUsed: { id: "", name: "", jobberUsageCount: 0 },
+    },
+    placeholderData: keepPreviousData,
+  });
+
   return (
     <SkillContext
       value={{
@@ -62,6 +75,7 @@ const SkillProvider = ({ children }: PropsWithChildren) => {
         resetSkillState,
         stateAndOnChanges,
         tableQuery,
+        statsQuery,
       }}
     >
       {children}

@@ -4,6 +4,7 @@ import {
   DeleteSkill,
   GetSkill,
   GetSkillById,
+  GetStatsSkill,
   UpdateSkill,
 } from "./service";
 import {
@@ -17,11 +18,9 @@ import {
 import { t } from "../../lib/trpc"; // Ensure this uses `initTRPC().create()`
 
 export const skillRouter = t.router({
-  getAll: t.procedure
-    .input(SkillPaginationDto)
-    .query(async ({ input }) => {
-      return GetSkill(input);
-    }),
+  getAll: t.procedure.input(SkillPaginationDto).query(async ({ input }) => {
+    return GetSkill(input);
+  }),
 
   getById: t.procedure
     .input(idDto)
@@ -47,4 +46,8 @@ export const skillRouter = t.router({
     .mutation(async ({ input }: { input: IIdDtoType }) => {
       return DeleteSkill(input.id);
     }),
+
+  fetchStats: t.procedure.query(async () => {
+    return GetStatsSkill();
+  }),
 });
