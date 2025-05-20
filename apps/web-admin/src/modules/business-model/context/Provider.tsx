@@ -1,93 +1,94 @@
 import { useState, type PropsWithChildren } from "react";
-import { SkillContext, type ISkillDialogType } from "./Context";
+import { BusinessModelContext, type IBusinessModelDialogType } from "./Context";
+import type { IBusinessModelAdminDtoType } from "@skillsmatch/dto";
 import { useTableSearchParams } from "tanstack-table-search-params";
-import type { ISkillAdminDtoType } from "@skillsmatch/dto";
+import { URLSearchParams } from "url";
+
+import { businessModelRoute } from "../router";
 import {
   keepPreviousData,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { skillRoute } from "../router";
-import { fetchAllSkill } from "../services/fetchAll";
-import { fetchStats } from "../services/fetchStats";
+import { fetchAllBusinessModel } from "../service/fetchAll";
 
-const SkillProvider = ({ children }: PropsWithChildren) => {
-  const navigate = skillRoute.useNavigate();
-  const query = skillRoute.useSearch();
+export const BusinessModelProvider = ({ children }: PropsWithChildren) => {
+  const navigate = businessModelRoute.useNavigate();
+  const query = businessModelRoute.useSearch();
 
-  const [open, setOpen] = useState<ISkillDialogType | null>(null);
+  const [open, setOpen] = useState<IBusinessModelDialogType>(null);
+  const [currentRow, setCurrentRow] =
+    useState<IBusinessModelAdminDtoType | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [rowSelection, setRowSelection] = useState<Record<number, boolean>>({});
-  const [currentRow, setCurrentRow] = useState<ISkillAdminDtoType | null>(null);
+
   const stateAndOnChanges = useTableSearchParams({
     push: (url) => {
       const searchParams = new URLSearchParams(url.split("?")[1]);
       navigate({ search: Object.fromEntries(searchParams.entries()) });
     },
     query,
-    pathname: skillRoute.path,
+    pathname: businessModelRoute.path,
   });
   const queryClient = useQueryClient();
   const handleResetCache = () => {
-    queryClient.invalidateQueries({ queryKey: ["statsSkill"] });
+    queryClient.invalidateQueries({ queryKey: ["businessModelStats"] });
   };
-  const resetSkillState = () => {
+  const resetState = () => {
     setOpen(null);
     setCurrentRow(null);
     setRowSelection({});
     setSelectedIds([]);
     handleResetCache();
   };
-
   const tableQuery = useQuery({
     queryKey: [
-      "listSkill",
+      "businessModel",
       stateAndOnChanges.state.columnFilters,
       stateAndOnChanges.state.globalFilter,
       stateAndOnChanges.state.pagination,
       stateAndOnChanges.state.sorting,
     ],
     queryFn: () =>
-      fetchAllSkill({
+      fetchAllBusinessModel({
         columnFilters: stateAndOnChanges.state.columnFilters,
         globalFilter: stateAndOnChanges.state.globalFilter,
         pagination: stateAndOnChanges.state.pagination,
         sorting: stateAndOnChanges.state.sorting,
       }),
-    initialData: { data: [], total: 0 },
-    placeholderData: keepPreviousData,
-  });
-
-  const statsQuery = useQuery({
-    queryKey: ["statsSkill"],
-    queryFn: () => fetchStats(),
     initialData: {
+      data: [],
       total: 0,
-      active: 0,
-      mostUsed: { id: "", name: "", jobberUsageCount: 0 },
     },
     placeholderData: keepPreviousData,
   });
-
+  const statsQuery = useQuery({
+    queryKey: ["businessModelStats"],
+    initialData: {
+      total: 0,
+      active: 0,
+      mostUsed: { id: "", name: "", companyUsageCount: 0 },
+    },
+    placeholderData: keepPreviousData,
+  });
   return (
-    <SkillContext
+    <BusinessModelContext
       value={{
         open,
         setOpen,
-        rowSelection,
-        setRowSelection,
-        selectedIds,
-        setSelectedIds,
         currentRow,
         setCurrentRow,
-        resetSkillState,
+        selectedIds,
+        setSelectedIds,
+        rowSelection,
+        setRowSelection,
         stateAndOnChanges,
         tableQuery,
+        resetState,
         statsQuery,
       }}
     >
       {children}
-    </SkillContext>
+    </BusinessModelContext>
   );
 };
-export default SkillProvider;

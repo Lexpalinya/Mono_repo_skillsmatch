@@ -1,5 +1,6 @@
 import {
   IBusinessModelCreateDtoType,
+  IBusinessModelPaginationDto,
   IBusinessModelUpdateDtoType,
 } from "@skillsmatch/dto";
 
@@ -55,22 +56,55 @@ export const DeleteBusinessModel = async (id: string) => {
 };
 
 export const GetBusinessModel = async ({
-  where = { isActive: true },
-  page = 1,
-  pageSize = 10,
-  orderBy,
-  include,
-}: QueryOptions<BusinessModel>) => {
+  page,
+  limit,
+  search,
+  sortOrder = "asc",
+  sortBy,
+  visible,
+}: IBusinessModelPaginationDto) => {
   try {
-    const members = await queryTable("businessModel", {
-      where,
-      page,
-      pageSize,
-      orderBy,
-      include,
-    });
+    let where: any = { isActive: true };
+    if (search)
+      where.name = {
+        contains: search,
+        mode: "insensitive",
+      };
+    if (typeof visible === "boolean") where.visible = visible;
 
+    const members = await queryTable("businessModel", {
+      page,
+      limit,
+      where,
+      orderBy: {
+        [sortBy]: sortOrder,
+      },
+    });
     return members;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const GetStatsBusinessModel = async () => {
+  try {
+    const total = await prisma.businessModel.count({
+      where: {
+        isActive: true,
+      },
+    });
+    const active = await prisma.businessModel.count({
+      where: {
+        isActive: true,
+        visible: true,
+      },
+    });
+    const [mostUsed] = await prisma.businessModel.findMany({
+      orderBy: { companyUsageCount: "desc" },
+      select: { id: true, name: true, companyUsageCount: true },
+      take: 1,
+    });
+    return { total, active, mostUsed };
   } catch (error) {
     throw error;
   }

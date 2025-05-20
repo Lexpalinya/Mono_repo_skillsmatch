@@ -10,13 +10,13 @@ import { useSkill } from "../context/useSkill";
 export default function SkillPage() {
   return (
     <SkillProvider>
-      <SkillContext />
+      <SkillContent />
       <SkillDialog />
     </SkillProvider>
   );
 }
 
-export const SkillContext = () => (
+export const SkillContent = () => (
   <Main>
     <div className="flex items-center justify-between ">
       <div>
