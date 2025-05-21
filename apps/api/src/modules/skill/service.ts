@@ -94,12 +94,27 @@ export const GetStatsSkill = async () => {
         visible: true,
       },
     });
-    const [mostUsed] = await prisma.skill.findMany({
-      orderBy: { jobberUsageCount: "desc" },
-      select: { id: true, name: true, jobberUsageCount: true },
+    const [mostUsedPost] = await prisma.skill.findMany({
+      orderBy: { postUsageCount: "desc" },
+      select: {
+        id: true,
+        name: true,
+        postUsageCount: true,
+        jobberUsageCount: true,
+      },
       take: 1,
     });
-    return { total, active, mostUsed };
+    const [mostUsedJobber] = await prisma.skill.findMany({
+      orderBy: { jobberUsageCount: "desc" },
+      select: {
+        id: true,
+        name: true,
+        postUsageCount: true,
+        jobberUsageCount: true,
+      },
+      take: 1,
+    });
+    return { total, active, mostUsedPost, mostUsedJobber };
   } catch (error) {
     throw error;
   }

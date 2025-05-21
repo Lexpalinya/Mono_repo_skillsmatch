@@ -104,6 +104,7 @@ export const GetStatsBusinessModel = async () => {
       select: { id: true, name: true, companyUsageCount: true },
       take: 1,
     });
+
     return { total, active, mostUsed };
   } catch (error) {
     throw error;

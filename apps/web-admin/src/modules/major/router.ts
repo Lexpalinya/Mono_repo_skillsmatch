@@ -3,7 +3,7 @@ import { appLayoutRoute } from "@/layouts/AppLayout";
 import { createRoute, lazyRouteComponent } from "@tanstack/react-router";
 
 
-export const MajorRoute = createRoute(
+export const majorRoute = createRoute(
     {
         path: "/major",
         getParentRoute: () => appLayoutRoute,
@@ -12,4 +12,4 @@ export const MajorRoute = createRoute(
     }
 )
 
-export default [MajorRoute]
+export default [majorRoute]

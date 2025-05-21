@@ -72,7 +72,7 @@ export default function Edit({
 
   return BusinessModelForm({
     open,
-    setOpen: (value) => setOpen(value as IBusinessModelDialogType),
+    setOpen: (value) => setOpen(value as any),
     form,
     onSubmit,
   });

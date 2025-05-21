@@ -5,12 +5,13 @@ import { PlusCircle } from "lucide-react";
 import { useBusinessModel } from "../context/useBusinessModel";
 import BusinessModelStatsCard from "../components/BusinessModelStatsCard";
 import BusinessModelTable from "../components/table/Table";
+import BusinessModelDialog from "../components/dialog/BusinessModelDialog";
 
 export default function BusinessModelPage() {
   return (
     <BusinessModelProvider>
       <BusinessModelContent />
-      {/* <SkillDialog /> */}
+      <BusinessModelDialog/>
     </BusinessModelProvider>
   );
 }

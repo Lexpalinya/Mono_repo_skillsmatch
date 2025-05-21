@@ -3,7 +3,7 @@ import { appLayoutRoute } from "@/layouts/AppLayout";
 import { createRoute, lazyRouteComponent } from "@tanstack/react-router";
 
 
-export const JobPositionRoute = createRoute(
+export const jobPositionRoute = createRoute(
     {
         path: "/job-position",
         getParentRoute: () => appLayoutRoute,
@@ -12,4 +12,4 @@ export const JobPositionRoute = createRoute(
     }
 )
 
-export default [JobPositionRoute]
+export default [jobPositionRoute]

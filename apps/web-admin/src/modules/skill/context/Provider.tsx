@@ -64,7 +64,18 @@ const SkillProvider = ({ children }: PropsWithChildren) => {
     initialData: {
       total: 0,
       active: 0,
-      mostUsed: { id: "", name: "", jobberUsageCount: 0 },
+      mostUsedPost: {
+        id: "",
+        name: "",
+        postUsageCount: 0,
+        jobberUsageCount: 0,
+      },
+      mostUsedJobber: {
+        id: "",
+        name: "",
+        postUsageCount: 0,
+        jobberUsageCount: 0,
+      },
     },
     placeholderData: keepPreviousData,
   });

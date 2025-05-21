@@ -25,24 +25,25 @@ const BusinessModelForm = <T extends FieldValues>({
       classNameDialog="w-[350px]"
       formInstance={form}
       onSubmit={onSubmit}
-      title={title || "Skill Form"}
-      description={description || "Update the details for this skill."}
+      title={title || "Business Model Form"}
+      description={description || "Update the details for this business model."}
     >
       <FormDialog.Field
         name="name"
-        label="Skill Name"
-        description="The name of the skill as it will appear to users."
+        label="Business Model Name"
+        description="The name of the business model as it will appear to users."
       >
-        <FormDialog.InputGroup.Input placeholder="My awesome skill..." />
+        <FormDialog.InputGroup.Input placeholder="e.g., Subscription, Freemium..." />
       </FormDialog.Field>
       <FormDialog.Field
         name="visible"
         label="Visibility"
-        description="Make this skill visible to all users."
+        description="Make this business model visible to all users."
       >
         <FormDialog.InputGroup.Switch />
       </FormDialog.Field>
     </FormDialog>
   );
 };
+
 export default BusinessModelForm;

@@ -1,13 +1,11 @@
 import {
   IJobPositionCreateDtoType,
+  IJobPositionPaginationDtoType,
   IJobPositionUpdateDtoType,
 } from "@skillsmatch/dto";
-
-import { Major } from "@prisma/client";
 import { ensureRecordExists, ensureUniqueRecord } from "../../utils/ensure";
 import prisma from "../../lib/prisma-client";
-import { QueryOptions, queryTable } from "../../utils/pagination";
-import { BusinessModel } from "@prisma/client";
+import { queryTable } from "../../utils/pagination";
 
 export const CreateJobPosition = async (data: IJobPositionCreateDtoType) => {
   await ensureUniqueRecord({
@@ -33,9 +31,7 @@ export const UpdateJobPosition = async (
     });
   await ensureRecordExists({ table: "jobPosition", column: "id", value: id });
   const jobPosition = await prisma.jobPosition.update({
-    where: {
-      id,
-    },
+    where: { id },
     data,
   });
   return jobPosition;
@@ -44,37 +40,77 @@ export const UpdateJobPosition = async (
 export const DeleteJobPosition = async (id: string) => {
   await ensureRecordExists({ table: "jobPosition", column: "id", value: id });
   const jobPosition = await prisma.jobPosition.update({
-    where: {
-      id,
-    },
-    data: {
-      isActive: false,
-    },
+    where: { id },
+    data: { isActive: false },
   });
   return jobPosition;
 };
 
 export const GetJobPosition = async ({
-  where = { isActive: true },
-  page = 1,
-  pageSize = 10,
-  orderBy,
-  include,
-}: QueryOptions<BusinessModel>) => {
+  page,
+  limit,
+  search,
+  sortOrder = "asc",
+  sortBy,
+  visible,
+}: IJobPositionPaginationDtoType) => {
   try {
-    const members = await queryTable("jobPosition", {
-      where,
+    let where: any = { isActive: true };
+    if (search)
+      where.name = {
+        contains: search,
+        mode: "insensitive",
+      };
+    if (typeof visible === "boolean") where.visible = visible;
+    const items = await queryTable("jobPosition", {
       page,
-      pageSize,
-      orderBy,
-      include,
+      limit,
+      where,
+      orderBy: {
+        [sortBy]: sortOrder,
+      },
     });
 
-    return members;
+    return items;
   } catch (error) {
     throw error;
   }
 };
+
+export const GetStatsJobPosition = async () => {
+  try {
+    const total = await prisma.jobPosition.count({
+      where: { isActive: true },
+    });
+    const active = await prisma.jobPosition.count({
+      where: { isActive: true, visible: true },
+    });
+    const [mostUsedPost] = await prisma.jobPosition.findMany({
+      orderBy: { postUsageCount: "desc" },
+      select: {
+        id: true,
+        name: true,
+        postUsageCount: true,
+        jobberUsageCount: true,
+      },
+      take: 1,
+    });
+    const [mostUsedJobber] = await prisma.jobPosition.findMany({
+      orderBy: { jobberUsageCount: "desc" },
+      select: {
+        id: true,
+        name: true,
+        postUsageCount: true,
+        jobberUsageCount: true,
+      },
+      take: 1,
+    });
+    return { total, active, mostUsedPost, mostUsedJobber };
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const GetJobPositionById = async (id: string) => {
   const jobPosition = await prisma.jobPosition.findUniqueOrThrow({
     where: {

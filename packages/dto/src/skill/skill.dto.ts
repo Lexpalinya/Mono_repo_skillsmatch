@@ -29,6 +29,7 @@ export const SkillStatsDto = z.object({
   id: z.string(),
   name: z.string(),
   jobberUsageCount: z.number(),
+  postUsageCount: z.number(),
 });
 
 export type ISkillCreateDtoType = z.infer<typeof SkillCreateDto>;

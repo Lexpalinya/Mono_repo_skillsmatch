@@ -2,7 +2,6 @@ import { useState, type PropsWithChildren } from "react";
 import { BusinessModelContext, type IBusinessModelDialogType } from "./Context";
 import type { IBusinessModelAdminDtoType } from "@skillsmatch/dto";
 import { useTableSearchParams } from "tanstack-table-search-params";
-import { URLSearchParams } from "url";
 
 import { businessModelRoute } from "../router";
 import {
@@ -11,6 +10,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { fetchAllBusinessModel } from "../service/fetchAll";
+import { fetchStats } from "../service/fetchStats";
 
 export const BusinessModelProvider = ({ children }: PropsWithChildren) => {
   const navigate = businessModelRoute.useNavigate();
@@ -69,6 +69,7 @@ export const BusinessModelProvider = ({ children }: PropsWithChildren) => {
       active: 0,
       mostUsed: { id: "", name: "", companyUsageCount: 0 },
     },
+    queryFn: () => fetchStats(),
     placeholderData: keepPreviousData,
   });
   return (

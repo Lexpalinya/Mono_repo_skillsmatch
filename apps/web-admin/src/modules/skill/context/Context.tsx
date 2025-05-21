@@ -18,7 +18,7 @@ interface ISkillContextType {
   stateAndOnChanges: Returns;
   resetSkillState: () => void;
   statsQuery: DefinedUseQueryResult<
-    { total: number; active: number; mostUsed: ISkillStatsDtoType },
+    { total: number; active: number; mostUsedPost: ISkillStatsDtoType, mostUsedJobber: ISkillStatsDtoType },
     Error
   >;
   tableQuery: DefinedUseQueryResult<

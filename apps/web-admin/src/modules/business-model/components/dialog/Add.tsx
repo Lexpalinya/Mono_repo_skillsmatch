@@ -56,7 +56,7 @@ export default function Add({ open }: IBusinessModelProps) {
 
   return BusinessModelForm({
     open,
-    setOpen: (value) => setOpen(value as IBusinessModelDialogType),
+    setOpen: (value) => setOpen(value as any),
     form,
     onSubmit,
     title: "Create New Business Model",

@@ -1,52 +1,53 @@
 import { z } from "zod";
 import {
-    CreateEducationalInstitution,
-    DeleteEducationalInstitution,
-    GetEducationalInstitution,
-    GetEducationalInstitutionById,
-    UpdateEducationalInstitution,
+  CreateEducationalInstitution,
+  DeleteEducationalInstitution,
+  GetEducationalInstitution,
+  GetEducationalInstitutionById,
+  GetStatsEducationalInstitution,
+  UpdateEducationalInstitution,
 } from "./service";
 import {
-    idDto,
-    IIdDtoType,
-    IEducationalInstitutionCreateDtoType,
-    EducationalInstitutionCreateDto,
-    EducationalInstitutionUpdateDto,
-    IQueryDtoType,
-    QueryDto,
-} from "@skillsmatch/dto";
-import { publicProcedure, router } from "../../lib/trpc";
+  idDto,
+  IIdDtoType,
+  IEducationalInstitutionCreateDtoType,
+  EducationalInstitutionCreateDto,
+  EducationalInstitutionUpdateDto,
+  EducationalInstitutionPaginationDto,
+} from "@skillsmatch/dto"; 
+import { t } from "../../lib/trpc";
 
-export const educationalInstitutionRouter = router({
-    getAll: publicProcedure.input(QueryDto)
-        .query(async ({ input }: { input?: IQueryDtoType }) => {
-            return GetEducationalInstitution(input || {});
-        }),
+export const educationalInstitutionRouter = t.router({
+  getAll: t.procedure.input(EducationalInstitutionPaginationDto).query(async ({ input }) => {
+    return GetEducationalInstitution(input);
+  }),
 
-    getById: publicProcedure
-        .input(idDto)
-        .query(async ({ input }: { input: IIdDtoType }) => {
-            return GetEducationalInstitutionById(input.id);
-        }),
+  getById: t.procedure
+    .input(idDto)
+    .query(async ({ input }: { input: IIdDtoType }) => {
+      return GetEducationalInstitutionById(input.id);
+    }),
 
-    create: publicProcedure
-        .input(EducationalInstitutionCreateDto)
-        .mutation(async ({ input }: { input: IEducationalInstitutionCreateDtoType }) => {
-            return CreateEducationalInstitution(input);
-        }),
+  create: t.procedure
+    .input(EducationalInstitutionCreateDto)
+    .mutation(async ({ input }: { input: IEducationalInstitutionCreateDtoType }) => {
+      return CreateEducationalInstitution(input);
+    }),
 
-    update: publicProcedure
-        .input(EducationalInstitutionUpdateDto.extend(idDto.shape))
-        .mutation(
-            async ({ input }: { input: z.infer<typeof EducationalInstitutionUpdateDto> & IIdDtoType }) => {
-                const { id, ...data } = input;
-                return UpdateEducationalInstitution(id, data);
-            }
-        ),
+  update: t.procedure
+    .input(EducationalInstitutionUpdateDto.extend(idDto.shape))
+    .mutation(async ({ input }) => {
+      const { id, ...data } = input;
+      return UpdateEducationalInstitution(id, data);
+    }),
 
-    delete: publicProcedure
-        .input(idDto)
-        .mutation(async ({ input }: { input: IIdDtoType }) => {
-            return DeleteEducationalInstitution(input.id);
-        }),
+  delete: t.procedure
+    .input(idDto)
+    .mutation(async ({ input }: { input: IIdDtoType }) => {
+      return DeleteEducationalInstitution(input.id);
+    }),
+
+  fetchStats: t.procedure.query(async () => {
+    return GetStatsEducationalInstitution();
+  }),
 });

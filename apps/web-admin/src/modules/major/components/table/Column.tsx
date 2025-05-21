@@ -1,0 +1,105 @@
+import { formatDateTime } from "@/utils/formatDateTime";
+import type { IMajorAdminDtoType } from "@skillsmatch/dto"; // เปลี่ยนเป็น Major DTO type
+import { Badge, Checkbox, cn, DataTableColumnHeader } from "@skillsmatch/ui";
+import type { ColumnDef } from "@tanstack/react-table";
+import MajorAction from "./Action"; // เปลี่ยน import Component action เป็น MajorAction
+
+export const MajorColumn: ColumnDef<IMajorAdminDtoType>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+        className="translate-y-[2px]"
+      />
+    ),
+    meta: {
+      className: cn(
+        "sticky md:table-cell left-0 z-10 rounded-tl",
+        "bg-background transition-colors duration-200 group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted"
+      ),
+    },
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+        className="translate-y-[2px]"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "name",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Major Name" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-fit text-nowrap">{row.original.name}</div>
+    ),
+  },
+  {
+    accessorKey: "postUsageCount", // ถ้ามี field ชื่อนี้ใน Major DTO
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Enrollment Count" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-fit text-nowrap">{row.original.postUsageCount}</div>
+    ),
+  },
+  {
+    accessorKey: "jobberUsageCount", // หรือถ้าไม่มีก็ลบหรือเปลี่ยนเป็นฟิลด์อื่น
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Lesson Count" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-fit text-nowrap">{row.original.jobberUsageCount}</div>
+    ),
+  },
+  {
+    accessorKey: "visible",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Visibility" />
+    ),
+    cell: ({ row }) => {
+      const visible = row.original.visible;
+      return (
+        <Badge variant={visible ? "default" : "secondary"}>
+          {visible ? "Visible" : "Hidden"}
+        </Badge>
+      );
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Created At" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-fit text-nowrap">
+        {formatDateTime(row.original.createdAt)}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "updatedAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Updated At" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-fit text-nowrap">
+        {formatDateTime(row.original.updatedAt)}
+      </div>
+    ),
+  },
+  {
+    id: "actions",
+    cell: MajorAction, // เปลี่ยน Component action ให้เป็น MajorAction
+  },
+];
