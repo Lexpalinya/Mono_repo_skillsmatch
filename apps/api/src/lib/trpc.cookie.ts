@@ -1,10 +1,11 @@
-import { Context as ElysiaContext } from "elysia";
-import { inferAsyncReturnType } from "@trpc/server";
+import type { Context } from 'hono';
 
-export function createContext({ set }: ElysiaContext) {
+export const createContext = (c: Context) => {
+  console.log('c :>> ', c);
   return {
-    set, // Provide the set object here so you can access it in the router
+    req: c.req,
+    res: c,
   };
-}
+};
 
-export type Context = inferAsyncReturnType<typeof createContext>;
+export type TrpcContext = ReturnType<typeof createContext>;

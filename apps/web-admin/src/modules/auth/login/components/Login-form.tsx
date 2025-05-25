@@ -1,17 +1,77 @@
-import { Button, Card, CardContent, cn, Input, Label } from "@skillsmatch/ui";
-import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MemberLoginDtoType, type IMemberLoginDtoType } from "@skillsmatch/dto";
+import { Button, Card, CardContent, cn, confirm, Form } from "@skillsmatch/ui";
+import { Link, useNavigate } from "@tanstack/react-router";
+
+import { CheckCircle } from "lucide-react";
+
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const [showPassword, setShowPassword] = useState(false);
+  const nav = useNavigate();
+  const form = useForm<IMemberLoginDtoType>({
+    defaultValues: {
+      phoneNumber: "+8562012345678",
+      password: "password",
+    },
+    resolver: zodResolver(MemberLoginDtoType),
+  });
+
+  const login = async (dataInput: IMemberLoginDtoType) => {
+    const res = await fetch("http://localhost:3000/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(dataInput),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Login failed");
+    }
+
+    console.log("data :>> ", data);
+    return data;
+  };
+  const onSubmit = async () => {
+    try {
+      await login(form.watch());
+      nav({ to: "/app" });
+
+      toast.success("Course created successfully!", {
+        icon: <CheckCircle className="text-success size-4" />,
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "An error occurred while creating the course. Please try again.";
+
+      confirm({
+        actionText: "Retry",
+        title: "Failed to Create Course",
+        description: errorMessage,
+        CancelProps: { className: "hidden" },
+      });
+    }
+  };
   return (
     <div className={cn("flex flex-col gap-6")} {...props}>
       <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <Form
+            showButton={false}
+            className="p-6 md:p-8"
+            formInstance={form} // Replace with a valid form instance
+            onSubmit={() => onSubmit()}
+          >
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -19,54 +79,33 @@ export default function LoginForm({
                   Login to your Acme Inc account
                 </p>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                />
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    required
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                    <span className="sr-only">
-                      {showPassword ? "Hide password" : "Show password"}
-                    </span>
-                  </Button>
-                </div>
-              </div>
-              <Button type="submit" className="w-full">
-                Login
-              </Button>
+
+              <Form.Field
+                name="phoneNumber"
+                label="Phone Number"
+                defaultValue={"+8562012345678"}
+              >
+                <Form.InputGroup.Input placeholder="+8562012345678 " />
+              </Form.Field>
+
+              <Form.Field
+                name="password"
+                label="Password"
+                defaultValue={"password"}
+              >
+                <Form.InputGroup.PasswordInput />
+              </Form.Field>
             </div>
-          </form>
+            <div className="flex items-center ">
+              <Link
+                to={"auth/forgot-password"}
+                className="ml-auto text-sm underline-offset-2 hover:underline"
+              >
+                Forgot your password?
+              </Link>
+            </div>
+            <Button className="w-full mt-3">Login</Button>
+          </Form>
           <div className="relative hidden bg-muted md:block">
             <img
               src="../../../../../vite.svg"

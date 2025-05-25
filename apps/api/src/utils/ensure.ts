@@ -27,13 +27,13 @@ export const ensureRecordExists = async <T>({
     where = {},
 }: EnsureRecordParams) => {
     validateColumn(column);
-
     const record = await (prisma[table] as any).findFirst({
         where: {
             [column]: value,
             ...where,
         },
     });
+
 
     if (!record) {
         throw new TRPCError({

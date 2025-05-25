@@ -1,7 +1,7 @@
 import { FormDialog } from "@skillsmatch/ui";
 import type { FieldValues, useForm } from "react-hook-form";
 
-const JobPositionForm = <T extends FieldValues>({
+const MajorForm = <T extends FieldValues>({
   open,
   setOpen,
   form,
@@ -46,4 +46,4 @@ const JobPositionForm = <T extends FieldValues>({
   );
 };
 
-export default JobPositionForm;
+export default MajorForm;

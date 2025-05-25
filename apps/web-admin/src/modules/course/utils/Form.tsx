@@ -22,7 +22,8 @@ const CourseForm = <T extends FieldValues>({
       onOpenChange={() => {
         setOpen(null);
       }}
-      classNameDialog="w-[350px]"
+      id={"login-form"}
+      classNameDialog="sm:max-w-[500px]"
       formInstance={form}
       onSubmit={onSubmit}
       title={title || "Course Form"}

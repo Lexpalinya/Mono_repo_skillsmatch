@@ -1,13 +1,17 @@
-import { IMemberCreateDtoType, IMemberUpdateDtoType } from "@skillsmatch/dto";
-
+import {
+  IMemberCreateDtoType,
+  IMemberPaginationDtoType,
+  IMemberUpdateDtoType,
+} from "@skillsmatch/dto";
 
 import { TRPCError } from "@trpc/server";
 
-import { Member } from "@prisma/client";
-import { ensureUniqueRecord } from '../../../utils/ensure';
-import prisma from '../../../lib/prisma-client';
-import { HashedPassword } from '../../../utils/password';
-import { QueryOptions, queryTable } from '../../../utils/pagination';
+import { Member, Prisma, PrismaClient } from "@prisma/client";
+import { ensureUniqueRecord } from "../../../utils/ensure";
+
+import { HashedPassword } from "../../../utils/password";
+import { QueryOptions, queryTable } from "../../../utils/pagination";
+import prisma from "@lib/prisma-client";
 
 export const CreateMember = async (data: IMemberCreateDtoType) => {
   try {
@@ -95,22 +99,42 @@ export const GetMember = async (id: string) => {
 };
 
 export const GetMembers = async ({
-  where = { isActive: true },
-  page = 1,
-  pageSize = 10,
-  orderBy,
-  include,
-}: QueryOptions<Member>) => {
+  page,
+  limit,
+  search,
+  sortOrder = "asc",
+  sortBy,
+  role,
+}: IMemberPaginationDtoType) => {
   try {
-    const members = await queryTable("member", {
-      where,
+    let where: any = { isActive: true };
+    if (search)
+      where.name = {
+        contains: search,
+        mode: "insensitive",
+      };
+    if (role) where.role = role;
+    const select: Prisma.MemberSelect = {
+      id: true,
+      email: true,
+      username: true,
+      profile: true,
+      phoneNumber: true,
+      role: true,
+      createdAt: true,
+      block: true,
+    };
+    const items = await queryTable("member", {
       page,
-      pageSize,
-      orderBy,
-      include,
+      limit,
+      where,
+      select,
+      orderBy: {
+        [sortBy]: sortOrder,
+      },
     });
 
-    return members;
+    return items;
   } catch (error) {
     throw error;
   }

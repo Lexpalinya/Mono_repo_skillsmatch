@@ -3,7 +3,7 @@ import { appLayoutRoute } from "@/layouts/AppLayout";
 import { createRoute, lazyRouteComponent } from "@tanstack/react-router";
 
 
-export const MemberRoute = createRoute(
+export const memberRoute = createRoute(
     {
         path: "/member",
         getParentRoute: () => appLayoutRoute,
@@ -12,4 +12,4 @@ export const MemberRoute = createRoute(
     }
 )
 
-export default [MemberRoute]
+export default [memberRoute]

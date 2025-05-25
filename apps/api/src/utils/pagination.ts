@@ -8,13 +8,21 @@ export type QueryOptions<TModel> = {
   limit?: number;
   orderBy?: any;
   include?: any;
+  select?: any;
 };
 
 export const queryTable = async <TModel extends keyof PrismaClient>(
   modelName: TModel,
   options: QueryOptions<any> = {}
 ) => {
-  const { where = {}, page = 1, limit = 10, orderBy, include } = options;
+  const {
+    where = {},
+    page = 1,
+    limit = 10,
+    orderBy,
+    include,
+    select,
+  } = options;
 
   const skip = (page - 1) * limit;
 
@@ -28,7 +36,8 @@ export const queryTable = async <TModel extends keyof PrismaClient>(
     model.findMany({
       where,
       orderBy,
-      include,
+      ...(include ? { include } : {}),
+      ...(select ? { select } : {}),
       skip,
       take: limit,
     }),

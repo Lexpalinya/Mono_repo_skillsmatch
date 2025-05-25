@@ -1,61 +1,13 @@
-// import { Elysia } from "elysia";
-// import { logger } from "@bogeychan/elysia-logger";
-// import { checkConnectionDATABASE } from "./lib/prisma-client";
-// import { cors } from "@elysiajs/cors";
-// import { TRPCError } from "@trpc/server";
-// import { trpc } from "@elysiajs/trpc";
-// import appRouter from "./router";
-
-// const app = new Elysia()
-//   .use(trpc(appRouter, { endpoint: "/trpc" }))
-//   .use(
-//     cors({
-//       origin: "http://localhost:5173",
-//       credentials: true,
-//       methods: ["GET", "POST", "PUT", "DELETE"],
-//     })
-//   )
-
-//   .use(logger({ level: "info" }))
-//   .onError(({ error, code, set }) => {
-//     if (error instanceof TRPCError) {
-//       throw error;
-//     }
-
-//     if (code === "NOT_FOUND") {
-//       set.status = 404;
-//       return {
-//         success: false,
-//         message: "Route not found",
-//       };
-//     }
-
-//     console.error("🔥 Global Error (Elysia):", error);
-//     set.status = 500;
-//     return {
-//       success: false,
-//       message: error.message || "Internal Server Error",
-//     };
-//   });
-// app
-//   .get("/", () => "Hello Elysia")
-//   .onStart(async () => {
-//     await checkConnectionDATABASE();
-//     console.log("🚀 Server Status: RUNNING");
-//     console.log(`🌍 Base URL: http://localhost:3000`);
-//     console.log(`🔗 API Prefix: ${app.config.prefix}`);
-//   })
-//   .listen({ port: 3000 });
-
-//-----------------------------------------------------------
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import appRouter from "./router";
 import { checkConnectionDATABASE } from "./lib/prisma-client";
 import { trpcServer } from "@hono/trpc-server";
-import { TRPCError } from "@trpc/server";
+import { createContext } from "@lib/trpc.cookie";
+import memberRoute from "./modules/member/honoRouter";
 const app = new Hono();
 
+// app.use(logger());
 // CORS middleware
 app.use(
   "*",
@@ -86,7 +38,7 @@ app.use(
 );
 // Root route
 app.get("/", (c) => c.text("Hello Hono"));
-
+app.route("/api", memberRoute);
 
 async function start() {
   await checkConnectionDATABASE();

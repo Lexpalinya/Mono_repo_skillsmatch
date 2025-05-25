@@ -45,6 +45,7 @@ export const RegisterMember = async (data: IMemberCreateDtoType) => {
       },
     });
 
+
     return {
       member,
       token: getTokenForMember(member),
@@ -53,6 +54,7 @@ export const RegisterMember = async (data: IMemberCreateDtoType) => {
     throw error;
   }
 };
+
 
 export const LoginMember = async (data: IMemberLoginDtoType) => {
   try {

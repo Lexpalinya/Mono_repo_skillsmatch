@@ -1,30 +1,27 @@
 import { useState, type PropsWithChildren } from "react";
-import {
-  EducationalInstitutionContext,
-  type IEducationalInstitutionDialogType,
-} from "./Context";
+import { MemberContext, type IMemberDialogType } from "./Context";
 import { useTableSearchParams } from "tanstack-table-search-params";
-import type { IEducationalInstitutionAdminDtoType } from "@skillsmatch/dto";
+import type { IMemberAdminDtoType } from "@skillsmatch/dto";
 import {
   keepPreviousData,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { educationalInstitutionRoute } from "../router";
-import { fetchAllEducationalInstitution } from "../services/fetchAll";
-import { fetchStatsEducationalInstitution } from "../services/fetchStats";
 
-const EducationalInstitutionProvider = ({ children }: PropsWithChildren) => {
-  const navigate = educationalInstitutionRoute.useNavigate();
-  const query = educationalInstitutionRoute.useSearch();
+import { fetchStatsMajor } from "../services/fetchStats";
+import { memberRoute } from "../router";
+import { fetchAllMember } from "../services/fetchAll";
 
-  const [open, setOpen] = useState<IEducationalInstitutionDialogType | null>(
-    null
-  );
+const MemberProvider = ({ children }: PropsWithChildren) => {
+  const navigate = memberRoute.useNavigate();
+  const query = memberRoute.useSearch();
+
+  const [open, setOpen] = useState<IMemberDialogType | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [rowSelection, setRowSelection] = useState<Record<number, boolean>>({});
-  const [currentRow, setCurrentRow] =
-    useState<IEducationalInstitutionAdminDtoType | null>(null);
+  const [currentRow, setCurrentRow] = useState<IMemberAdminDtoType | null>(
+    null
+  );
 
   const stateAndOnChanges = useTableSearchParams({
     push: (url) => {
@@ -32,17 +29,15 @@ const EducationalInstitutionProvider = ({ children }: PropsWithChildren) => {
       navigate({ search: Object.fromEntries(searchParams.entries()) });
     },
     query,
-    pathname: educationalInstitutionRoute.path,
+    pathname: memberRoute.path,
   });
 
   const queryClient = useQueryClient();
   const handleResetCache = () => {
-    queryClient.invalidateQueries({
-      queryKey: ["statsEducationalInstitution"],
-    });
+    queryClient.invalidateQueries({ queryKey: ["statsMajor"] });
   };
 
-  const resetEducationalInstitutionState = () => {
+  const resetMajorState = () => {
     setOpen(null);
     setCurrentRow(null);
     setRowSelection({});
@@ -52,14 +47,14 @@ const EducationalInstitutionProvider = ({ children }: PropsWithChildren) => {
 
   const tableQuery = useQuery({
     queryKey: [
-      "listEducationalInstitution",
+      "listMember",
       stateAndOnChanges.state.columnFilters,
       stateAndOnChanges.state.globalFilter,
       stateAndOnChanges.state.pagination,
       stateAndOnChanges.state.sorting,
     ],
     queryFn: () =>
-      fetchAllEducationalInstitution({
+      fetchAllMember({
         columnFilters: stateAndOnChanges.state.columnFilters,
         globalFilter: stateAndOnChanges.state.globalFilter,
         pagination: stateAndOnChanges.state.pagination,
@@ -70,8 +65,8 @@ const EducationalInstitutionProvider = ({ children }: PropsWithChildren) => {
   });
 
   const statsQuery = useQuery({
-    queryKey: ["statsEducationalInstitution"],
-    queryFn: () => fetchStatsEducationalInstitution(),
+    queryKey: ["statsMember"],
+    queryFn: () => fetchStatsMajor(),
     initialData: {
       total: 0,
       active: 0,
@@ -92,7 +87,7 @@ const EducationalInstitutionProvider = ({ children }: PropsWithChildren) => {
   });
 
   return (
-    <EducationalInstitutionContext
+    <MemberContext.Provider
       value={{
         open,
         setOpen,
@@ -102,15 +97,15 @@ const EducationalInstitutionProvider = ({ children }: PropsWithChildren) => {
         setSelectedIds,
         currentRow,
         setCurrentRow,
-        resetEducationalInstitutionState,
+        resetMajorState,
         stateAndOnChanges,
         tableQuery,
         statsQuery,
       }}
     >
       {children}
-    </EducationalInstitutionContext>
+    </MemberContext.Provider>
   );
 };
 
-export default EducationalInstitutionProvider;
+export default MemberProvider;

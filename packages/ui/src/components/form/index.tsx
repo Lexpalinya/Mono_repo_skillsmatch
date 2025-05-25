@@ -106,7 +106,7 @@ export const FormDialog = <TVariables extends FieldValues>({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
-        className={cn("max-w-4xl max-h-[90vh] overflow-y-auto", classNameDialog)}
+        className={cn("max-w-5xl max-h-[90vh] overflow-y-auto", classNameDialog)}
       >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
