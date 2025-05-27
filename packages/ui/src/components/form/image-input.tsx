@@ -30,7 +30,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
   value,
   onChange,
   className,
-  width = 1000,
+  width = 500,
   height = 500,
   ...rest
 }) => {

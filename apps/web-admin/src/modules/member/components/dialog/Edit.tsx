@@ -1,15 +1,20 @@
 import type { IMemberCurrentRowProps } from "../../utils/type";
 import { confirm } from "@skillsmatch/ui";
 import { useForm } from "react-hook-form";
-import { MajorUpdateDto, type IMemberUpdateDtoType } from "@skillsmatch/dto";
+import {
+  MemberUpdateFileDto,
+  type IMemberFileUpdateDtoType,
+} from "@skillsmatch/dto";
 import trpcClient from "@/libs/trpc-client";
 
 import { CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { extractChangedFields } from "@/utils/extractChangedFields";
-import MajorForm from "../../utils/Form";
+
 import { useMember } from "../../context/useMember";
+import { uploadImageToCloudinary } from "@skillsmatch/config";
+import MemberForm from "../../utils/Form";
 
 export default function Edit({ open, currentRow }: IMemberCurrentRowProps) {
   const {
@@ -18,14 +23,14 @@ export default function Edit({ open, currentRow }: IMemberCurrentRowProps) {
     resetMajorState,
   } = useMember();
 
-  const form = useForm<IMemberUpdateDtoType>({
-    defaultValues: {
-      visible: currentRow.visible ?? false,
+  const form = useForm<IMemberFileUpdateDtoType>({
+    values: {
+      ...currentRow,
     },
-    resolver: zodResolver(MajorUpdateDto),
+    resolver: zodResolver(MemberUpdateFileDto),
   });
 
-  const onSubmit = async (values: IMemberUpdateDtoType) => {
+  const onSubmit = async (values: IMemberFileUpdateDtoType) => {
     try {
       const changedFields = extractChangedFields(currentRow, values);
       if (Object.keys(changedFields).length === 0) {
@@ -34,17 +39,32 @@ export default function Edit({ open, currentRow }: IMemberCurrentRowProps) {
         });
         return;
       }
+      if (values.profile instanceof File) {
+        values.profile = await uploadImageToCloudinary(values.profile);
+      }
+
+      if (values.background instanceof File) {
+        values.background = await uploadImageToCloudinary(values.background);
+      }
+      form.setValue("profile", values.profile);
+      form.setValue("background", values.background);
 
       await trpcClient.member.update.mutate({
-        ...changedFields,
-        id: "",
+        id: currentRow.id,
+        ...values,
+        profile: typeof values.profile === "string" ? values.profile : null,
+        background: typeof values.background === "string" ? values.background : null,
       });
 
       resetMajorState();
       form.reset();
       refetch();
 
-      toast.success("Major updated successfully!", {
+      resetMajorState();
+      form.reset();
+      refetch();
+
+      toast.success("Member updated successfully!", {
         icon: <CheckCircle className="text-success size-4" />,
       });
     } catch (error) {
@@ -55,17 +75,19 @@ export default function Edit({ open, currentRow }: IMemberCurrentRowProps) {
 
       confirm({
         actionText: "Retry",
-        title: "Failed to Update Major",
+        title: "Failed to Update Member",
         description: errorMessage,
         CancelProps: { className: "hidden" },
       });
     }
   };
 
-  return MajorForm({
+  return MemberForm({
     open,
     setOpen: (value) => setOpen(value as any),
     form,
     onSubmit,
+    title: "Edit Member",
+    description: "Update member information.",
   });
 }

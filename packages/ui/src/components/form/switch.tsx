@@ -3,6 +3,7 @@ import { cn } from "../../lib/utils";
 import type { Content as SwitchContentType } from "@radix-ui/react-select";
 import React, { forwardRef } from "react";
 import { FormControl } from "./react-hook-form";
+import { FormDescription, FormLabel } from "../ui/form";
 
 interface SwitchProps {
   value?: boolean;
@@ -15,6 +16,7 @@ interface SwitchProps {
   className?: string;
   require?: boolean;
   label?: string;
+  description?: string;
 }
 
 export const Switch = forwardRef<
@@ -31,16 +33,19 @@ export const Switch = forwardRef<
     ...rest
   } = props;
   return (
-    <div className={cn(className, "flex items-center space-x-2  my-2")}>
+    <div
+      className={cn(
+        className,
+        "flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"
+      )}
+    >
+      <div className="space-y-0.5">
+        <FormLabel>{props.label}</FormLabel>
+        <FormDescription>{props.description}</FormDescription>
+      </div>
       <FormControl>
         <SwitchUI checked={value} onCheckedChange={onChange} {...rest} />
       </FormControl>
-      <Label>
-        {props.label
-          ? props.label
-          : value
-        }
-      </Label>
     </div>
   );
 });

@@ -95,7 +95,7 @@ export const MemberColumn: ColumnDef<IMemberAdminDtoType>[] = [
             role === "admin"
               ? "destructive"
               : role === "company"
-                ? "outline"
+                ? "default"
                 : role === "jobber"
                   ? "secondary"
                   : "default"

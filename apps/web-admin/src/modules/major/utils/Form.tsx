@@ -35,12 +35,11 @@ const MajorForm = <T extends FieldValues>({
       >
         <FormDialog.InputGroup.Input placeholder="e.g., Software Engineer" />
       </FormDialog.Field>
-      <FormDialog.Field
-        name="visible"
-        label="Visibility"
-        description="Make this job position visible to all users."
-      >
-        <FormDialog.InputGroup.Switch />
+      <FormDialog.Field name="visible">
+        <FormDialog.InputGroup.Switch
+          label="Visibility"
+          description="Make this job position visible to all users."
+        />
       </FormDialog.Field>
     </FormDialog>
   );

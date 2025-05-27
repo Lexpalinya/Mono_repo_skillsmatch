@@ -35,12 +35,11 @@ const EducationalInstitutionForm = <T extends FieldValues>({
       >
         <FormDialog.InputGroup.Input placeholder="e.g., ABC University" />
       </FormDialog.Field>
-      <FormDialog.Field
-        name="visible"
-        label="Visibility"
-        description="Make this institution visible to all users."
-      >
-        <FormDialog.InputGroup.Switch />
+      <FormDialog.Field name="visible">
+        <FormDialog.InputGroup.Switch
+          label="Visibility"
+          description="Make this institution visible to all users."
+        />
       </FormDialog.Field>
     </FormDialog>
   );

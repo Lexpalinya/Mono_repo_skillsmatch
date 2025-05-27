@@ -11,7 +11,8 @@
       "@/*": ["./src/*"],
       "@skillsmatch/api": ["./../api/src/router.ts"],
       "@skillsmatch/ui": ["../../packages/ui/src/index.ts"],
-      "@skillsmatch/dto": ["../../packages/dto/src/index.ts"]
+      "@skillsmatch/dto": ["../../packages/dto/src/index.ts"],
+      "@skillsmatch/config": ["../../packages/config/src/index.ts"]
     },
     /* Bundler mode */
     "moduleResolution": "bundler",

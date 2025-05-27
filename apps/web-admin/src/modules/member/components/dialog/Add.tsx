@@ -1,7 +1,10 @@
 import type { IMemberProps } from "../../utils/type";
 
 import { useForm } from "react-hook-form";
-import { MemberCreateDto, type IMemberCreateDtoType } from "@skillsmatch/dto";
+import {
+  MemberCreateFileDto,
+  type IMemberFileCreateDtoType,
+} from "@skillsmatch/dto";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { CheckCircle } from "lucide-react";
@@ -9,7 +12,7 @@ import trpcClient from "@/libs/trpc-client";
 import { confirm } from "@skillsmatch/ui";
 import { useMember } from "../../context/useMember";
 import MemberForm from "../../utils/Form";
-
+import { uploadImageToCloudinary } from "@skillsmatch/config";
 
 export default function Add({ open }: IMemberProps) {
   const {
@@ -18,25 +21,26 @@ export default function Add({ open }: IMemberProps) {
     resetMajorState,
   } = useMember();
 
-  const form = useForm<IMemberCreateDtoType>({
-    defaultValues: {
-      visible: true,
-      username: "",
-      password: "",
-      email: "",
-      phoneNumber: "",
-      profile: "",
-      role: "jobber",
-      background: "",
-      block: false,
-    },
-    resolver: zodResolver(MemberCreateDto),
+  const form = useForm<IMemberFileCreateDtoType>({
+    resolver: zodResolver(MemberCreateFileDto),
   });
 
-  const onSubmit = async (values: IMemberCreateDtoType) => {
+  const onSubmit = async (values: IMemberFileCreateDtoType) => {
     try {
+      if (values.profile instanceof File) {
+        values.profile = await uploadImageToCloudinary(values.profile);
+      }
+
+      if (values.background instanceof File) {
+        values.background = await uploadImageToCloudinary(values.background);
+      }
+      form.setValue("profile", values.profile);
+      form.setValue("background", values.background);
+
       await trpcClient.member.create.mutate({
         ...values,
+        profile: typeof values.profile === "string" ? values.profile : null,
+        background: typeof values.background === "string" ? values.background : null,
       });
 
       resetMajorState();

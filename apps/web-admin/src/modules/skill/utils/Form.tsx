@@ -40,7 +40,10 @@ const SkillForm = <T extends FieldValues>({
         label="Visibility"
         description="Make this skill visible to all users."
       >
-        <FormDialog.InputGroup.Switch />
+        <FormDialog.InputGroup.Switch
+          label="Visibility"
+          description="Make this skill visible to all users."
+        />
       </FormDialog.Field>
     </FormDialog>
   );

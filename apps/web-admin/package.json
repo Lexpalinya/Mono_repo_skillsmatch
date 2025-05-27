@@ -12,6 +12,7 @@
   "dependencies": {
     "@skillsmatch/dto": "workspace:*",
     "@skillsmatch/ui": "workspace:*",
+    "@skillsmatch/config": "workspace:*",
     "@skillsmatch/api": "workspace:*"
   }
 }

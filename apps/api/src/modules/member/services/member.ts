@@ -7,10 +7,10 @@ import {
 import { TRPCError } from "@trpc/server";
 
 import { Member, Prisma, PrismaClient } from "@prisma/client";
-import { ensureUniqueRecord } from "../../../utils/ensure";
+import { ensureUniqueRecord } from "@utils/ensure";
 
-import { HashedPassword } from "../../../utils/password";
-import { QueryOptions, queryTable } from "../../../utils/pagination";
+import { HashedPassword } from "@utils/password";
+import { queryTable } from "@utils/pagination";
 import prisma from "@lib/prisma-client";
 
 export const CreateMember = async (data: IMemberCreateDtoType) => {
@@ -50,6 +50,9 @@ export const UpdateMember = async (
   data: IMemberUpdateDtoType & { id: string }
 ) => {
   try {
+    if (data.password) {
+      data.password = await HashedPassword(data.password);
+    }
     const member = await prisma.member.update({
       where: { id: data.id },
       data,
@@ -90,6 +93,18 @@ export const GetMember = async (id: string) => {
         id,
         isActive: true,
       },
+      include: {
+        Company: {
+          select: {
+            id: true,
+          },
+        },
+        Jobber: {
+          select: {
+            id: true,
+          },
+        },
+      },
     });
 
     return member;
@@ -107,15 +122,35 @@ export const GetMembers = async ({
   role,
 }: IMemberPaginationDtoType) => {
   try {
-    let where: any = { isActive: true };
-    if (search)
-      where.name = {
-        contains: search,
-        mode: "insensitive",
+    let where: Prisma.MemberWhereInput = { isActive: true };
+    if (search) {
+      where = {
+        OR: [
+          {
+            username: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          {
+            email: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          {
+            phoneNumber: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        ],
       };
+    }
     if (role) where.role = role;
     const select: Prisma.MemberSelect = {
       id: true,
+      visible: true,
       email: true,
       username: true,
       profile: true,
@@ -123,6 +158,8 @@ export const GetMembers = async ({
       role: true,
       createdAt: true,
       block: true,
+      background: true,
+      password: true,
     };
     const items = await queryTable("member", {
       page,

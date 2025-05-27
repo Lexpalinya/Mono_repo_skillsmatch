@@ -26,7 +26,9 @@ const EducationLevelForm = <T extends FieldValues>({
       formInstance={form}
       onSubmit={onSubmit}
       title={title || "Education Level Form"}
-      description={description || "Update the details for this education level."}
+      description={
+        description || "Update the details for this education level."
+      }
     >
       <FormDialog.Field
         name="name"
@@ -35,12 +37,11 @@ const EducationLevelForm = <T extends FieldValues>({
       >
         <FormDialog.InputGroup.Input placeholder="e.g., Bachelor Degree" />
       </FormDialog.Field>
-      <FormDialog.Field
-        name="visible"
-        label="Visibility"
-        description="Make this education level visible to all users."
-      >
-        <FormDialog.InputGroup.Switch />
+      <FormDialog.Field name="visible">
+        <FormDialog.InputGroup.Switch
+          label="Visibility"
+          description="Make this education level visible to all users."
+        />
       </FormDialog.Field>
     </FormDialog>
   );

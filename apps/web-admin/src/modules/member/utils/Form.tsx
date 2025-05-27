@@ -28,11 +28,22 @@ const MemberForm = <T extends FieldValues>({
       title={title || "Member Form"}
       description={description || "Update the details for this member."}
     >
-      <div className="grid grid-cols-2 gap-4">
+      <div className="relative w-full mb-16">
+        <FormDialog.Field name="background">
+          <FormDialog.InputGroup.ImageInput className="h-32 w-full border-2 border-solid object-cover rounded-md " />
+        </FormDialog.Field>
+        <div className="absolute left-1/2 bottom-0 translate-x-[-40%] translate-y-1/2">
+          <FormDialog.Field name="profile">
+            <FormDialog.InputGroup.ImageInput className="h-24 w-24 rounded-full bg-muted border-solid border-2 shadow-md object-cover" />
+          </FormDialog.Field>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 mt-6">
         <FormDialog.Field name="username" label="Username">
           <FormDialog.InputGroup.Input placeholder="alex" />
         </FormDialog.Field>
-        <FormDialog.Field name="name" label="Role">
+        <FormDialog.Field name="role" label="Role">
           <FormDialog.InputGroup.Select
             defaultValue="jobber"
             options={[
@@ -43,6 +54,7 @@ const MemberForm = <T extends FieldValues>({
           />
         </FormDialog.Field>
       </div>
+
       <div className="grid grid-cols-2 gap-4">
         <FormDialog.Field name="email" label="Email">
           <FormDialog.InputGroup.Input placeholder="alex@example.com" />
@@ -51,16 +63,17 @@ const MemberForm = <T extends FieldValues>({
           <FormDialog.InputGroup.Input placeholder="+8562012345678" />
         </FormDialog.Field>
       </div>
+
       <FormDialog.Field name="password" label="Password">
         <FormDialog.InputGroup.PasswordInput />
       </FormDialog.Field>
-      <div className="grid grid-cols-2 gap-4">
-        <FormDialog.Field
-          name="block"
-          label="Block Status"
-          description="Block this member from accessing the system."
-        >
-          <FormDialog.InputGroup.Switch />
+
+      <div className="">
+        <FormDialog.Field name="block">
+          <FormDialog.InputGroup.Switch
+            label="Block Status"
+            description="Block this member from accessing the system."
+          />
         </FormDialog.Field>
       </div>
     </FormDialog>

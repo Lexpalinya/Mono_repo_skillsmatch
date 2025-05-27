@@ -3,7 +3,6 @@ import { cors } from "hono/cors";
 import appRouter from "./router";
 import { checkConnectionDATABASE } from "./lib/prisma-client";
 import { trpcServer } from "@hono/trpc-server";
-import { createContext } from "@lib/trpc.cookie";
 import memberRoute from "./modules/member/honoRouter";
 const app = new Hono();
 

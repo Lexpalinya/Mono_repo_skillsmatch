@@ -36,12 +36,11 @@ const CourseForm = <T extends FieldValues>({
       >
         <FormDialog.InputGroup.Input placeholder="e.g., Introduction to Programming" />
       </FormDialog.Field>
-      <FormDialog.Field
-        name="visible"
-        label="Visibility"
-        description="Make this course visible to all users."
-      >
-        <FormDialog.InputGroup.Switch />
+      <FormDialog.Field name="visible">
+        <FormDialog.InputGroup.Switch
+          label="Visibility"
+          description="Make this course visible to all users."
+        />
       </FormDialog.Field>
     </FormDialog>
   );

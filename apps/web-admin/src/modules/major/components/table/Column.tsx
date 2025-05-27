@@ -45,7 +45,7 @@ export const MajorColumn: ColumnDef<IMajorAdminDtoType>[] = [
     ),
   },
   {
-    accessorKey: "postUsageCount", // ถ้ามี field ชื่อนี้ใน Major DTO
+    accessorKey: "postUsageCount",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Enrollment Count" />
     ),
@@ -54,7 +54,7 @@ export const MajorColumn: ColumnDef<IMajorAdminDtoType>[] = [
     ),
   },
   {
-    accessorKey: "jobberUsageCount", // หรือถ้าไม่มีก็ลบหรือเปลี่ยนเป็นฟิลด์อื่น
+    accessorKey: "jobberUsageCount",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Lesson Count" />
     ),
