@@ -28,13 +28,13 @@ const MemberForm = <T extends FieldValues>({
       title={title || "Member Form"}
       description={description || "Update the details for this member."}
     >
-      <div className="relative w-full mb-16">
+      <div className="relative w-full mb-24">
         <FormDialog.Field name="background">
-          <FormDialog.InputGroup.ImageInput className="h-32 w-full border-2 border-solid object-cover rounded-md " />
+          <FormDialog.InputGroup.ImageInput className="object-contain h-32 w-full bg-muted border-solid border-2  bg-cover  " />
         </FormDialog.Field>
-        <div className="absolute left-1/2 bottom-0 translate-x-[-40%] translate-y-1/2">
+        <div className="absolute left-1/2 bottom-0 translate-x-[-40%] translate-y-1/3">
           <FormDialog.Field name="profile">
-            <FormDialog.InputGroup.ImageInput className="h-24 w-24 rounded-full bg-muted border-solid border-2 shadow-md object-cover" />
+            <FormDialog.InputGroup.ImageInput className="h-24 w-24 rounded-full bg-muted border-solid border-2 shadow-md object-contain bg-cover  " />
           </FormDialog.Field>
         </div>
       </div>

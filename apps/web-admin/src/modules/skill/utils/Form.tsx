@@ -33,7 +33,7 @@ const SkillForm = <T extends FieldValues>({
         label="Skill Name"
         description="The name of the skill as it will appear to users."
       >
-        <FormDialog.InputGroup.Input placeholder="My awesome skill..." />
+        <FormDialog.InputGroup.Input placeholder="My awesome skill..."  />
       </FormDialog.Field>
       <FormDialog.Field
         name="visible"

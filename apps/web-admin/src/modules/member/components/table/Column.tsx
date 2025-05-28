@@ -45,7 +45,7 @@ export const MemberColumn: ColumnDef<IMemberAdminDtoType>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "username",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="User name" />
     ),

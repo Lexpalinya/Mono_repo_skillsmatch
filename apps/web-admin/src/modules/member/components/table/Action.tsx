@@ -1,4 +1,4 @@
-import type { IMajorAdminDtoType, IMemberAdminDtoType } from "@skillsmatch/dto";
+import type { IMemberAdminDtoType } from "@skillsmatch/dto";
 import {
   Button,
   confirm,
@@ -10,11 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "@skillsmatch/ui";
 import type { Row } from "@tanstack/react-table";
-import { Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { CheckCircle, Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { type PropsWithChildren } from "react";
 
 import trpcClient from "@/libs/trpc-client";
 import { useMember } from "../../context/useMember";
+import { toast } from "sonner";
 
 export default function MemberAction({
   row,
@@ -23,19 +24,21 @@ export default function MemberAction({
     tableQuery: { refetch },
     setOpen,
     setCurrentRow,
-    resetMajorState,
+    resetMemberState,
   } = useMember();
 
   const handleDelete = async () => {
     try {
-      console.log("Deleting major with ID: ", row.original.id);
-      // await trpcClient.member.delete.mutate({ id: row.original.id });
-      resetMajorState();
+      await trpcClient.member.delete.mutate([row.original.id]);
+      resetMemberState(row.original.id);
       refetch();
+      toast.success("Member Delete successfully!", {
+        icon: <CheckCircle className="text-success size-4" />,
+      });
     } catch (error) {
       confirm({
         actionText: "Retry",
-        title: "Failed to delete Major",
+        title: "Failed to delete Member",
         description:
           "An error occurred while deleting the major. Please try again.",
         CancelProps: { className: "hidden" },
@@ -93,7 +96,7 @@ export default function MemberAction({
           className="text-destructive"
         >
           <Trash2 className="mr-2 h-4 w-4" />
-          Delete major
+          Delete Member
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

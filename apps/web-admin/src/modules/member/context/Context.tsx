@@ -1,4 +1,4 @@
-import type { IMemberAdminDtoType, IMajorStatsDtoType } from "@skillsmatch/dto";
+import type { IMemberAdminDtoType } from "@skillsmatch/dto";
 import type { DefinedUseQueryResult } from "@tanstack/react-query";
 import type { RowSelectionState } from "@tanstack/react-table";
 import { createContext, type Dispatch, type SetStateAction } from "react";
@@ -16,13 +16,13 @@ interface IMemberContextType {
   currentRow: IMemberAdminDtoType | null;
   setCurrentRow: Dispatch<SetStateAction<IMemberAdminDtoType | null>>;
   stateAndOnChanges: Returns;
-  resetMajorState: () => void;
+  resetMemberState: (id?: string) => void;
   statsQuery: DefinedUseQueryResult<
     {
       total: number;
       active: number;
-      mostUsedPost: IMajorStatsDtoType;
-      mostUsedJobber: IMajorStatsDtoType;
+      jobber: number;
+      company: number;
     },
     Error
   >;

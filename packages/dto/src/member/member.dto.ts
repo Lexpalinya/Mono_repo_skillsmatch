@@ -98,6 +98,13 @@ export const MemberPaginationDto = QueryDto.extend({
   role: z.nativeEnum(EUserRole).optional(),
 });
 
+export const MemberStatsDto = z.object({
+  total: z.number(),
+  active: z.number(),
+  jobber: z.number(),
+  company: z.number(),
+});
+
 // ✅ Export TypeScript types
 export type IMemberCreateDtoType = z.infer<typeof MemberCreateDto>;
 export type IMemberFileCreateDtoType = z.infer<typeof MemberCreateFileDto>;
@@ -112,3 +119,4 @@ export type IMemberChangePasswordDtoType = z.infer<
 export type IMemberAdminDtoType = z.infer<typeof MemberAdminDto>;
 export type IMemberAdminViewDtoType = z.infer<typeof MemberAdminViewDto>;
 export type IMemberPaginationDtoType = z.infer<typeof MemberPaginationDto>;
+export type IMemberStatsDtoType = z.infer<typeof MemberStatsDto>;

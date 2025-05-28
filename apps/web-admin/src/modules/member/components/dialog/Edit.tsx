@@ -20,7 +20,7 @@ export default function Edit({ open, currentRow }: IMemberCurrentRowProps) {
   const {
     tableQuery: { refetch },
     setOpen,
-    resetMajorState,
+    resetMemberState,
   } = useMember();
 
   const form = useForm<IMemberFileUpdateDtoType>({
@@ -53,14 +53,11 @@ export default function Edit({ open, currentRow }: IMemberCurrentRowProps) {
         id: currentRow.id,
         ...values,
         profile: typeof values.profile === "string" ? values.profile : null,
-        background: typeof values.background === "string" ? values.background : null,
+        background:
+          typeof values.background === "string" ? values.background : null,
       });
 
-      resetMajorState();
-      form.reset();
-      refetch();
-
-      resetMajorState();
+      resetMemberState(currentRow.id);
       form.reset();
       refetch();
 

@@ -13,7 +13,7 @@ import {
   IQueryDtoType,
   MemberPaginationDto,
 } from "@skillsmatch/dto";
-import { publicProcedure, router } from "../../lib/trpc";
+import { router, t } from "../../lib/trpc";
 import {
   ChangePasswordMember,
   ForgotPasswordMember,
@@ -25,12 +25,13 @@ import {
   DeleteMember,
   GetMember,
   GetMembers,
+  GetStatsMember,
   UpdateMember,
 } from "./services/member";
 import { jobPositionRouter } from "../job-position/router";
 
 export const memberAuthRouter = router({
-  register: publicProcedure
+  register: t.procedure
     .input(MemberCreateDto)
     .mutation(async ({ input, ctx }) => {
       const { res } = ctx;
@@ -47,7 +48,7 @@ export const memberAuthRouter = router({
       return { message: "Registration successful", token: result.token };
     }),
 
-  login: publicProcedure
+  login: t.procedure
     .input(MemberLoginDtoType)
     .mutation(async ({ input, ctx }) => {
       const { res } = ctx;
@@ -65,7 +66,7 @@ export const memberAuthRouter = router({
       return { message: "Login successful", token: result.token };
     }),
 
-  forgotPassword: publicProcedure
+  forgotPassword: t.procedure
     .input(MemberLoginDtoType)
     .mutation(async ({ input }) => {
       const res = await ForgotPasswordMember(input);
@@ -73,7 +74,7 @@ export const memberAuthRouter = router({
       return { message: "Password reset instructions sent" };
     }),
 
-  changePassword: publicProcedure
+  changePassword: t.procedure
     .input(MemberChangePasswordDtoType)
     .mutation(async ({ input }) => {
       const res = await ChangePasswordMember(input);
@@ -83,25 +84,23 @@ export const memberAuthRouter = router({
 });
 
 export const memberRouter = router({
-  getAll: publicProcedure
-    .input(MemberPaginationDto)
-    .query(async ({ input }) => {
-      return GetMembers(input);
-    }),
+  getAll: t.procedure.input(MemberPaginationDto).query(async ({ input }) => {
+    return GetMembers(input);
+  }),
 
-  getById: publicProcedure
+  getById: t.procedure
     .input(idDto)
     .query(async ({ input }: { input: IIdDtoType }) => {
       return GetMember(input.id);
     }),
 
-  create: publicProcedure
+  create: t.procedure
     .input(MemberCreateDto)
     .mutation(async ({ input }: { input: IMemberCreateDtoType }) => {
       return CreateMember(input);
     }),
 
-  update: publicProcedure
+  update: t.procedure
     .input(MemberUpdateDto.extend(idDto.shape))
     .mutation(
       async ({ input }: { input: IMemberUpdateDtoType & IIdDtoType }) => {
@@ -109,9 +108,13 @@ export const memberRouter = router({
       }
     ),
 
-  delete: publicProcedure
+  delete: t.procedure
     .input(z.array(z.string()))
     .mutation(async ({ input }: { input: string[] }) => {
       return DeleteMember(input);
     }),
+
+  fetchStats: t.procedure.query(async () => {
+    return  GetStatsMember();
+  }),
 });

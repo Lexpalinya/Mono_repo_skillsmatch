@@ -8,7 +8,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-import { fetchStatsMajor } from "../services/fetchStats";
+import { fetchStatsMember } from "../services/fetchStats";
 import { memberRoute } from "../router";
 import { fetchAllMember } from "../services/fetchAll";
 
@@ -33,16 +33,18 @@ const MemberProvider = ({ children }: PropsWithChildren) => {
   });
 
   const queryClient = useQueryClient();
-  const handleResetCache = () => {
-    queryClient.invalidateQueries({ queryKey: ["statsMajor"] });
+  const handleResetCache = (id?: string) => {
+    queryClient.invalidateQueries({ queryKey: ["statsMember"] });
+    if (typeof id === "string")
+      queryClient.invalidateQueries({ queryKey: ["memberDetail", id] });
   };
 
-  const resetMajorState = () => {
+  const resetMemberState = (id?: string) => {
     setOpen(null);
     setCurrentRow(null);
     setRowSelection({});
     setSelectedIds([]);
-    handleResetCache();
+    handleResetCache(id);
   };
 
   const tableQuery = useQuery({
@@ -66,23 +68,8 @@ const MemberProvider = ({ children }: PropsWithChildren) => {
 
   const statsQuery = useQuery({
     queryKey: ["statsMember"],
-    queryFn: () => fetchStatsMajor(),
-    initialData: {
-      total: 0,
-      active: 0,
-      mostUsedPost: {
-        id: "",
-        name: "",
-        postUsageCount: 0,
-        jobberUsageCount: 0,
-      },
-      mostUsedJobber: {
-        id: "",
-        name: "",
-        postUsageCount: 0,
-        jobberUsageCount: 0,
-      },
-    },
+    queryFn: () => fetchStatsMember(),
+    initialData: { total: 0, active: 0, jobber: 0, company: 0 },
     placeholderData: keepPreviousData,
   });
 
@@ -97,7 +84,7 @@ const MemberProvider = ({ children }: PropsWithChildren) => {
         setSelectedIds,
         currentRow,
         setCurrentRow,
-        resetMajorState,
+        resetMemberState,
         stateAndOnChanges,
         tableQuery,
         statsQuery,

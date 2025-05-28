@@ -1,5 +1,5 @@
 import Add from "./Add";
-import View from "./View";
+import View from "./View/View";
 import Edit from "./Edit";
 import { useMember } from "../../context/useMember";
 

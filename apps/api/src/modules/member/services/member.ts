@@ -176,3 +176,21 @@ export const GetMembers = async ({
     throw error;
   }
 };
+
+export const GetStatsMember = async () => {
+  try {
+    const members = await prisma.member.findMany({
+      where: { isActive: true },
+      select: { role: true },
+    });
+
+    const total = members.length;
+    const active = members.filter((m) => m.role !== "admin").length;
+    const jobber = members.filter((m) => m.role === "jobber").length;
+    const company = members.filter((m) => m.role === "company").length;
+
+    return { total, active, jobber, company };
+  } catch (error) {
+    throw error;
+  }
+};

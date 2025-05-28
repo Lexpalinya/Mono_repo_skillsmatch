@@ -18,7 +18,7 @@ export default function Add({ open }: IMemberProps) {
   const {
     tableQuery: { refetch },
     setOpen,
-    resetMajorState,
+    resetMemberState,
   } = useMember();
 
   const form = useForm<IMemberFileCreateDtoType>({
@@ -40,10 +40,11 @@ export default function Add({ open }: IMemberProps) {
       await trpcClient.member.create.mutate({
         ...values,
         profile: typeof values.profile === "string" ? values.profile : null,
-        background: typeof values.background === "string" ? values.background : null,
+        background:
+          typeof values.background === "string" ? values.background : null,
       });
 
-      resetMajorState();
+      resetMemberState();
       form.reset();
       refetch();
 
