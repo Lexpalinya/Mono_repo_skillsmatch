@@ -4,6 +4,7 @@ import { courseRouter } from "./modules/course/router";
 import { educationalInstitutionRouter } from "./modules/education-institution/router";
 import { educationLevelRouter } from "./modules/education-level/router";
 import { jobPositionRouter } from "./modules/job-position/router";
+import { jobberRouter } from "./modules/jobber/router";
 import { majorRouter } from "./modules/major/router";
 import { memberAuthRouter, memberRouter } from "./modules/member/router";
 import { skillRouter } from "./modules/skill/router";
@@ -18,10 +19,10 @@ export const appRouter = router({
   skill: skillRouter,
   member: memberRouter,
   auth: memberAuthRouter,
+  jobber: jobberRouter,
 });
 
 export default appRouter;
 export type AppRouter = typeof appRouter;
 
 console.log("🧭 Routes:", Object.keys(appRouter._def.procedures));
-

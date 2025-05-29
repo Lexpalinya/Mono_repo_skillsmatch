@@ -1,40 +1,53 @@
 import { z } from "zod";
-import { CreateCourse, DeleteCourse, GetCourse, GetCourseById, UpdateCourse } from "./service";
-import { idDto, IIdDtoType, ICourseCreateDtoType, CourseCreateDto, CourseUpdateDto, QueryDto, IQueryDtoType } from "@skillsmatch/dto";
-import { publicProcedure, router } from "../../lib/trpc";
+import {
+  CreateJobberStatus,
+  DeleteJobberStatus,
+  GetJobberStatus,
+  GetJobberStatusById,
+  GetStatsJobberStatus,
+  UpdateJobberStatus,
+} from "./service";
+import {
+  idDto,
+  IIdDtoType,
+  IJobberStatusCreateDtoType,
+  JobberStatusCreateDto,
+  JobberStatusUpdateDto,
+  JobberStatusPaginationDto,
+} from "@skillsmatch/dto";
+import { t } from "../../lib/trpc";
 
-export const courseRouter = router({
-    getAll: publicProcedure.input(QueryDto)
-        .query(async ({ input }: { input?: IQueryDtoType }) => {
-            return GetCourse(input || {});
-        }),
+export const jobberStatusRouter = t.router({
+  getAll: t.procedure.input(JobberStatusPaginationDto).query(async ({ input }) => {
+    return GetJobberStatus(input);
+  }),
 
-    getById: publicProcedure
-        .input(idDto)
-        .query(async ({ input }: { input: IIdDtoType }) => {
-            return GetCourseById(input.id);
-        }),
+  getById: t.procedure
+    .input(idDto)
+    .query(async ({ input }: { input: IIdDtoType }) => {
+      return GetJobberStatusById(input.id);
+    }),
 
-    create: publicProcedure
-        .input(
-            CourseCreateDto
-        )
-        .mutation(async ({ input }: { input: ICourseCreateDtoType }) => {
-            return CreateCourse(input);
-        }),
+  create: t.procedure
+    .input(JobberStatusCreateDto)
+    .mutation(async ({ input }: { input: IJobberStatusCreateDtoType }) => {
+      return CreateJobberStatus(input);
+    }),
 
-    update: publicProcedure
-        .input(
-            CourseUpdateDto.extend(idDto.shape)
-        )
-        .mutation(async ({ input }: { input: z.infer<typeof CourseUpdateDto> & IIdDtoType }) => {
-            const { id, ...data } = input;
-            return UpdateCourse(id, data);
-        }),
+  update: t.procedure
+    .input(JobberStatusUpdateDto.extend(idDto.shape))
+    .mutation(async ({ input }) => {
+      const { id, ...data } = input;
+      return UpdateJobberStatus(id, data);
+    }),
 
-    delete: publicProcedure
-        .input(idDto)
-        .mutation(async ({ input }: { input: IIdDtoType }) => {
-            return DeleteCourse(input.id);
-        }),
+  delete: t.procedure
+    .input(idDto)
+    .mutation(async ({ input }: { input: IIdDtoType }) => {
+      return DeleteJobberStatus(input.id);
+    }),
+
+  fetchStats: t.procedure.query(async () => {
+    return GetStatsJobberStatus();
+  }),
 });
