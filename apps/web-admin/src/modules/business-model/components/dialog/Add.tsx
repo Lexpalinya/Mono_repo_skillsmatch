@@ -11,7 +11,6 @@ import { confirm } from "@skillsmatch/ui";
 import { useBusinessModel } from "../../context/useBusinessModel";
 import type { IBusinessModelProps } from "../../utils/type";
 import BusinessModelForm from "../../utils/Form";
-import type { IBusinessModelDialogType } from "../../context/Context";
 
 export default function Add({ open }: IBusinessModelProps) {
   const {

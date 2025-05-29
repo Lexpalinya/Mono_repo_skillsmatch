@@ -1,6 +1,7 @@
 import { EGender } from "@prisma/client";
 import { z } from "zod";
 import { QueryDto } from "../query/query.dto";
+import { fileSchema } from "../file.dto";
 
 export const JobberCreateDto = z.object({
   isVerify: z.boolean().optional(),
@@ -24,6 +25,13 @@ export const JobberCreateDto = z.object({
     .min(1, "At least one document image is required"),
   reason: z.string().optional().nullable(),
 });
+export const JobberFileCreateDto = JobberCreateDto.omit({
+  docImage: true,
+}).extend({
+  docImage: z
+    .union([fileSchema.array(), z.array(z.string().url()), z.null()])
+    .optional(),
+});
 
 export const JobberUpdateDto = z.object({
   isVerify: z.boolean().optional(),
@@ -44,6 +52,13 @@ export const JobberUpdateDto = z.object({
   cVillage: z.string().optional(),
   docImage: z.array(z.string().url("Invalid URL")).optional(),
   reason: z.string().optional().nullable(),
+});
+export const JobberFileUpdateDto = JobberUpdateDto.omit({
+  docImage: true,
+}).extend({
+  docImage: z
+    .union([fileSchema.array(), z.array(z.string().url()), z.null()])
+    .optional(),
 });
 
 export const JobberAdminDto = z.object({
@@ -73,7 +88,56 @@ export const JobberPaginationDto = QueryDto.extend({
   visible: z.boolean().optional(),
 });
 
+export const JobberStatsDto = z.object({
+  total: z.number(),
+  active: z.number(),
+  verified: z.number(),
+  status: z.number(),
+});
+
+export const JobberAdminViewDto = z.object({
+  id: z.string(),
+  isVerify: z.boolean().default(false),
+  isActive: z.boolean().default(true),
+  status: z.object({
+    id: z.string(),
+    name: z.string(),
+  }),
+  member: z.object({
+    id: z.string(),
+    username: z.string(),
+    email: z.string().email(),
+    phoneNumber: z.string(),
+    profile: z.string().nullable().optional(),
+  }),
+  gender: z.nativeEnum(EGender),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  birthday: z.date(),
+  nationality: z.string(),
+  ethnicity: z.string(),
+  religion: z.string(),
+  bProvince: z.string(),
+  bDistrict: z.string(),
+  bVillage: z.string(),
+  cProvince: z.string(),
+  cDistrict: z.string(),
+  cVillage: z.string(),
+  docImage: z.array(z.string()),
+  reason: z.string().nullable().optional(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+export const JobberStatusStatsDto = z.object({
+  id: z.string(),
+  name: z.string(),
+  companyUsageCount: z.number(),
+});
 export type IJobberCreateDtoType = z.infer<typeof JobberCreateDto>;
 export type IJobberUpdateDtoType = z.infer<typeof JobberUpdateDto>;
 export type IJobberAdminDtoType = z.infer<typeof JobberAdminDto>;
 export type IJobberPaginationDtoType = z.infer<typeof JobberPaginationDto>;
+export type IJobberStatsDtoType = z.infer<typeof JobberStatsDto>;
+export type IJobberAdminViewDto = z.infer<typeof JobberAdminViewDto>;
+export type IJobberFileCreateDtoType = z.infer<typeof JobberFileCreateDto>;
+export type IJobberFileUpdateDtoType = z.infer<typeof JobberFileUpdateDto>;

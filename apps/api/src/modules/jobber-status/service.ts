@@ -19,7 +19,10 @@ export const CreateJobberStatus = async (data: IJobberStatusCreateDtoType) => {
   return jobberStatus;
 };
 
-export const UpdateJobberStatus = async (id: string, data: IJobberStatusUpdateDtoType) => {
+export const UpdateJobberStatus = async (
+  id: string,
+  data: IJobberStatusUpdateDtoType
+) => {
   if (data.name)
     await ensureUniqueRecord({
       table: "jobberStatus",
@@ -86,11 +89,7 @@ export const GetStatsJobberStatus = async () => {
 
     const [mostUsed] = await prisma.jobberStatus.findMany({
       orderBy: { jobberUsageCount: "desc" },
-      select: {
-        id: true,
-        name: true,
-        jobberUsageCount: true,
-      },
+      select: { id: true, name: true, jobberUsageCount: true },
       take: 1,
     });
 

@@ -4,6 +4,7 @@ import { courseRouter } from "./modules/course/router";
 import { educationalInstitutionRouter } from "./modules/education-institution/router";
 import { educationLevelRouter } from "./modules/education-level/router";
 import { jobPositionRouter } from "./modules/job-position/router";
+import { jobberStatusRouter } from "./modules/jobber-status/router";
 import { jobberRouter } from "./modules/jobber/router";
 import { majorRouter } from "./modules/major/router";
 import { memberAuthRouter, memberRouter } from "./modules/member/router";
@@ -20,6 +21,7 @@ export const appRouter = router({
   member: memberRouter,
   auth: memberAuthRouter,
   jobber: jobberRouter,
+  jobberStatus: jobberStatusRouter,
 });
 
 export default appRouter;

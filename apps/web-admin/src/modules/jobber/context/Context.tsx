@@ -15,13 +15,13 @@ interface IJobberContextType {
   currentRow: IJobberAdminDtoType | null;
   setCurrentRow: Dispatch<SetStateAction<IJobberAdminDtoType | null>>;
   stateAndOnChanges: Returns;
-  resetJobberState: () => void;
+  resetJobberState: (id?: string) => void;
   statsQuery: DefinedUseQueryResult<
     {
+      status: number;
       total: number;
       active: number;
       verified: number;
-      padding: number;
     },
     Error
   >;

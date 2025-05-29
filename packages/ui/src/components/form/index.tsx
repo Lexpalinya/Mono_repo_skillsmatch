@@ -28,6 +28,8 @@ import { DateTimePicker } from "./datetime-picker";
 import { DatePicker } from "./date-picker";
 import { VirtualizerCombobox } from "./virtualizer-combobox";
 import { FormCheckbox } from "./form-checkbox";
+import { InfiniteComboboxField } from "./infinite-combobox-field";
+import { InputNumberField } from "./input-number-field";
 
 interface BaseFormProps<TVariables extends FieldValues = FieldValues> {
   formInstance: UseFormReturn<TVariables>;
@@ -106,7 +108,10 @@ export const FormDialog = <TVariables extends FieldValues>({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
-        className={cn("max-w-5xl max-h-[90vh] overflow-y-auto", classNameDialog)}
+        className={cn(
+          "max-w-5xl max-h-[90vh] overflow-y-auto",
+          classNameDialog
+        )}
       >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -153,6 +158,8 @@ const InputGroup = {
   DateTimePicker,
   DatePicker,
   VirtualizerCombobox,
+  InfiniteCombobox: InfiniteComboboxField,
+  InputNumberField,
 };
 
 Form.InputGroup = InputGroup;

@@ -1,26 +1,25 @@
 import { useState, type PropsWithChildren } from "react";
-import { JobberContext, type IJobberDialogType } from "./Context";
+import { JobberStatusContext, type IJobberStatusDialogType } from "./Context";
 import { useTableSearchParams } from "tanstack-table-search-params";
-import type { IJobberAdminDtoType } from "@skillsmatch/dto";
+import type { IJobberStatusAdminDtoType } from "@skillsmatch/dto";
 import {
   keepPreviousData,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { jobberRoute } from "../router";
-import { fetchStatsJobber } from "../services/fetchStats";
-import { fetchAllJobber } from "../services/fetchAll";
+import { jobberStatusRoute } from "../router";
+import { fetchAllJobberStatus } from "../services/fetchAll";
+import { fetchStatsJobberStatus } from "../services/fetchStats";
 
-const JobberProvider = ({ children }: PropsWithChildren) => {
-  const navigate = jobberRoute.useNavigate();
-  const query = jobberRoute.useSearch();
+const JobberStatusProvider = ({ children }: PropsWithChildren) => {
+  const navigate = jobberStatusRoute.useNavigate();
+  const query = jobberStatusRoute.useSearch();
 
-  const [open, setOpen] = useState<IJobberDialogType | null>(null);
+  const [open, setOpen] = useState<IJobberStatusDialogType | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [rowSelection, setRowSelection] = useState<Record<number, boolean>>({});
-  const [currentRow, setCurrentRow] = useState<IJobberAdminDtoType | null>(
-    null
-  );
+  const [currentRow, setCurrentRow] =
+    useState<IJobberStatusAdminDtoType | null>(null);
 
   const stateAndOnChanges = useTableSearchParams({
     push: (url) => {
@@ -28,34 +27,32 @@ const JobberProvider = ({ children }: PropsWithChildren) => {
       navigate({ search: Object.fromEntries(searchParams.entries()) });
     },
     query,
-    pathname: jobberRoute.path,
+    pathname: jobberStatusRoute.path,
   });
 
   const queryClient = useQueryClient();
-  const handleResetCache = (id?: string) => {
-    queryClient.invalidateQueries({ queryKey: ["statsJobber"] });
-    if (typeof id === "string")
-      queryClient.invalidateQueries({ queryKey: ["jobberDetail", id] });
+  const handleResetCache = () => {
+    queryClient.invalidateQueries({ queryKey: ["statsJobberStatus"] });
   };
 
-  const resetJobberState = (id?: string) => {
+  const resetJobberStatusState = () => {
     setOpen(null);
     setCurrentRow(null);
     setRowSelection({});
     setSelectedIds([]);
-    handleResetCache(id);
+    handleResetCache();
   };
 
   const tableQuery = useQuery({
     queryKey: [
-      "listJobber",
+      "listJobberStatus",
       stateAndOnChanges.state.columnFilters,
       stateAndOnChanges.state.globalFilter,
       stateAndOnChanges.state.pagination,
       stateAndOnChanges.state.sorting,
     ],
     queryFn: () =>
-      fetchAllJobber({
+      fetchAllJobberStatus({
         columnFilters: stateAndOnChanges.state.columnFilters,
         globalFilter: stateAndOnChanges.state.globalFilter,
         pagination: stateAndOnChanges.state.pagination,
@@ -66,19 +63,18 @@ const JobberProvider = ({ children }: PropsWithChildren) => {
   });
 
   const statsQuery = useQuery({
-    queryKey: ["statsJobber"],
-    queryFn: () => fetchStatsJobber(),
+    queryKey: ["statsJobberStatus"],
+    queryFn: () => fetchStatsJobberStatus(),
     initialData: {
       total: 0,
       active: 0,
-      verified: 0,
-      status: 0,
+      mostUsed: { id: "", name: "", jobberUsageCount: 0 },
     },
     placeholderData: keepPreviousData,
   });
 
   return (
-    <JobberContext.Provider
+    <JobberStatusContext.Provider
       value={{
         open,
         setOpen,
@@ -88,15 +84,15 @@ const JobberProvider = ({ children }: PropsWithChildren) => {
         setSelectedIds,
         currentRow,
         setCurrentRow,
-        resetJobberState,
+        resetJobberStatusState,
         stateAndOnChanges,
         tableQuery,
         statsQuery,
       }}
     >
       {children}
-    </JobberContext.Provider>
+    </JobberStatusContext.Provider>
   );
 };
 
-export default JobberProvider;
+export default JobberStatusProvider;

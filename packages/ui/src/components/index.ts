@@ -37,3 +37,6 @@ export * from "./ui/table";
 export * from "./ui/data-table";
 export * from "./ui/conformer";
 export * from "./ui/sonner";
+
+export * from   "./ui/Infinite-combobox"
+export * from   "./ui/input-number"

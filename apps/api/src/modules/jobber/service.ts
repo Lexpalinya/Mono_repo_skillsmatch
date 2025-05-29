@@ -2,6 +2,8 @@ import {
   IJobberAdminDtoType,
   IJobberCreateDtoType,
   IJobberPaginationDtoType,
+  IJobberStatsDtoType,
+  IJobberStatusAdminDtoType,
   IJobberUpdateDtoType,
 } from "@skillsmatch/dto";
 import { ensureRecordExists, ensureUniqueRecord } from "@utils/ensure";
@@ -146,31 +148,30 @@ export const GetJobbers = async ({
   }
 };
 
-export const GetStatsJobber = async () => {
+export const GetStatsJobber = async (): Promise<IJobberStatsDtoType> => {
   try {
-    const total = await prisma.jobber.count({
-      where: { isActive: true },
-    });
+    const [total, active, verified, status] = await Promise.all([
+      prisma.jobber.count({
+        where: { isActive: true },
+      }),
+      prisma.jobber.count({
+        where: {
+          isActive: true,
+        },
+      }),
+      prisma.jobber.count({
+        where: {
+          isActive: true,
+        },
+      }),
+      prisma.jobber.count({
+        where: {
+          isActive: true,
+        },
+      }),
+    ]);
 
-    const active = await prisma.jobber.count({
-      where: {
-        isActive: true,
-      },
-    });
-
-    const jobber = await prisma.jobber.count({
-      where: {
-        isActive: true,
-      },
-    });
-
-    const company = await prisma.jobber.count({
-      where: {
-        isActive: true,
-      },
-    });
-
-    return { total, active, jobber, company };
+    return { total, active, verified, status };
   } catch (error) {
     throw error;
   }

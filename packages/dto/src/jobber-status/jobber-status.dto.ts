@@ -5,14 +5,14 @@ export const JobberStatusCreateDto = z.object({
   isActive: z.boolean().optional(),
   visible: z.boolean().optional(),
   name: z.string().min(1, "Name is required"),
-  jobberUsageCount: z.number().optional().default(0),
+ 
 });
 
 export const JobberStatusUpdateDto = z.object({
   isActive: z.boolean().optional(),
   visible: z.boolean().optional(),
   name: z.string().min(1, "Name is required").optional(),
-  jobberUsageCount: z.number().optional(),
+
 });
 
 export const JobberStatusAdminDto = z.object({
@@ -38,5 +38,7 @@ export const JobberStatusStatsDto = z.object({
 export type IJobberStatusCreateDtoType = z.infer<typeof JobberStatusCreateDto>;
 export type IJobberStatusUpdateDtoType = z.infer<typeof JobberStatusUpdateDto>;
 export type IJobberStatusAdminDtoType = z.infer<typeof JobberStatusAdminDto>;
-export type IJobberStatusPaginationDtoType = z.infer<typeof JobberStatusPaginationDto>;
+export type IJobberStatusPaginationDtoType = z.infer<
+  typeof JobberStatusPaginationDto
+>;
 export type IJobberStatusStatsDtoType = z.infer<typeof JobberStatusStatsDto>;
