@@ -21,6 +21,7 @@ export const fetchAllJobber = async ({
   const getColumnFilterValue = (id: string, defaultValue: string) =>
     (columnFilters.find((filter) => filter.id === id)?.value as string) ||
     defaultValue;
+  const status = getColumnFilterValue("status", "");
 
   const queryParams = {
     search: globalFilter || "",
@@ -28,6 +29,7 @@ export const fetchAllJobber = async ({
     limit: pagination.pageSize,
     sortBy: sorting[0]?.id,
     sortOrder: sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
+    status,
   };
 
   const result = await trpcClient.jobber.getAll.query(queryParams);

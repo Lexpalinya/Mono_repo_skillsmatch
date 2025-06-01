@@ -1,7 +1,11 @@
 import { EUserRole } from "@prisma/client";
 import { z } from "zod";
 import { idDto } from "../id/id.dto";
-import { QueryDto } from "../query/query.dto";
+import {
+  OffsetPaginateRequestDto,
+  QueryDto,
+  SearchDto,
+} from "../query/query.dto";
 import { fileSchema } from "../file.dto";
 
 export const MemberCreateDto = z.object({
@@ -105,6 +109,12 @@ export const MemberStatsDto = z.object({
   company: z.number(),
 });
 
+export const MemberComboboxDto = OffsetPaginateRequestDto.extend(
+  SearchDto.shape
+).extend({
+  role: z.nativeEnum(EUserRole),
+});
+
 // ✅ Export TypeScript types
 export type IMemberCreateDtoType = z.infer<typeof MemberCreateDto>;
 export type IMemberFileCreateDtoType = z.infer<typeof MemberCreateFileDto>;
@@ -120,3 +130,4 @@ export type IMemberAdminDtoType = z.infer<typeof MemberAdminDto>;
 export type IMemberAdminViewDtoType = z.infer<typeof MemberAdminViewDto>;
 export type IMemberPaginationDtoType = z.infer<typeof MemberPaginationDto>;
 export type IMemberStatsDtoType = z.infer<typeof MemberStatsDto>;
+export type IMemberComboboxDtoType = z.infer<typeof MemberComboboxDto>;

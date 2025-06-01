@@ -86,6 +86,7 @@ export const JobberAdminDto = z.object({
 });
 export const JobberPaginationDto = QueryDto.extend({
   visible: z.boolean().optional(),
+  status: z.string().optional(),
 });
 
 export const JobberStatsDto = z.object({

@@ -93,6 +93,7 @@ export const GetJobbers = async ({
   search,
   sortOrder = "asc",
   sortBy,
+  status
 }: IJobberPaginationDtoType) => {
   try {
     let where: Prisma.JobberWhereInput = { isActive: true };
@@ -106,6 +107,12 @@ export const GetJobbers = async ({
           { member: { username: { contains: search, mode: "insensitive" } } },
         ],
       };
+    }
+    if(status){
+      where={
+        ...where,
+        statusId:status
+      }
     }
 
     const select: Prisma.JobberSelect = {

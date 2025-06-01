@@ -1,4 +1,5 @@
 import {
+  IComboboxDtoType,
   IJobberStatusCreateDtoType,
   IJobberStatusPaginationDtoType,
   IJobberStatusUpdateDtoType,
@@ -6,6 +7,7 @@ import {
 import { ensureRecordExists, ensureUniqueRecord } from "../../utils/ensure";
 import prisma from "../../lib/prisma-client";
 import { queryTable } from "../../utils/pagination";
+import { Prisma } from "@prisma/client";
 
 export const CreateJobberStatus = async (data: IJobberStatusCreateDtoType) => {
   await ensureUniqueRecord({
@@ -105,4 +107,41 @@ export const GetJobberStatusById = async (id: string) => {
   });
   if (!jobberStatus.isActive) throw new Error("JobberStatus is inactive");
   return jobberStatus;
+};
+
+export const GetJobberStatusCombobox = async (
+  input: IComboboxDtoType
+): Promise<Array<{ value: string; label: string }>> => {
+  try {
+    const where: Prisma.JobberStatusWhereInput = {
+      isActive: true,
+      visible: true,
+      OR: [
+        {
+          name: {
+            contains: input.search,
+            mode: "insensitive",
+          },
+        },
+      ],
+    };
+    const items = await queryTable("jobberStatus", {
+      page: input.offset,
+      limit: input.limit,
+      where,
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+    return items.data.map((item: { id: string; name: string }) => ({
+      label: item.name,
+      value: item.id,
+    }));
+  } catch (error) {
+    throw error;
+  }
 };

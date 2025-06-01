@@ -9,9 +9,8 @@ import {
   MemberUpdateDto,
   MemberLoginDtoType,
   MemberChangePasswordDtoType,
-  QueryDto,
-  IQueryDtoType,
   MemberPaginationDto,
+  MemberComboboxDto,
 } from "@skillsmatch/dto";
 import { router, t } from "../../lib/trpc";
 import {
@@ -24,6 +23,7 @@ import {
   CreateMember,
   DeleteMember,
   GetMember,
+  GetMemberCombobox,
   GetMembers,
   GetStatsMember,
   UpdateMember,
@@ -115,6 +115,12 @@ export const memberRouter = router({
     }),
 
   fetchStats: t.procedure.query(async () => {
-    return  GetStatsMember();
+    return GetStatsMember();
   }),
+
+  fetchMemberCombobox: t.procedure
+    .input(MemberComboboxDto)
+    .query(async ({ input }) => {
+      return GetMemberCombobox(input);
+    }),
 });

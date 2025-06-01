@@ -4,6 +4,7 @@ import {
   DeleteJobberStatus,
   GetJobberStatus,
   GetJobberStatusById,
+  GetJobberStatusCombobox,
   GetStatsJobberStatus,
   UpdateJobberStatus,
 } from "./service";
@@ -14,13 +15,16 @@ import {
   JobberStatusCreateDto,
   JobberStatusUpdateDto,
   JobberStatusPaginationDto,
+  ComboboxDto,
 } from "@skillsmatch/dto";
 import { t } from "../../lib/trpc";
 
 export const jobberStatusRouter = t.router({
-  getAll: t.procedure.input(JobberStatusPaginationDto).query(async ({ input }) => {
-    return GetJobberStatus(input);
-  }),
+  getAll: t.procedure
+    .input(JobberStatusPaginationDto)
+    .query(async ({ input }) => {
+      return GetJobberStatus(input);
+    }),
 
   getById: t.procedure
     .input(idDto)
@@ -50,4 +54,9 @@ export const jobberStatusRouter = t.router({
   fetchStats: t.procedure.query(async () => {
     return GetStatsJobberStatus();
   }),
+  fetchJobberStatusCombobox: t.procedure
+    .input(ComboboxDto)
+    .query(async ({ input }) => {
+      return GetJobberStatusCombobox(input);
+    }),
 });

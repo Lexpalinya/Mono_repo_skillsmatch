@@ -1,5 +1,7 @@
+import { jobberStatusComboboxService } from "@/modules/service/combobox/jobber-status";
 import {
   DataTableToolbar,
+  InfiniteCombobox,
   Select,
   SelectContent,
   SelectItem,
@@ -13,41 +15,18 @@ interface Props<T> {
 }
 
 export default function ToolsBar<T>({ table }: Props<T>) {
-  const renderFilterSelect = (
-    columnId: string,
-    placeholder: string,
-    options: { value: string; label: string }[]
-  ) => (
-    <Select
-      value={table.getColumn(columnId)?.getFilterValue() as string}
-      onValueChange={(event) =>
-        table.getColumn(columnId)?.setFilterValue(event)
-      }
-    >
-      <SelectTrigger className="w-[150px]">
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {options.map((option) => (
-          <SelectItem key={option.value} value={option.value}>
-            {option.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  );
   return (
     <DataTableToolbar
       table={table}
       renderSlot={() => (
-        <div className="flex justify-between w-full">
-          {renderFilterSelect("role", "Select a Role", [
-            { value: "all", label: "All Role" },
-            { value: "admin", label: "Admin" },
-            { value: "jobber", label: "Jobber" },
-            { value: "company", label: "Company" },
-          ])}
-        </div>
+        <InfiniteCombobox
+          className="w-[200px]"
+          onChange={(event) => table.getColumn("status")?.setFilterValue(event)}
+          placeholder="Select Status"    
+          fetchItems={async ({ pageParam, search, limit = 10 }) =>
+            jobberStatusComboboxService({ pageParam, search, limit })
+          }
+        />
       )}
     />
   );

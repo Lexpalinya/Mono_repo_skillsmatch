@@ -1,4 +1,5 @@
 import {
+  IMemberComboboxDtoType,
   IMemberCreateDtoType,
   IMemberPaginationDtoType,
   IMemberUpdateDtoType,
@@ -193,4 +194,55 @@ export const GetStatsMember = async () => {
   } catch (error) {
     throw error;
   }
+};
+
+export const GetMemberCombobox = async (
+  input: IMemberComboboxDtoType
+): Promise<Array<{ value: string; label: string }>> => {
+  const where: Prisma.MemberWhereInput = {
+    isActive: true,
+    visible: true,
+    role: input.role,
+    OR: [
+      {
+        username: {
+          contains: input.search,
+          mode: "insensitive",
+        },
+      },
+      {
+        phoneNumber: {
+          contains: input.search,
+          mode: "insensitive",
+        },
+      },
+    ],
+  };
+
+  const query = await queryTable("member", {
+    page: input.offset,
+    limit: input.limit,
+    where,
+    select: {
+      id: true,
+      username: true,
+      phoneNumber: true,
+      role: true,
+    },
+    orderBy: {
+      username: "asc",
+    },
+  });
+
+  return query.data.map(
+    (item: {
+      id: string;
+      username: string;
+      phoneNumber: string;
+      role: string;
+    }) => ({
+      value: item.id,
+      label: `(${item.phoneNumber}) (${item.role.toUpperCase()}) ${item.username} `,
+    })
+  );
 };

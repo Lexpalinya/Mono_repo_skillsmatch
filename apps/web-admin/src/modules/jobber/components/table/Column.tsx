@@ -11,6 +11,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 import { Avatar } from "@radix-ui/react-avatar";
 import type { IJobberAdminDtoType } from "@skillsmatch/dto";
+import { calculateAge } from "@/utils/extractChangedFields";
 
 export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
   {
@@ -91,7 +92,8 @@ export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
     header: "Age",
     cell: ({ row }) => {
       const birthday = row.getValue("birthday") as Date;
-      const age = new Date().getFullYear() - birthday.getFullYear();
+
+      const age = calculateAge(birthday);
       return <div>{age}</div>;
     },
   },

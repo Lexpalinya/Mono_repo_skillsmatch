@@ -30,6 +30,7 @@ import { VirtualizerCombobox } from "./virtualizer-combobox";
 import { FormCheckbox } from "./form-checkbox";
 import { InfiniteComboboxField } from "./infinite-combobox-field";
 import { InputNumberField } from "./input-number-field";
+import { ImageInputMulti } from "./image-input-multi";
 
 interface BaseFormProps<TVariables extends FieldValues = FieldValues> {
   formInstance: UseFormReturn<TVariables>;
@@ -145,6 +146,7 @@ Form.Field = FormField;
 Form.Button = Button;
 const InputGroup = {
   Input,
+  ImageInputMulti,
   ImageInput,
   PasswordField,
   PasswordInput,
