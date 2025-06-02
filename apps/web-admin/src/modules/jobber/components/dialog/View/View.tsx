@@ -21,6 +21,7 @@ import type { IJobberAdminViewDto } from "@skillsmatch/dto";
 import ViewHeader from "./ViewHeader";
 import PersonalInfo from "./PersonalInfo";
 import Location from "./Location";
+import Documents from "./Documents";
 
 export default function View({ open, currentRow }: IJobberCurrentRowProps) {
   const { setOpen } = useJobber();
@@ -69,7 +70,7 @@ export default function View({ open, currentRow }: IJobberCurrentRowProps) {
             <Location data={data} />
           </TabsContent>
           <TabsContent value="documents" className="space-y-4 pt-4">
-           
+            <Documents data={data} />
           </TabsContent>
         </Tabs>
         <DialogFooter>
