@@ -71,11 +71,16 @@ export const GetJobber = async (id: string) => {
         member: {
           select: {
             id: true,
+            username: true,
+            email: true,
+            phoneNumber: true,
+            profile: true,
           },
         },
         status: {
           select: {
             id: true,
+            name: true,
           },
         },
       },
@@ -93,7 +98,7 @@ export const GetJobbers = async ({
   search,
   sortOrder = "asc",
   sortBy,
-  status
+  status,
 }: IJobberPaginationDtoType) => {
   try {
     let where: Prisma.JobberWhereInput = { isActive: true };
@@ -108,11 +113,11 @@ export const GetJobbers = async ({
         ],
       };
     }
-    if(status){
-      where={
+    if (status) {
+      where = {
         ...where,
-        statusId:status
-      }
+        statusId: status,
+      };
     }
 
     const select: Prisma.JobberSelect = {

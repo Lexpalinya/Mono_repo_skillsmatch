@@ -12,6 +12,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Avatar } from "@radix-ui/react-avatar";
 import type { IJobberAdminDtoType } from "@skillsmatch/dto";
 import { calculateAge } from "@/utils/extractChangedFields";
+import JobberAction from "./Action";
 
 export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
   {
@@ -162,5 +163,9 @@ export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
       </Button>
     ),
     cell: ({ row }) => format(row.getValue("createdAt"), "MMM d, yyyy"),
+  },
+  {
+    id: "actions",
+    cell: JobberAction,
   },
 ];
