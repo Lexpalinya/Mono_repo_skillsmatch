@@ -1,5 +1,5 @@
 import type { IJobberAdminViewDto } from "@skillsmatch/dto";
-import FullImageViewer from "../../../../../../../../packages/ui/src/components/ui/full-image-viewer";
+import { FullImageViewer } from "@skillsmatch/ui";
 
 export default function Documents({ data }: { data: IJobberAdminViewDto }) {
   return (
@@ -11,6 +11,7 @@ export default function Documents({ data }: { data: IJobberAdminViewDto }) {
             key={index}
             src={image}
             alt={data.member.username}
+            currentIndex={index}
             imageList={data.docImage.map((image) => ({
               src: image,
               alt: data.member.username,

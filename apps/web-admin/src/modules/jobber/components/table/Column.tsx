@@ -5,6 +5,7 @@ import {
   Badge,
   Button,
   Checkbox,
+  FullImageViewer,
 } from "@skillsmatch/ui";
 import { format } from "date-fns";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -52,17 +53,12 @@ export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
       const data = row.original;
       return (
         <div className="flex items-center gap-2">
-          <Avatar className="h-8 w-8">
-            <AvatarImage
-              src={
-                data.member?.profile || "/placeholder.svg?height=32&width=32"
-              }
-              alt={`${data.firstName} ${data.lastName}`}
-            />
-            <AvatarFallback>
-              <UserRound className="h-4 w-4" />
-            </AvatarFallback>
-          </Avatar>
+          <FullImageViewer
+            width={35}
+            height={35}
+            src={data.member?.profile || "/placeholder.svg?height=80&width=80"}
+            alt={`${data.firstName} ${data.lastName}`}
+          />
           <div>
             <div className="font-medium">
               {data.firstName} {data.lastName}

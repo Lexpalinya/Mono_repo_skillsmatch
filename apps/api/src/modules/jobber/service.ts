@@ -131,6 +131,7 @@ export const GetJobbers = async ({
       nationality: true,
       createdAt: true,
       statusId: true,
+      reason: true,
       status: {
         select: {
           name: true,
@@ -140,6 +141,7 @@ export const GetJobbers = async ({
         select: {
           username: true,
           profile: true,
+          email: true,
         },
       },
     };

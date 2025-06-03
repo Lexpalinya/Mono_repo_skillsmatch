@@ -68,21 +68,19 @@ export const JobberAdminDto = z.object({
   firstName: z.string(),
   lastName: z.string(),
   birthday: z.string(),
-  isVerify: z.boolean().optional(),
+  isVerify: z.boolean(),
   nationality: z.string(),
   createdAt: z.string(),
-  statusId: z.string().optional(),
-  status: z
-    .object({
-      name: z.string(),
-    })
-    .optional(),
-  member: z
-    .object({
-      username: z.string(),
-      profile: z.string(),
-    })
-    .optional(),
+  statusId: z.string(),
+  reason: z.string(),
+  status: z.object({
+    name: z.string(),
+  }),
+  member: z.object({
+    username: z.string(),
+    profile: z.string(),
+    email: z.string(),
+  }),
 });
 export const JobberPaginationDto = QueryDto.extend({
   visible: z.boolean().optional(),
@@ -125,7 +123,7 @@ export const JobberAdminViewDto = z.object({
   cDistrict: z.string(),
   cVillage: z.string(),
   docImage: z.array(z.string()),
-  reason: z.string().nullable().optional(),
+  reason: z.string().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });

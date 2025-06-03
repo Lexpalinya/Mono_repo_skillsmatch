@@ -3,7 +3,7 @@ import type { DefinedUseQueryResult } from "@tanstack/react-query";
 import type { RowSelectionState } from "@tanstack/react-table";
 import { createContext, type Dispatch, type SetStateAction } from "react";
 import type { Returns } from "tanstack-table-search-params";
-export type IJobberDialogType = "add" | "view" | "edit" | null;
+export type IJobberDialogType = "add" | "view" | "edit" | "verified" | null;
 
 interface IJobberContextType {
   open: IJobberDialogType | null;
