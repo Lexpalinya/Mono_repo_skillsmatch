@@ -1,7 +1,7 @@
 import Add from "./Add";
 import View from "./View/View";
 
-import { useJobber } from "../../context/useJobber";
+import { useJobber } from "../../context/useCompany";
 import Verified from "./Verified";
 import Edit from "./Edit/Edit";
 

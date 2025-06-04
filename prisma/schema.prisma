@@ -51,6 +51,7 @@ model Member {
   updatedAt    DateTime  @updatedAt
   Jobber       Jobber[]
   Company      Company[]
+  Review       Review[]
 }
 
 model Course {
@@ -261,8 +262,8 @@ model PostEducationInstitution {
 }
 
 model PostJobPositionDetail {
-  id String @id @default(uuid()) @db.VarChar(36)
-
+  id                         String                       @id @default(uuid()) @db.VarChar(36)
+  amount                     Int                          @default(1)
   pId                        String
   jpId                       String
   description                String                       @db.Text()
@@ -303,4 +304,14 @@ model AttendInterView {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   aj        ApplyForJob @relation(fields: [ajId], references: [id])
+}
+
+model Review {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  memberId  String
+  comment   String
+  score     Int
+  member    Member   @relation(fields: [memberId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

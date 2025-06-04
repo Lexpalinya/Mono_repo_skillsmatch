@@ -3,10 +3,10 @@ import { createRoute, lazyRouteComponent } from "@tanstack/react-router";
 
 
 
-export const CompanyRoute = createRoute({
+export const companyRoute = createRoute({
     path: "/company",
     getParentRoute: () => appLayoutRoute,
     component: lazyRouteComponent(() => import("./pages/CompanyPage"))
 })
 
-export default [CompanyRoute]
+export default [companyRoute]

@@ -1,9 +1,7 @@
 import {
-  IJobberAdminDtoType,
   IJobberCreateDtoType,
   IJobberPaginationDtoType,
   IJobberStatsDtoType,
-  IJobberStatusAdminDtoType,
   IJobberUpdateDtoType,
 } from "@skillsmatch/dto";
 import { ensureRecordExists, ensureUniqueRecord } from "@utils/ensure";

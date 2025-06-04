@@ -57,7 +57,7 @@ export const JobberFileUpdateDto = JobberUpdateDto.omit({
   docImage: true,
 }).extend({
   docImage: z
-    .union([fileSchema.array(), z.array(z.string().url()), z.null()])
+    .union([z.array(z.union([fileSchema, z.string().url()])), z.null()])
     .optional(),
 });
 
@@ -109,6 +109,8 @@ export const JobberAdminViewDto = z.object({
     phoneNumber: z.string(),
     profile: z.string().nullable().optional(),
   }),
+  memberId: z.string(),
+  statusId: z.string(),
   gender: z.nativeEnum(EGender),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
