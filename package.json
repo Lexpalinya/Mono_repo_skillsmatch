@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "api": "cd apps/api; bun dev",
-    "web": "cd apps/web-admin; bun dev"
+    "web": "cd apps/web-admin; bun dev",
+    "db:studio": "bunx prisma studio",
+    "db:push": "bunx prisma db push",
+    "db:pull": "bunx prisma db pull",
+    "db:migrate": "bunx prisma migrate dev"
   },
   "workspaces": [
     "apps/*",
