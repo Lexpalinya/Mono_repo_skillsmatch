@@ -3,15 +3,15 @@ import CompanyProvider from "../context/Provider";
 import { Button } from "@skillsmatch/ui";
 import { PlusCircle } from "lucide-react";
 import { useCompany } from "../context/useCompany";
-import CompanyStatsCard from "../components/CompanyStatsCard"; 
-import { CompanyTable } from "../components/table/Table"; 
-// import CompanyDialog from "../components/dialog/CompanyDialog";
+import CompanyStatsCard from "../components/CompanyStatsCard";
+import { CompanyTable } from "../components/table/Table";
+import CompanyDialog from "../components/dialog/CompanyDialog";
 
 export default function CompanyPage() {
   return (
     <CompanyProvider>
       <CompanyContent />
-      {/* <CompanyDialog /> */}
+      <CompanyDialog />
     </CompanyProvider>
   );
 }

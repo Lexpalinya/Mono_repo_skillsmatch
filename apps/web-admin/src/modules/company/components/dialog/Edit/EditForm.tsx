@@ -19,16 +19,16 @@ import type {
   IJobberFileUpdateDtoType,
 } from "@skillsmatch/dto";
 import { JobberFileUpdateDto } from "@skillsmatch/dto";
-import { memberComboboxService } from "@/modules/service/combobox/member";
 import { jobberStatusComboboxService } from "@/modules/service/combobox/jobber-status";
-import { useJobber } from "@/modules/jobber/context/useJobber";
+
 import trpcClient from "@/libs/trpc-client";
 import { extractChangedFields } from "@/utils/extractChangedFields";
+import { useCompany } from "@/modules/company/context/useCompany";
 
 interface JobberFormProps {
-  open: boolean;
+  readonly open: boolean;
 
-  initialData: Partial<IJobberAdminViewDto>;
+  readonly initialData: Partial<IJobberAdminViewDto>;
 }
 
 export default function EditForm({ open, initialData }: JobberFormProps) {
@@ -41,8 +41,8 @@ export default function EditForm({ open, initialData }: JobberFormProps) {
   const {
     tableQuery: { refetch },
     setOpen,
-    resetJobberState,
-  } = useJobber();
+    resetCompanyState,
+  } = useCompany();
 
   const onSubmit = async (values: IJobberFileUpdateDtoType) => {
     try {
@@ -75,7 +75,7 @@ export default function EditForm({ open, initialData }: JobberFormProps) {
             : (changedFields.docImage as string[]),
       });
 
-      resetJobberState();
+      resetCompanyState();
       refetch();
 
       toast.success("Jobber updated successfully!", {

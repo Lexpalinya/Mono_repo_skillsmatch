@@ -1,4 +1,5 @@
 import trpcClient from "@/libs/trpc-client";
+import type { ICompanyPaginationDtoType } from "@skillsmatch/dto";
 import type {
   ColumnFiltersState,
   PaginationState,
@@ -10,6 +11,7 @@ interface FetchAllJobberParams {
   columnFilters: ColumnFiltersState;
   globalFilter: string;
   sorting: SortingState;
+  bmIds?: string[] | undefined;
 }
 
 export const fetchAllCompany = async ({
@@ -17,19 +19,15 @@ export const fetchAllCompany = async ({
   globalFilter,
   columnFilters,
   sorting,
+  bmIds,
 }: FetchAllJobberParams) => {
-  const getColumnFilterValue = (id: string, defaultValue: string) =>
-    (columnFilters.find((filter) => filter.id === id)?.value as string) ||
-    defaultValue;
-  const status = getColumnFilterValue("status", "");
-
-  const queryParams = {
+  const queryParams: ICompanyPaginationDtoType = {
     search: globalFilter || "",
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
     sortBy: sorting[0]?.id,
     sortOrder: sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
-    status,
+    bmIds: Array.isArray(bmIds) && bmIds.length === 0 ? undefined : bmIds,
   };
 
   const result = await trpcClient.company.getAll.query(queryParams);

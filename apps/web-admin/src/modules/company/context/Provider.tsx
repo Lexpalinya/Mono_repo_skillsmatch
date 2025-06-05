@@ -1,7 +1,7 @@
-import { useState, type PropsWithChildren } from "react";
+import { useMemo, useState, type PropsWithChildren } from "react";
 import { CompanyContext, type ICompanyDialogType } from "./Context";
 import { useTableSearchParams } from "tanstack-table-search-params";
-import type { ICompanyAdminViewDtoType } from "@skillsmatch/dto";
+import type { ICompanyAdminDataType } from "@skillsmatch/dto";
 import {
   keepPreviousData,
   useQuery,
@@ -18,7 +18,7 @@ const CompanyProvider = ({ children }: PropsWithChildren) => {
   const [open, setOpen] = useState<ICompanyDialogType | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [rowSelection, setRowSelection] = useState<Record<number, boolean>>({});
-  const [currentRow, setCurrentRow] = useState<ICompanyAdminViewDtoType | null>(
+  const [currentRow, setCurrentRow] = useState<ICompanyAdminDataType | null>(
     null
   );
 
@@ -53,6 +53,7 @@ const CompanyProvider = ({ children }: PropsWithChildren) => {
       stateAndOnChanges.state.globalFilter,
       stateAndOnChanges.state.pagination,
       stateAndOnChanges.state.sorting,
+      query.bmIds,
     ],
     queryFn: () =>
       fetchAllCompany({
@@ -60,6 +61,7 @@ const CompanyProvider = ({ children }: PropsWithChildren) => {
         globalFilter: stateAndOnChanges.state.globalFilter,
         pagination: stateAndOnChanges.state.pagination,
         sorting: stateAndOnChanges.state.sorting,
+        bmIds: query.bmIds,
       }),
     initialData: { data: [], total: 0 },
     placeholderData: keepPreviousData,
@@ -72,28 +74,42 @@ const CompanyProvider = ({ children }: PropsWithChildren) => {
       total: 0,
       active: 0,
       verified: 0,
-      hiring: 0,
+      status: 0,
     },
     placeholderData: keepPreviousData,
   });
 
+  const contextValue = useMemo(
+    () => ({
+      query,
+      open,
+      setOpen,
+      rowSelection,
+      setRowSelection,
+      selectedIds,
+      setSelectedIds,
+      currentRow,
+      setCurrentRow,
+      resetCompanyState,
+      stateAndOnChanges,
+      tableQuery,
+      statsQuery,
+    }),
+    [
+      query,
+      open,
+      rowSelection,
+      selectedIds,
+      currentRow,
+      resetCompanyState,
+      stateAndOnChanges,
+      tableQuery,
+      statsQuery,
+    ]
+  );
+
   return (
-    <CompanyContext.Provider
-      value={{
-        open,
-        setOpen,
-        rowSelection,
-        setRowSelection,
-        selectedIds,
-        setSelectedIds,
-        currentRow,
-        setCurrentRow,
-        resetCompanyState,
-        stateAndOnChanges,
-        tableQuery,
-        statsQuery,
-      }}
-    >
+    <CompanyContext.Provider value={contextValue}>
       {children}
     </CompanyContext.Provider>
   );

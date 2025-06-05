@@ -1,8 +1,8 @@
-import { z, type TypeOf } from "zod";
+import { boolean, z } from "zod";
 import { fileSchema } from "../file.dto";
 import { QueryDto } from "../query/query.dto";
 
-export const CreateCompanyDTO = z.object({
+export const CompanyCreateCompanyDTO = z.object({
   isActive: z.boolean().optional(), // default = true
   isVerify: z.boolean().optional(), // default = false
   memberId: z.string().uuid({ message: "Invalid member ID" }),
@@ -18,7 +18,7 @@ export const CreateCompanyDTO = z.object({
   docImage: z.array(z.string().url({ message: "Invalid document image URL" })),
   reason: z.string().optional(),
 });
-export const CompanyFileCreateDTO = CreateCompanyDTO.omit({
+export const CompanyFileCreateDTO = CompanyCreateCompanyDTO.omit({
   docImage: true,
 }).extend({
   docImage: z
@@ -26,8 +26,7 @@ export const CompanyFileCreateDTO = CreateCompanyDTO.omit({
     .optional(),
 });
 
-export const UpdateCompanyDTO = z.object({
-  id: z.string().uuid({ message: "Invalid company ID" }),
+export const CompanyUpdateCompanyDTO = z.object({
   isActive: z.boolean().optional(),
   isVerify: z.boolean().optional(),
   memberId: z.string().uuid().optional(),
@@ -43,7 +42,7 @@ export const UpdateCompanyDTO = z.object({
   docImage: z.array(z.string().url()).optional(),
   reason: z.string().optional(),
 });
-export const CompanyFileUpdateDTO = UpdateCompanyDTO.omit({
+export const CompanyFileUpdateDTO = CompanyUpdateCompanyDTO.omit({
   docImage: true,
 }).extend({
   docImage: z
@@ -80,6 +79,34 @@ export const CompanyAdminViewDto = z.object({
   reason: z.string(),
 });
 
+export const CompanyAdminDto = z.object({
+  id: z.string(),
+  isVerify: z.boolean(),
+  name: z.string(),
+  taxPayId: z.string(),
+  owner_firstname: z.string(),
+  owner_lastname: z.string(),
+  bmId: z.string().nullable(),
+  createdAt: z.string(),
+  reason: z.string().nullable(),
+  memberId: z.string(),
+  province: z.string(),
+  district: z.string(),
+  village: z.string(),
+
+  member: z.object({
+    username: z.string(),
+    profile: z.string().nullable(),
+    email: z.string().email(),
+  }),
+
+  bm: z
+    .object({
+      name: z.string(),
+    })
+    .nullable(),
+});
+
 export const CompanyStatsDto = z.object({
   total: z.number(),
   active: z.number(),
@@ -89,10 +116,14 @@ export const CompanyStatsDto = z.object({
 
 export const CompanyPaginationDto = QueryDto.extend({
   visible: z.boolean().optional(),
-  status: z.string().optional(),
+  bmIds: z.array(z.string()).optional(),
+  verified: boolean().optional(),
 });
-export type ICompanyCreateDTOType = z.infer<typeof CreateCompanyDTO>;
-export type ICompanyUpdateDTOType = z.infer<typeof UpdateCompanyDTO>;
+export type ICompanyCreateDTOType = z.infer<typeof CompanyCreateCompanyDTO>;
+export type ICompanyUpdateDTOType = z.infer<typeof CompanyUpdateCompanyDTO>;
 export type ICompanyAdminViewDtoType = z.infer<typeof CompanyAdminViewDto>;
 export type ICompanyPaginationDtoType = z.infer<typeof CompanyPaginationDto>;
 export type ICompanyStatusDtoType = z.infer<typeof CompanyStatsDto>;
+export type ICompanyAdminDataType = z.infer<typeof CompanyAdminDto>;
+export type ICompanyFileCreateDTOType = z.infer<typeof CompanyFileCreateDTO>;
+export type ICompanyFileUpdateDTOType = z.infer<typeof CompanyFileUpdateDTO>;

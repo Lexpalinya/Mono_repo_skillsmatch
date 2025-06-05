@@ -1,21 +1,19 @@
-import { ArrowUpDown, CheckCircle, UserRound, XCircle } from "lucide-react";
+import { ArrowUpDown, CheckCircle, XCircle } from "lucide-react";
 import {
-  AvatarFallback,
-  AvatarImage,
   Badge,
   Button,
   Checkbox,
+  DataTableColumnHeader,
   FullImageViewer,
 } from "@skillsmatch/ui";
 import { format } from "date-fns";
 import type { ColumnDef } from "@tanstack/react-table";
 
-import { Avatar } from "@radix-ui/react-avatar";
-import type { IJobberAdminDtoType } from "@skillsmatch/dto";
-import { calculateAge } from "@/utils/extractChangedFields";
+import type { ICompanyAdminDataType } from "@skillsmatch/dto";
+
 import JobberAction from "./Action";
 
-export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
+export const companyColumns: ColumnDef<ICompanyAdminDataType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -40,14 +38,9 @@ export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
   },
   {
     accessorKey: "name",
+
     header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Name
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
+      <DataTableColumnHeader column={column} title="Company Name" />
     ),
     cell: ({ row }) => {
       const data = row.original;
@@ -56,15 +49,15 @@ export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
           <FullImageViewer
             width={35}
             height={35}
-            src={data.member?.profile || "/placeholder.svg?height=80&width=80"}
-            alt={`${data.firstName} ${data.lastName}`}
+            src={data.member?.profile ?? "/placeholder.svg?height=80&width=80"}
+            alt={`${data.member.username} `}
           />
           <div>
-            <div className="font-medium">
-              {data.firstName} {data.lastName}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {data.member?.username}
+            <div>
+              <div className="font-medium">{data.name}</div>
+              <div className="text-xs text-muted-foreground">
+                {data.member.username}
+              </div>
             </div>
           </div>
         </div>
@@ -74,56 +67,54 @@ export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
       const data = row.original;
       const search = value.toLowerCase();
       return (
-        `${data.firstName} ${data.lastName}`.toLowerCase().includes(search) ||
-        (data.member?.username?.toLowerCase().includes(search) ?? false)
+        `${data.owner_firstname} ${data.owner_lastname}`
+          .toLowerCase()
+          .includes(search) === true
       );
     },
   },
   {
-    accessorKey: "gender",
-    header: "Gender",
-    cell: ({ row }) => <div>{row.getValue("gender")}</div>,
+    accessorKey: "owner_firstname",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Owner Name" />
+    ),
+    cell: ({ row }) => (
+      <p>
+        {row.original.owner_firstname} {row.original.owner_lastname}
+      </p>
+    ),
   },
   {
-    accessorKey: "birthday",
-    header: "Age",
+    accessorKey: "bmId",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Business Model" />
+    ),
     cell: ({ row }) => {
-      const birthday = row.getValue("birthday") as Date;
-
-      const age = calculateAge(birthday);
-      return <div>{age}</div>;
+      return <div>{row.original.bm?.name}</div>;
     },
   },
   {
-    accessorKey: "nationality",
-    header: "Nationality",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "province",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Location" />
+    ),
     cell: ({ row }) => {
-      const status = row.original.status?.name ?? "Unknown";
-      const variant =
-        status === "Active"
-          ? "default"
-          : status === "Pending"
-            ? "outline"
-            : status === "Suspended"
-              ? "destructive"
-              : "secondary";
-
-      return <Badge variant={variant}>{status}</Badge>;
-    },
-    filterFn: (row, value) => {
-      if (value === "all") return true;
-      return row.original.status?.name === value;
+      return (
+        <div className="text-wrap">
+          {row.original.province}, {row.original.district},{" "}
+          {row.original.village}
+        </div>
+      );
     },
   },
+
   {
     accessorKey: "isVerify",
-    header: "Verification",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Verified" />
+    ),
     cell: ({ row }) => {
-      const isVerified = row.getValue("isVerify") as boolean;
+      const isVerified = row.getValue("isVerify");
       return (
         <div className="flex items-center">
           {isVerified ? (
@@ -139,11 +130,6 @@ export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
           )}
         </div>
       );
-    },
-    filterFn: (row, value) => {
-      if (value === "all") return true;
-      const isVerified = row.getValue("isVerify") as boolean;
-      return value === "verified" ? isVerified : !isVerified;
     },
   },
 

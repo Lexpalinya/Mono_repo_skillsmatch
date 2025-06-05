@@ -1,4 +1,3 @@
-import type { ICompanyDtoType } from "@skillsmatch/dto";
 import {
   Button,
   confirm,
@@ -23,12 +22,14 @@ import { type PropsWithChildren } from "react";
 import trpcClient from "@/libs/trpc-client";
 import { useCompany } from "../../context/useCompany";
 import { toast } from "sonner";
+import type { ICompanyAdminDataType } from "@skillsmatch/dto";
 
 export default function CompanyAction({
   row,
-}: PropsWithChildren<{ row: Row<ICompanyDtoType> }>) {
+}: PropsWithChildren<{ row: Row<ICompanyAdminDataType> }>) {
   const {
     tableQuery: { refetch },
+    open,
     setOpen,
     setCurrentRow,
     resetCompanyState,
@@ -42,7 +43,7 @@ export default function CompanyAction({
       toast.success("Company deleted successfully!", {
         icon: <CheckCircle className="text-success size-4" />,
       });
-    } catch (error) {
+    } catch {
       confirm({
         actionText: "Retry",
         title: "Failed to delete company",
@@ -89,11 +90,28 @@ export default function CompanyAction({
           }}
         >
           <Pencil className="mr-2 h-4 w-4" />
-          Edit company
+          Edit jobber
         </DropdownMenuItem>
-
         <DropdownMenuSeparator />
-
+        <DropdownMenuItem
+          onClick={() => {
+            setOpen("verified");
+            setCurrentRow(row.original);
+          }}
+        >
+          {row.original.isVerify ? (
+            <>
+              <XCircle className="mr-2 h-4 w-4" />
+              Revoke verification
+            </>
+          ) : (
+            <>
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Verify Company
+            </>
+          )}
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={async () => {
             const next = await confirm({
@@ -108,7 +126,7 @@ export default function CompanyAction({
           className="text-destructive"
         >
           <Trash2 className="mr-2 h-4 w-4" />
-          Delete company
+          Delete Company
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

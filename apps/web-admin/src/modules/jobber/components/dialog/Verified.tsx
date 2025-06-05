@@ -8,7 +8,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useJobber } from "../../context/useJobber";
 import type { IJobberCurrentRowProps } from "../../utils/type";
 
-export default function Verified({ open, currentRow }: IJobberCurrentRowProps) {
+export default function Verified({
+  open,
+  currentRow,
+}: Readonly<IJobberCurrentRowProps>) {
   const {
     tableQuery: { refetch },
     setOpen,
@@ -33,7 +36,7 @@ export default function Verified({ open, currentRow }: IJobberCurrentRowProps) {
       form.reset();
       refetch();
 
-      toast.success("Skill updated successfully!", {
+      toast.success("Jobber updated successfully!", {
         icon: <CheckCircle className="text-success size-4" />,
       });
     } catch (error) {
@@ -44,7 +47,7 @@ export default function Verified({ open, currentRow }: IJobberCurrentRowProps) {
 
       confirm({
         actionText: "Retry",
-        title: "Failed to Create Skill",
+        title: "Failed to Create Jobber",
         description: errorMessage,
         CancelProps: { className: "hidden" },
       });

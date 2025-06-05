@@ -2,12 +2,13 @@ import {
   IBusinessModelCreateDtoType,
   IBusinessModelPaginationDto,
   IBusinessModelUpdateDtoType,
+  IComboboxDtoType,
 } from "@skillsmatch/dto";
 
 import { ensureRecordExists, ensureUniqueRecord } from "../../utils/ensure";
 import prisma from "../../lib/prisma-client";
-import { QueryOptions, queryTable } from "../../utils/pagination";
-import { BusinessModel } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import { queryTable } from "@utils/pagination";
 
 export const CreateBusinessModel = async (
   data: IBusinessModelCreateDtoType
@@ -119,4 +120,41 @@ export const GetBusinessModelById = async (id: string) => {
     },
   });
   return businessModel;
+};
+
+export const GetBusinessModelCombobox = async (
+  input: IComboboxDtoType
+): Promise<Array<{ value: string; label: string }>> => {
+  try {
+    const where: Prisma.JobberStatusWhereInput = {
+      isActive: true,
+      visible: true,
+      OR: [
+        {
+          name: {
+            contains: input.search,
+            mode: "insensitive",
+          },
+        },
+      ],
+    };
+    const items = await queryTable("businessModel", {
+      page: input.offset,
+      limit: input.limit,
+      where,
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+    return items.data.map((item: { id: string; name: string }) => ({
+      label: item.name,
+      value: item.id,
+    }));
+  } catch (error) {
+    throw error;
+  }
 };

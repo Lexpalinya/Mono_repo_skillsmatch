@@ -1,4 +1,4 @@
-import type { ICompanyAdminViewDtoType } from "@skillsmatch/dto";
+import type { ICompanyAdminDataType } from "@skillsmatch/dto";
 import type { DefinedUseQueryResult } from "@tanstack/react-query";
 import type { RowSelectionState } from "@tanstack/react-table";
 import { createContext, type Dispatch, type SetStateAction } from "react";
@@ -13,8 +13,8 @@ interface ICompanyContextType {
   setSelectedIds: Dispatch<SetStateAction<string[]>>;
   rowSelection: RowSelectionState;
   setRowSelection: Dispatch<SetStateAction<RowSelectionState>>;
-  currentRow: ICompanyAdminViewDtoType | null;
-  setCurrentRow: Dispatch<SetStateAction<ICompanyAdminViewDtoType | null>>;
+  currentRow: ICompanyAdminDataType | null;
+  setCurrentRow: Dispatch<SetStateAction<ICompanyAdminDataType | null>>;
   stateAndOnChanges: Returns;
   resetCompanyState: (id?: string) => void;
   statsQuery: DefinedUseQueryResult<
@@ -22,12 +22,13 @@ interface ICompanyContextType {
       total: number;
       active: number;
       verified: number;
-      hiring: number;
+      status: number;
     },
     Error
   >;
+  query: Record<string, string>;
   tableQuery: DefinedUseQueryResult<
-    { data: ICompanyAdminViewDtoType[]; total: number },
+    { data: ICompanyAdminDataType[]; total: number },
     Error
   >;
 }

@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { CheckCircle } from "lucide-react";
@@ -12,31 +11,29 @@ import {
   TabsList,
   TabsTrigger,
 } from "@skillsmatch/ui";
-import { useJobber } from "../../context/useCompany";
 
-import { uploadImageToCloudinary } from "@skillsmatch/config";
-import type { IJobberProps } from "../../utils/type";
+import { useCompany } from "../../context/useCompany";
 import {
-  JobberFileCreateDto,
-  type IJobberFileCreateDtoType,
+  CompanyFileCreateDTO,
+  type ICompanyFileCreateDTOType,
 } from "@skillsmatch/dto";
-import { memberComboboxService } from "@/modules/service/combobox/member";
-import { jobberStatusComboboxService } from "@/modules/service/combobox/jobber-status";
+import { memberCompanyComboboxService } from "@/modules/service/combobox/member";
+import { businessModelComboboxService } from "@/modules/service/combobox/bussiness-model";
+import { uploadImageToCloudinary } from "@skillsmatch/config";
 
-export default function Add({ open }: IJobberProps) {
+export default function AddCompany({ open }: Readonly<{ open: boolean }>) {
   const {
     tableQuery: { refetch },
     setOpen,
-    resetJobberState,
-  } = useJobber();
+    resetCompanyState,
+  } = useCompany();
 
-  const form = useForm<IJobberFileCreateDtoType>({
-    resolver: zodResolver(JobberFileCreateDto),
+  const form = useForm<ICompanyFileCreateDTOType>({
+    resolver: zodResolver(CompanyFileCreateDTO),
   });
 
-  const onSubmit = async (values: IJobberFileCreateDtoType) => {
+  const onSubmit = async (values: ICompanyFileCreateDTOType) => {
     try {
-      // Upload if `docImage` is array of File
       if (
         Array.isArray(values.docImage) &&
         values.docImage[0] instanceof File
@@ -51,31 +48,29 @@ export default function Add({ open }: IJobberProps) {
 
       form.setValue("docImage", values.docImage);
 
-      await trpcClient.jobber.create.mutate({
+      await trpcClient.company.create.mutate({
         ...values,
         docImage:
-          Array.isArray(values.docImage) && values.docImage[0] instanceof File
-            ? []
-            : (values.docImage as string[]),
+          Array.isArray(values.docImage) &&
+          values.docImage.every((item) => typeof item === "string")
+            ? values.docImage
+            : [],
       });
-
-      resetJobberState();
+      resetCompanyState();
       form.reset();
       refetch();
 
-      toast.success("Jobber created successfully!", {
+      toast.success("Company created successfully!", {
         icon: <CheckCircle className="text-success size-4" />,
       });
     } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "An error occurred while creating the jobber. Please try again.";
-
       confirm({
         actionText: "Retry",
-        title: "Failed to Create Jobber",
-        description: errorMessage,
+        title: "Failed to Create Company",
+        description:
+          error instanceof Error
+            ? error.message
+            : "An error occurred while creating the company. Please try again.",
         CancelProps: { className: "hidden" },
       });
     }
@@ -87,6 +82,8 @@ export default function Add({ open }: IJobberProps) {
       onSubmit={onSubmit}
       open={open}
       onOpenChange={() => setOpen(null)}
+      title="Create New Company"
+      description="Fill in the details below to create a new company."
     >
       <Tabs defaultValue="basic" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
@@ -96,65 +93,45 @@ export default function Add({ open }: IJobberProps) {
         </TabsList>
 
         <TabsContent value="basic" className="space-y-4 pt-4">
+          <FormDialog.Field name="name" label="Company Name">
+            <FormDialog.InputGroup.Input />
+          </FormDialog.Field>
           <div className="grid grid-cols-2 gap-4">
-            <FormDialog.Field name="firstName" label="First Name">
+            <FormDialog.Field name="owner_firstname" label="Owner First Name">
               <FormDialog.InputGroup.Input />
             </FormDialog.Field>
-            <FormDialog.Field name="lastName" label="Last Name">
+            <FormDialog.Field name="owner_lastname" label="Owner Last Name">
               <FormDialog.InputGroup.Input />
             </FormDialog.Field>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <FormDialog.Field name="gender" label="Gender">
-              <FormDialog.InputGroup.Select
-                options={[
-                  { label: "Male", value: "male" },
-                  { label: "Female", value: "female" },
-                  { label: "Transgender", value: "transgender" },
-                ]}
-              />
+            <FormDialog.Field name="taxPayId" label="tax Pay Id">
+              <FormDialog.InputGroup.Input />
             </FormDialog.Field>
-            <FormDialog.Field name="birthday" label="Date of Birth">
+            <FormDialog.Field name="dob" label="Date of Birth">
               <FormDialog.InputGroup.DatePicker />
             </FormDialog.Field>
           </div>
-          <div className="grid grid-cols-3 gap-4">
-            <FormDialog.Field name="nationality" label="Nationality">
-              <FormDialog.InputGroup.Input placeholder="e.g. Lao" />
-            </FormDialog.Field>
-            <FormDialog.Field name="ethnicity" label="Ethnicity">
-              <FormDialog.InputGroup.Input placeholder="e.g. Lao" />
-            </FormDialog.Field>
-            <FormDialog.Field name="religion" label="Religion">
-              <FormDialog.InputGroup.Input placeholder="e.g. buddhism" />
-            </FormDialog.Field>
-          </div>
+          <FormDialog.Field name="bmId" label="Business Model">
+            <FormDialog.InputGroup.InfiniteCombobox
+              placeholder="Select Business Model"
+              fetchItems={async ({ pageParam, search, limit = 10 }) =>
+                businessModelComboboxService({ pageParam, search, limit })
+              }
+            />
+          </FormDialog.Field>
         </TabsContent>
         <TabsContent value="location" className="space-y-4 pt-4">
           <div>
             <h3 className="mb-2 text-sm font-medium">Birth Location</h3>
             <div className="grid grid-cols-3 gap-4">
-              <FormDialog.Field name="bProvince" label="Province">
+              <FormDialog.Field name="province" label="Province">
                 <FormDialog.InputGroup.Input placeholder="e.g. Vientiane Capital" />
               </FormDialog.Field>
-              <FormDialog.Field name="bDistrict" label="District">
+              <FormDialog.Field name="district" label="District">
                 <FormDialog.InputGroup.Input placeholder="e.g. Saythany" />
               </FormDialog.Field>
-              <FormDialog.Field name="bVillage" label="Village">
-                <FormDialog.InputGroup.Input placeholder="e.g. dongdok" />
-              </FormDialog.Field>
-            </div>
-          </div>
-          <div>
-            <h3 className="mb-2 text-sm font-medium">Current Location</h3>
-            <div className="grid grid-cols-3 gap-4">
-              <FormDialog.Field name="cProvince" label="Province">
-                <FormDialog.InputGroup.Input placeholder="e.g. Vientiane Capital" />
-              </FormDialog.Field>
-              <FormDialog.Field name="cDistrict" label="District">
-                <FormDialog.InputGroup.Input placeholder="e.g. Saythany" />
-              </FormDialog.Field>
-              <FormDialog.Field name="cVillage" label="Village">
+              <FormDialog.Field name="village" label="Village">
                 <FormDialog.InputGroup.Input placeholder="e.g. dongdok" />
               </FormDialog.Field>
             </div>
@@ -166,22 +143,17 @@ export default function Add({ open }: IJobberProps) {
               <FormDialog.InputGroup.InfiniteCombobox
                 placeholder="Select Member Account"
                 fetchItems={async ({ pageParam, search, limit = 10 }) =>
-                  memberComboboxService({ pageParam, search, limit })
-                }
-              />
-            </FormDialog.Field>
-            <FormDialog.Field name="statusId" label="Status">
-              <FormDialog.InputGroup.InfiniteCombobox
-                placeholder="Select Status"
-                fetchItems={async ({ pageParam, search, limit = 10 }) =>
-                  jobberStatusComboboxService({ pageParam, search, limit })
+                  memberCompanyComboboxService({ pageParam, search, limit })
                 }
               />
             </FormDialog.Field>
           </div>
           <p className="text-sm text-muted-foreground">
-            Link this jobber to an existing member account
+            Link this company to an existing member account
           </p>
+          <FormDialog.Field name="reason" label="Notes/Reason">
+            <FormDialog.InputGroup.Input placeholder="Any additional notes about this company" />
+          </FormDialog.Field>
           <FormDialog.Field name="docImage" label="Document Image">
             <FormDialog.InputGroup.ImageInputMulti />
           </FormDialog.Field>

@@ -1,12 +1,12 @@
 import Add from "./Add";
 import View from "./View/View";
 
-import { useJobber } from "../../context/useCompany";
 import Verified from "./Verified";
 import Edit from "./Edit/Edit";
+import { useCompany } from "../../context/useCompany";
 
-export default function JobberDialog() {
-  const { open, currentRow } = useJobber();
+export default function CompanyDialog() {
+  const { open, currentRow } = useCompany();
 
   return (
     <>

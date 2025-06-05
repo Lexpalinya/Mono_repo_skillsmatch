@@ -156,6 +156,7 @@ export const GetJobbers = async ({
 
     return items;
   } catch (error) {
+    console.error("object :>> error", error);
     throw error;
   }
 };

@@ -19,7 +19,7 @@ import type {
   IJobberFileUpdateDtoType,
 } from "@skillsmatch/dto";
 import { JobberFileUpdateDto } from "@skillsmatch/dto";
-import { memberComboboxService } from "@/modules/service/combobox/member";
+import { memberJobberComboboxService } from "@/modules/service/combobox/member";
 import { jobberStatusComboboxService } from "@/modules/service/combobox/jobber-status";
 import { useJobber } from "@/modules/jobber/context/useJobber";
 import trpcClient from "@/libs/trpc-client";

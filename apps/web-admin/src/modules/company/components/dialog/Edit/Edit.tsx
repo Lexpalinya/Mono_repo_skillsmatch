@@ -1,6 +1,5 @@
 // containers/EditForm.tsx
-import { useQuery } from "@tanstack/react-query";
-import { keepPreviousData } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
 import trpcClient from "@/libs/trpc-client";
 
@@ -14,7 +13,6 @@ export default function Edit({ open, currentRow }: IJobberCurrentRowProps) {
     queryFn: () => trpcClient.jobber.getById.query({ id: currentRow.id }),
     placeholderData: keepPreviousData,
   });
-
 
   if (isLoading || !data) return null;
   if (error) throw error;

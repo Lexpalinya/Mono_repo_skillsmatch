@@ -69,43 +69,93 @@ export const GetCompany = async ({
   search,
   sortOrder = "asc",
   sortBy,
-  status,
+  bmIds,
+  verified,
 }: ICompanyPaginationDtoType) => {
   try {
-    let where: Prisma.JobberWhereInput = { isActive: true };
+    let where: Prisma.CompanyWhereInput = { isActive: true };
 
     if (search) {
       where = {
-        AND: { isActive: true },
         OR: [
-          { firstName: { contains: search, mode: "insensitive" } },
-          { lastName: { contains: search, mode: "insensitive" } },
-          { member: { username: { contains: search, mode: "insensitive" } } },
+          {
+            owner_firstname: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          {
+            owner_lastname: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          {
+            name: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          {
+            province: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          {
+            district: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          {
+            village: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
         ],
       };
     }
-    if (status) {
+    if (bmIds) {
       where = {
         ...where,
-        statusId: status,
+        bmId: {
+          in: bmIds,
+        },
       };
     }
 
+    if (verified) {
+      where = {
+        ...where,
+        isVerify: verified,
+      };
+    }
     const select: Prisma.CompanySelect = {
       id: true,
-      memberId: true,
-
       isVerify: true,
-
+      name: true,
+      taxPayId: true,
+      owner_firstname: true,
+      owner_lastname: true,
+      bmId: true,
       createdAt: true,
-
       reason: true,
-
+      memberId: true,
+      province: true,
+      district: true,
+      village: true,
       member: {
         select: {
           username: true,
           profile: true,
           email: true,
+        },
+      },
+      bm: {
+        select: {
+          name: true,
         },
       },
     };

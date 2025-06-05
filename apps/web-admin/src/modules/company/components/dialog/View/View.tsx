@@ -14,7 +14,7 @@ import { DialogTitle } from "@radix-ui/react-dialog";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import trpcClient from "@/libs/trpc-client";
 import ViewSkeleton from "../ViewSkeleton";
-import { useJobber } from "../../../context/useCompany";
+import { useCompany } from "../../../context/useCompany";
 import type { IJobberCurrentRowProps } from "../../../utils/type";
 
 import type { IJobberAdminViewDto } from "@skillsmatch/dto";
@@ -24,7 +24,7 @@ import Location from "./Location";
 import Documents from "./Documents";
 
 export default function View({ open, currentRow }: IJobberCurrentRowProps) {
-  const { setOpen } = useJobber();
+  const { setOpen } = useCompany();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["JobberDetail", currentRow.id],

@@ -4,6 +4,7 @@ import {
   DeleteBusinessModel,
   GetBusinessModel,
   GetBusinessModelById,
+  GetBusinessModelCombobox,
   GetStatsBusinessModel,
   UpdateBusinessModel,
 } from "./service";
@@ -14,6 +15,7 @@ import {
   BusinessModelCreateDto,
   BusinessModelUpdateDto,
   BusinessModelPaginationDto,
+  ComboboxDto,
 } from "@skillsmatch/dto";
 import { t, router } from "../../lib/trpc";
 
@@ -57,4 +59,9 @@ export const businessModelRouter = router({
   fetchStats: t.procedure.query(async () => {
     return GetStatsBusinessModel();
   }),
+  fetchBusinessStatusCombobox: t.procedure
+    .input(ComboboxDto)
+    .query(async ({ input }) => {
+      return GetBusinessModelCombobox(input);
+    }),
 });

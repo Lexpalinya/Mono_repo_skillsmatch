@@ -1,39 +1,45 @@
 import { confirm, FormDialog } from "@skillsmatch/ui";
 import { useForm } from "react-hook-form";
-import { JobberUpdateDto, type IJobberUpdateDtoType } from "@skillsmatch/dto";
+import {
+  CompanyUpdateCompanyDTO,
+  type ICompanyUpdateDTOType,
+} from "@skillsmatch/dto";
 import trpcClient from "@/libs/trpc-client";
 import { CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useJobber } from "../../context/useCompany";
-import type { IJobberCurrentRowProps } from "../../utils/type";
+import { useCompany } from "../../context/useCompany";
+import type { ICompanyCurrentRowProps } from "../../utils/type";
 
-export default function Verified({ open, currentRow }: IJobberCurrentRowProps) {
+export default function Verified({
+  open,
+  currentRow,
+}: Readonly<ICompanyCurrentRowProps>) {
   const {
     tableQuery: { refetch },
     setOpen,
-    resetJobberState,
-  } = useJobber();
-  const form = useForm<IJobberUpdateDtoType>({
+    resetCompanyState,
+  } = useCompany();
+  const form = useForm<ICompanyUpdateDTOType>({
     defaultValues: {
-      reason: currentRow.reason,
+      reason: currentRow.reason ?? undefined,
     },
-    resolver: zodResolver(JobberUpdateDto),
+    resolver: zodResolver(CompanyUpdateCompanyDTO),
   });
-
-  const onSubmit = async (values: IJobberUpdateDtoType) => {
+  console.log("form.watch() :>> ", form.watch());
+  const onSubmit = async (values: ICompanyUpdateDTOType) => {
     try {
-      await trpcClient.jobber.update.mutate({
+      await trpcClient.company.update.mutate({
         reason: values.reason,
         isVerify: !currentRow.isVerify,
         id: currentRow.id,
       });
 
-      resetJobberState();
+      resetCompanyState();
       form.reset();
       refetch();
 
-      toast.success("Skill updated successfully!", {
+      toast.success("Company updated successfully!", {
         icon: <CheckCircle className="text-success size-4" />,
       });
     } catch (error) {
@@ -44,7 +50,7 @@ export default function Verified({ open, currentRow }: IJobberCurrentRowProps) {
 
       confirm({
         actionText: "Retry",
-        title: "Failed to Create Skill",
+        title: "Failed to Create Company",
         description: errorMessage,
         CancelProps: { className: "hidden" },
       });
@@ -63,21 +69,21 @@ export default function Verified({ open, currentRow }: IJobberCurrentRowProps) {
       title={currentRow.isVerify ? "Revoke verification" : "Verify"}
       description={
         currentRow.isVerify
-          ? "Revoke the verification status of this jobber."
-          : "Verify this jobber to confirm their identity and information."
+          ? "Revoke the verification status of this company."
+          : "Verify this company to confirm their identity and information."
       }
     >
       <div className="space-y-2 rounded-lg border p-4">
-        <h3 className="text-sm font-medium">Jobber Information</h3>
+        <h3 className="text-sm font-medium">Company Information</h3>
         <div className="grid grid-cols-2 gap-1 text-sm">
           <span className="text-muted-foreground">Name:</span>
+          <span>{currentRow.name}</span>
+          <span className="text-muted-foreground">Owner:</span>
           <span>
-            {currentRow.firstName} {currentRow.lastName}
+            {currentRow.owner_firstname} {currentRow.owner_lastname}
           </span>
-          <span className="text-muted-foreground">Username:</span>
-          <span>{currentRow.member?.username}</span>
-          <span className="text-muted-foreground">Email:</span>
-          <span>{currentRow.member?.email}</span>
+          <span className="text-muted-foreground">Business Model:</span>
+          <span>{currentRow.bm?.name}</span>
         </div>
       </div>
 

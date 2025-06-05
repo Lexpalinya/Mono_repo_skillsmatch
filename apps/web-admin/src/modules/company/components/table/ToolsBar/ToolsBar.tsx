@@ -1,30 +1,33 @@
-import { jobberStatusComboboxService } from "@/modules/service/combobox/jobber-status";
-import {
-  DataTableToolbar,
-  InfiniteCombobox,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@skillsmatch/ui";
+import { companyRoute } from "@/modules/company/router";
+import { businessModelComboboxService } from "@/modules/service/combobox/bussiness-model";
+import { DataTableToolbar, InfiniteCombobox } from "@skillsmatch/ui";
 import type { Table } from "@tanstack/react-table";
 
 interface Props<T> {
-  table: Table<T>;
+  readonly table: Table<T>;
 }
 
 export default function ToolsBar<T>({ table }: Props<T>) {
+  const nav = companyRoute.useNavigate();
+  const search = companyRoute.useSearch();
   return (
     <DataTableToolbar
       table={table}
       renderSlot={() => (
         <InfiniteCombobox
           className="w-[200px]"
-          onChange={(event) => table.getColumn("status")?.setFilterValue(event)}
-          placeholder="Select Status"    
+          onChange={(event) => {
+            nav({
+              search: {
+                ...search,
+                bmIds: event,
+              },
+            });
+          }}
+          multiple={true}
+          placeholder="Select Business Model"
           fetchItems={async ({ pageParam, search, limit = 10 }) =>
-            jobberStatusComboboxService({ pageParam, search, limit })
+            businessModelComboboxService({ pageParam, search, limit })
           }
         />
       )}

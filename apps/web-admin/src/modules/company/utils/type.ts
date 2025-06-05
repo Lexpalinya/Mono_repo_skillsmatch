@@ -1,9 +1,9 @@
-import type { IJobberAdminDtoType } from "@skillsmatch/dto";
+import type { ICompanyAdminDataType } from "@skillsmatch/dto";
 
-export interface IJobberProps {
+export interface ICompanyProps {
   open: boolean;
 }
 
-export interface IJobberCurrentRowProps extends IJobberProps {
-  currentRow: IJobberAdminDtoType;
+export interface ICompanyCurrentRowProps extends ICompanyProps {
+  currentRow: ICompanyAdminDataType;
 }
