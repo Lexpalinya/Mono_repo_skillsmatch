@@ -27,11 +27,10 @@ export default function JobberStatusAction({
 
   const handleDelete = async () => {
     try {
-      console.log("Deleting jobber status with ID: ", row.original.id);
       await trpcClient.jobberStatus.delete.mutate({ id: row.original.id });
       resetJobberStatusState();
       refetch();
-    } catch (error) {
+    } catch {
       confirm({
         actionText: "Retry",
         title: "Failed to delete Jobber Status",

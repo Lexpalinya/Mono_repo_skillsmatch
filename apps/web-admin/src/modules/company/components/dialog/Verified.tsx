@@ -1,9 +1,6 @@
 import { confirm, FormDialog } from "@skillsmatch/ui";
 import { useForm } from "react-hook-form";
-import {
-  CompanyUpdateCompanyDTO,
-  type ICompanyUpdateDTOType,
-} from "@skillsmatch/dto";
+import { CompanyUpdateDTO, type ICompanyUpdateDTOType } from "@skillsmatch/dto";
 import trpcClient from "@/libs/trpc-client";
 import { CheckCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -24,9 +21,9 @@ export default function Verified({
     defaultValues: {
       reason: currentRow.reason ?? undefined,
     },
-    resolver: zodResolver(CompanyUpdateCompanyDTO),
+    resolver: zodResolver(CompanyUpdateDTO),
   });
-  console.log("form.watch() :>> ", form.watch());
+
   const onSubmit = async (values: ICompanyUpdateDTOType) => {
     try {
       await trpcClient.company.update.mutate({

@@ -11,13 +11,13 @@ interface FetchAllJobberParams {
   columnFilters: ColumnFiltersState;
   globalFilter: string;
   sorting: SortingState;
-  bmIds?: string[] | undefined;
+  bmIds: string[] | undefined;
 }
 
 export const fetchAllCompany = async ({
   pagination,
   globalFilter,
-  columnFilters,
+
   sorting,
   bmIds,
 }: FetchAllJobberParams) => {

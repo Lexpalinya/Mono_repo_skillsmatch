@@ -34,10 +34,9 @@ export default function LoginForm({
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.message || "Login failed");
+      throw new Error(data.message ?? "Login failed");
     }
 
-    console.log("data :>> ", data);
     return data;
   };
   const onSubmit = async () => {

@@ -27,11 +27,12 @@ export default function EducationalInstitutionAction({
 
   const handleDelete = async () => {
     try {
-      console.log("Deleting institution with ID: ", row.original.id);
-      await trpcClient.educationInstitution.delete.mutate({ id: row.original.id });
+      await trpcClient.educationInstitution.delete.mutate({
+        id: row.original.id,
+      });
       resetEducationalInstitutionState();
       refetch();
-    } catch (error) {
+    } catch {
       confirm({
         actionText: "Retry",
         title: "Failed to delete Educational Institution",

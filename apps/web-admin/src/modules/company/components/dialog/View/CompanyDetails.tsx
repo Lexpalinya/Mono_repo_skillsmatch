@@ -1,11 +1,13 @@
-import { calculateAge } from "@/utils/extractChangedFields";
 import { formatDate } from "@/utils/formatDateTime";
-import type { IJobberAdminViewDto } from "@skillsmatch/dto";
+import type { ICompanyAdminViewDtoType } from "@skillsmatch/dto";
 
-import { Calendar, Flag, Users } from "lucide-react";
+import { Briefcase } from "lucide-react";
 
-export default function PersonalInfo({ data }: { data: IJobberAdminViewDto }) {
-  const age = calculateAge(data.birthday);
+export default function CompanyDetails({
+  data,
+}: Readonly<{
+  data: ICompanyAdminViewDtoType;
+}>) {
   return (
     <>
       <div className="grid gap-4 md:grid-cols-2">
@@ -13,27 +15,22 @@ export default function PersonalInfo({ data }: { data: IJobberAdminViewDto }) {
           <h4 className="font-medium">Basic Information</h4>
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Calendar className="h-4 w-4" />
-              Birthday:
+              <Briefcase className="h-4 w-4" />
+              Business Model:
             </div>
-            <div>{age.toString()}</div>
+            <div>{data.bm.name}</div>
 
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Flag className="h-4 w-4" />
-              Nationality:
+              Owner:
             </div>
-            <div>{data.nationality}</div>
+            <div>
+              {data.owner_firstname} {data.owner_lastname}
+            </div>
 
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Users className="h-4 w-4" />
-              Ethnicity:
+              Job Posts:
             </div>
-            <div>{data.ethnicity}</div>
-
-            <div className="flex items-center gap-2 text-muted-foreground">
-              Religion:
-            </div>
-            <div>{data.religion}</div>
+            <div>{data.postCount || 0}</div>
           </div>
         </div>
 
@@ -43,7 +40,7 @@ export default function PersonalInfo({ data }: { data: IJobberAdminViewDto }) {
             <div className="flex items-center gap-2 text-muted-foreground">
               Member ID:
             </div>
-            <div className="truncate font-mono text-xs">{data.member.id}</div>
+            <div className="truncate font-mono text-xs">{data.memberId}</div>
 
             <div className="flex items-center gap-2 text-muted-foreground">
               Username:

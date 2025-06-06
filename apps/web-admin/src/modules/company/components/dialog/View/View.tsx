@@ -15,21 +15,21 @@ import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import trpcClient from "@/libs/trpc-client";
 import ViewSkeleton from "../ViewSkeleton";
 import { useCompany } from "../../../context/useCompany";
-import type { IJobberCurrentRowProps } from "../../../utils/type";
 
-import type { IJobberAdminViewDto } from "@skillsmatch/dto";
+import type { ICompanyAdminViewDtoType } from "@skillsmatch/dto";
 import ViewHeader from "./ViewHeader";
-import PersonalInfo from "./PersonalInfo";
+import CompanyDetails from "./CompanyDetails";
 import Location from "./Location";
 import Documents from "./Documents";
+import type { ICompanyCurrentRowProps } from "@/modules/company/utils/type";
 
-export default function View({ open, currentRow }: IJobberCurrentRowProps) {
+export default function View({ open, currentRow }: ICompanyCurrentRowProps) {
   const { setOpen } = useCompany();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["JobberDetail", currentRow.id],
-    queryFn: async (): Promise<IJobberAdminViewDto> => {
-      return await trpcClient.jobber.getById.query({ id: currentRow.id });
+    queryKey: ["CompanyDetail", currentRow.id],
+    queryFn: async (): Promise<ICompanyAdminViewDtoType> => {
+      return await trpcClient.company.getById.query({ id: currentRow.id });
     },
     placeholderData: keepPreviousData,
   });
@@ -47,9 +47,9 @@ export default function View({ open, currentRow }: IJobberCurrentRowProps) {
     <Dialog open={open} onOpenChange={() => setOpen(null)}>
       <DialogContent className="sm:max-w-[750px]">
         <DialogHeader>
-          <DialogTitle>Jobber Details</DialogTitle>
+          <DialogTitle>Company Details</DialogTitle>
           <DialogDescription>
-            Detailed information about this data.
+            Detailed information about this company.
           </DialogDescription>
         </DialogHeader>
 
@@ -64,7 +64,7 @@ export default function View({ open, currentRow }: IJobberCurrentRowProps) {
             <TabsTrigger value="documents">Documents</TabsTrigger>
           </TabsList>
           <TabsContent value="personal" className="space-y-4 pt-4">
-            <PersonalInfo data={data} />
+            <CompanyDetails data={data} />
           </TabsContent>
           <TabsContent value="location" className="space-y-4 pt-4">
             <Location data={data} />

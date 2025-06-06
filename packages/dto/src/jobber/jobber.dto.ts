@@ -129,7 +129,7 @@ export const JobberAdminViewDto = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
 });
-export const JobberStatusStatsDto = z.object({
+export const JobberStatsCompanyDto = z.object({
   id: z.string(),
   name: z.string(),
   companyUsageCount: z.number(),

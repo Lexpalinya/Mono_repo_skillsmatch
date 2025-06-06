@@ -65,7 +65,7 @@ export const GetSkill = async ({
         mode: "insensitive",
       };
     if (typeof visible === "boolean") where.visible = visible;
-    console.log("where :>> ", where);
+
     const members = await queryTable("skill", {
       page,
       limit,

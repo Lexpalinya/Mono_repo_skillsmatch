@@ -177,13 +177,54 @@ export const GetCompany = async ({
 };
 
 export const GetCompanyById = async (id: string) => {
+  const select = {
+    id: true,
+    isVerify: true,
+    isActive: true,
+    member: {
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        phoneNumber: true,
+        profile: true,
+      },
+    },
+    memberId: true,
+    name: true,
+    bmId: true,
+    bm: {
+      select: {
+        id: true,
+        name: true,
+      },
+    },
+    taxPayId: true,
+    dob: true,
+    owner_firstname: true,
+    owner_lastname: true,
+    province: true,
+    district: true,
+    village: true,
+    docImage: true,
+    reason: true,
+    createdAt: true,
+    updatedAt: true,
+  };
   const company = await prisma.company.findUniqueOrThrow({
     where: {
       id,
       isActive: true,
     },
+    select,
   });
-  return company;
+
+  const companyPost = await prisma.post.count({
+    where: {
+      cId: company.id,
+    },
+  });
+  return { ...company, postCount: companyPost };
 };
 
 export const GetStatsCompany = async (): Promise<ICompanyStatusDtoType> => {

@@ -28,10 +28,10 @@ export const fetchAllSkill = async ({
     limit: pagination.pageSize,
     sortBy: sorting[0]?.id,
     sortOrder: sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
-    visible: visible === "" ? undefined : visible === "true" ? true : false,
+    visible: visible === "" ? undefined : visible === "true",
   };
 
   const result = await trpcClient.skill.getAll.query(queryParams);
-  console.log('result :>> ', result);
+
   return { data: result.data, total: result.total };
 };

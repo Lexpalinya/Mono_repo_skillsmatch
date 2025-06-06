@@ -1,4 +1,4 @@
-import { useState, type PropsWithChildren } from "react";
+import { useMemo, useState, type PropsWithChildren } from "react";
 import { JobberContext, type IJobberDialogType } from "./Context";
 import { useTableSearchParams } from "tanstack-table-search-params";
 import type { IJobberAdminDtoType } from "@skillsmatch/dto";
@@ -77,23 +77,35 @@ const JobberProvider = ({ children }: PropsWithChildren) => {
     placeholderData: keepPreviousData,
   });
 
+  const contextValue = useMemo(
+    () => ({
+      open,
+      setOpen,
+      rowSelection,
+      setRowSelection,
+      selectedIds,
+      setSelectedIds,
+      currentRow,
+      setCurrentRow,
+      resetJobberState,
+      stateAndOnChanges,
+      tableQuery,
+      statsQuery,
+    }),
+    [
+      open,
+      rowSelection,
+      selectedIds,
+      currentRow,
+      resetJobberState,
+      stateAndOnChanges,
+      tableQuery,
+      statsQuery,
+    ]
+  );
+
   return (
-    <JobberContext.Provider
-      value={{
-        open,
-        setOpen,
-        rowSelection,
-        setRowSelection,
-        selectedIds,
-        setSelectedIds,
-        currentRow,
-        setCurrentRow,
-        resetJobberState,
-        stateAndOnChanges,
-        tableQuery,
-        statsQuery,
-      }}
-    >
+    <JobberContext.Provider value={contextValue}>
       {children}
     </JobberContext.Provider>
   );

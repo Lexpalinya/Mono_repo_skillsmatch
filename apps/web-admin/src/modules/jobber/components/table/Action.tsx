@@ -42,7 +42,7 @@ export default function JobberAction({
       toast.success("Jobber deleted successfully!", {
         icon: <CheckCircle className="text-success size-4" />,
       });
-    } catch (error) {
+    } catch {
       confirm({
         actionText: "Retry",
         title: "Failed to delete jobber",

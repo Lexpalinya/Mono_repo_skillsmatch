@@ -27,11 +27,10 @@ export default function EducationLevelAction({
 
   const handleDelete = async () => {
     try {
-      console.log("Deleting education level with ID: ", row.original.id);
       await trpcClient.educationLevel.delete.mutate({ id: row.original.id });
       resetEducationLevelState();
       refetch();
-    } catch (error) {
+    } catch {
       confirm({
         actionText: "Retry",
         title: "Failed to delete Education Level",

@@ -1,12 +1,12 @@
 import { t } from "../../lib/trpc";
 import {
   CompanyPaginationDto,
-  CreateCompanyDTO,
+  CompanyCreateDTO,
   ICompanyCreateDTOType,
   ICompanyUpdateDTOType,
   idDto,
   IIdDtoType,
-  UpdateCompanyDTO,
+  CompanyUpdateDTO,
 } from "@skillsmatch/dto";
 import {
   CreateCompany,
@@ -28,15 +28,13 @@ export const companyRouter = t.router({
       return GetCompanyById(input.id);
     }),
 
-  create: t.procedure
-    .input(CreateCompanyDTO)
-    .mutation(async ({ input }: { input: ICompanyCreateDTOType }) => {
-      return CreateCompany(input);
-    }),
+  create: t.procedure.input(CompanyCreateDTO).mutation(async ({ input }) => {
+    return CreateCompany(input);
+  }),
 
   update: t.procedure
-    .input(UpdateCompanyDTO.extend(idDto.shape))
-    .mutation(async ({ input }: { input: ICompanyUpdateDTOType }) => {
+    .input(CompanyUpdateDTO.extend(idDto.shape))
+    .mutation(async ({ input }) => {
       const { id, ...data } = input;
       return UpdateCompany(id, data);
     }),

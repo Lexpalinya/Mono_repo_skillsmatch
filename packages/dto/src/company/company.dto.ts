@@ -2,7 +2,7 @@ import { boolean, z } from "zod";
 import { fileSchema } from "../file.dto";
 import { QueryDto } from "../query/query.dto";
 
-export const CompanyCreateCompanyDTO = z.object({
+export const CompanyCreateDTO = z.object({
   isActive: z.boolean().optional(), // default = true
   isVerify: z.boolean().optional(), // default = false
   memberId: z.string().uuid({ message: "Invalid member ID" }),
@@ -18,7 +18,7 @@ export const CompanyCreateCompanyDTO = z.object({
   docImage: z.array(z.string().url({ message: "Invalid document image URL" })),
   reason: z.string().optional(),
 });
-export const CompanyFileCreateDTO = CompanyCreateCompanyDTO.omit({
+export const CompanyFileCreateDTO = CompanyCreateDTO.omit({
   docImage: true,
 }).extend({
   docImage: z
@@ -26,7 +26,7 @@ export const CompanyFileCreateDTO = CompanyCreateCompanyDTO.omit({
     .optional(),
 });
 
-export const CompanyUpdateCompanyDTO = z.object({
+export const CompanyUpdateDTO = z.object({
   isActive: z.boolean().optional(),
   isVerify: z.boolean().optional(),
   memberId: z.string().uuid().optional(),
@@ -42,7 +42,7 @@ export const CompanyUpdateCompanyDTO = z.object({
   docImage: z.array(z.string().url()).optional(),
   reason: z.string().optional(),
 });
-export const CompanyFileUpdateDTO = CompanyUpdateCompanyDTO.omit({
+export const CompanyFileUpdateDTO = CompanyUpdateDTO.omit({
   docImage: true,
 }).extend({
   docImage: z
@@ -77,6 +77,9 @@ export const CompanyAdminViewDto = z.object({
   village: z.string(),
   docImage: z.array(z.string().url({ message: "Invalid document image URL" })),
   reason: z.string(),
+  postCount: z.number(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 export const CompanyAdminDto = z.object({
@@ -119,8 +122,8 @@ export const CompanyPaginationDto = QueryDto.extend({
   bmIds: z.array(z.string()).optional(),
   verified: boolean().optional(),
 });
-export type ICompanyCreateDTOType = z.infer<typeof CompanyCreateCompanyDTO>;
-export type ICompanyUpdateDTOType = z.infer<typeof CompanyUpdateCompanyDTO>;
+export type ICompanyCreateDTOType = z.infer<typeof CompanyCreateDTO>;
+export type ICompanyUpdateDTOType = z.infer<typeof CompanyUpdateDTO>;
 export type ICompanyAdminViewDtoType = z.infer<typeof CompanyAdminViewDto>;
 export type ICompanyPaginationDtoType = z.infer<typeof CompanyPaginationDto>;
 export type ICompanyStatusDtoType = z.infer<typeof CompanyStatsDto>;
