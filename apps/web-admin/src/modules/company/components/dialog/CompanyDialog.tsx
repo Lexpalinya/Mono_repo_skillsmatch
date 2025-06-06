@@ -8,7 +8,6 @@ import { useCompany } from "../../context/useCompany";
 export default function CompanyDialog() {
   const { open, currentRow } = useCompany();
 
-  console.log("currentRow :>> ", currentRow);
   return (
     <>
       <Add open={open === "add"} />
