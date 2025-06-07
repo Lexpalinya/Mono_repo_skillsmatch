@@ -4,6 +4,7 @@ import {
   DeleteEducationLevel,
   GetEducationLevel,
   GetEducationLevelById,
+  GetEducationLevelCombobox,
   GetStatsEducationLevel,
   UpdateEducationLevel,
 } from "./service";
@@ -14,13 +15,16 @@ import {
   EducationLevelCreateDto,
   EducationLevelUpdateDto,
   EducationLevelPaginationDto,
-} from "@skillsmatch/dto"; 
+  ComboboxDto,
+} from "@skillsmatch/dto";
 import { t } from "../../lib/trpc";
 
 export const educationLevelRouter = t.router({
-  getAll: t.procedure.input(EducationLevelPaginationDto).query(async ({ input }) => {
-    return GetEducationLevel(input);
-  }),
+  getAll: t.procedure
+    .input(EducationLevelPaginationDto)
+    .query(async ({ input }) => {
+      return GetEducationLevel(input);
+    }),
 
   getById: t.procedure
     .input(idDto)
@@ -50,4 +54,9 @@ export const educationLevelRouter = t.router({
   fetchStats: t.procedure.query(async () => {
     return GetStatsEducationLevel();
   }),
+  fetchEducationLevelCombobox: t.procedure
+    .input(ComboboxDto)
+    .query(async ({ input }) => {
+      return GetEducationLevelCombobox(input);
+    }),
 });

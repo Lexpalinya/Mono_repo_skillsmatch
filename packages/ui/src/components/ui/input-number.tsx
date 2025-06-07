@@ -90,7 +90,7 @@ export const InputNumber = React.forwardRef<HTMLInputElement, InputNumberProps>(
         internalValue === "" ? min - step : Number(internalValue);
       const newValue = Math.min(currentValue + step, max);
       setInternalValue(newValue.toString());
-      onChange?.(newValue);
+      onChange?.(Number(newValue.toFixed(1)));
     };
 
     const decrement = () => {
@@ -98,7 +98,7 @@ export const InputNumber = React.forwardRef<HTMLInputElement, InputNumberProps>(
         internalValue === "" ? min + step : Number(internalValue);
       const newValue = Math.max(currentValue - step, min);
       setInternalValue(newValue.toString());
-      onChange?.(newValue);
+      onChange?.(Number(newValue.toFixed(1)));
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

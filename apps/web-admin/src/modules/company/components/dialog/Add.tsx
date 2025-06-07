@@ -14,11 +14,11 @@ import {
 
 import { useCompany } from "../../context/useCompany";
 import {
-  CompanyFileCreateDTO,
-  type ICompanyFileCreateDTOType,
+  CompanyFileCreateDto,
+  type ICompanyFileCreateDtoType,
 } from "@skillsmatch/dto";
 import { memberCompanyComboboxService } from "@/modules/service/combobox/member";
-import { businessModelComboboxService } from "@/modules/service/combobox/bussiness-model";
+import { businessModelComboboxService } from "@/modules/service/combobox/business-model";
 import { uploadImageToCloudinary } from "@skillsmatch/config";
 
 export default function AddCompany({ open }: Readonly<{ open: boolean }>) {
@@ -28,11 +28,11 @@ export default function AddCompany({ open }: Readonly<{ open: boolean }>) {
     resetCompanyState,
   } = useCompany();
 
-  const form = useForm<ICompanyFileCreateDTOType>({
-    resolver: zodResolver(CompanyFileCreateDTO),
+  const form = useForm<ICompanyFileCreateDtoType>({
+    resolver: zodResolver(CompanyFileCreateDto),
   });
 
-  const onSubmit = async (values: ICompanyFileCreateDTOType) => {
+  const onSubmit = async (values: ICompanyFileCreateDtoType) => {
     try {
       if (
         Array.isArray(values.docImage) &&
@@ -132,22 +132,21 @@ export default function AddCompany({ open }: Readonly<{ open: boolean }>) {
                 <FormDialog.InputGroup.Input placeholder="e.g. Saythany" />
               </FormDialog.Field>
               <FormDialog.Field name="village" label="Village">
-                <FormDialog.InputGroup.Input placeholder="e.g. dongdok" />
+                <FormDialog.InputGroup.Input placeholder="e.g. nongtha" />
               </FormDialog.Field>
             </div>
           </div>
         </TabsContent>
         <TabsContent value="account" className="space-y-4 pt-4">
-          <div className="grid grid-cols-2 gap-4">
-            <FormDialog.Field name="memberId" label="Member Account">
-              <FormDialog.InputGroup.InfiniteCombobox
-                placeholder="Select Member Account"
-                fetchItems={async ({ pageParam, search, limit = 10 }) =>
-                  memberCompanyComboboxService({ pageParam, search, limit })
-                }
-              />
-            </FormDialog.Field>
-          </div>
+          <FormDialog.Field name="memberId" label="Member Account">
+            <FormDialog.InputGroup.InfiniteCombobox
+              placeholder="Select Member Account"
+              fetchItems={async ({ pageParam, search, limit = 10 }) =>
+                memberCompanyComboboxService({ pageParam, search, limit })
+              }
+            />
+          </FormDialog.Field>
+
           <p className="text-sm text-muted-foreground">
             Link this company to an existing member account
           </p>

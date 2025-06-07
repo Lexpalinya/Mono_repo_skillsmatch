@@ -3,14 +3,16 @@ import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
 import trpcClient from "@/libs/trpc-client";
 
-import type { IJobberCurrentRowProps } from "../../../utils/type";
-
 import EditForm from "./EditForm";
+import type { ICompanyCurrentRowProps } from "@/modules/company/utils/type";
+import type { ICompanyAdminViewDtoType } from "@skillsmatch/dto";
 
-export default function Edit({ open, currentRow }: IJobberCurrentRowProps) {
+export default function Edit({ open, currentRow }: ICompanyCurrentRowProps) {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["JobberDetail", currentRow.id],
-    queryFn: () => trpcClient.jobber.getById.query({ id: currentRow.id }),
+    queryKey: ["CompanyDetail", currentRow.id],
+    queryFn: async (): Promise<ICompanyAdminViewDtoType> => {
+      return await trpcClient.company.getById.query({ id: currentRow.id });
+    },
     placeholderData: keepPreviousData,
   });
 

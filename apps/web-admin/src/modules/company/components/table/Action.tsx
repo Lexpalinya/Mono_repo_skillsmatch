@@ -22,14 +22,14 @@ import { type PropsWithChildren } from "react";
 import trpcClient from "@/libs/trpc-client";
 import { useCompany } from "../../context/useCompany";
 import { toast } from "sonner";
-import type { ICompanyAdminDataType } from "@skillsmatch/dto";
+import type { ICompanyAdminDtoType } from "@skillsmatch/dto";
 
 export default function CompanyAction({
   row,
-}: PropsWithChildren<{ row: Row<ICompanyAdminDataType> }>) {
+}: PropsWithChildren<{ row: Row<ICompanyAdminDtoType> }>) {
   const {
     tableQuery: { refetch },
-    open,
+
     setOpen,
     setCurrentRow,
     resetCompanyState,

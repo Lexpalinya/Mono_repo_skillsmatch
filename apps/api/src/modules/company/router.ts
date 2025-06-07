@@ -2,17 +2,17 @@ import { t } from "../../lib/trpc";
 import {
   CompanyPaginationDto,
   CompanyCreateDTO,
-  ICompanyCreateDTOType,
-  ICompanyUpdateDTOType,
   idDto,
-  IIdDtoType,
   CompanyUpdateDTO,
+  IIdDtoType,
+  ComboboxDto,
 } from "@skillsmatch/dto";
 import {
   CreateCompany,
   DeleteCompany,
   GetCompany,
   GetCompanyById,
+  GetCompanyCombobox,
   GetStatsCompany,
   UpdateCompany,
 } from "./service";
@@ -48,4 +48,9 @@ export const companyRouter = t.router({
   fetchStats: t.procedure.query(async () => {
     return GetStatsCompany();
   }),
+  fetchCompanyCombobox: t.procedure
+    .input(ComboboxDto)
+    .query(async ({ input }) => {
+      return GetCompanyCombobox(input);
+    }),
 });

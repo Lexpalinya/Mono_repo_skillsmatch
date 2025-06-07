@@ -1,6 +1,10 @@
 import { boolean, z } from "zod";
 import { fileSchema } from "../file.dto";
-import { QueryDto } from "../query/query.dto";
+import {
+  OffsetPaginateRequestDto,
+  QueryDto,
+  SearchDto,
+} from "../query/query.dto";
 
 export const CompanyCreateDTO = z.object({
   isActive: z.boolean().optional(), // default = true
@@ -122,6 +126,11 @@ export const CompanyPaginationDto = QueryDto.extend({
   bmIds: z.array(z.string()).optional(),
   verified: boolean().optional(),
 });
+
+export const CompanyComboboxDto = OffsetPaginateRequestDto.extend(
+  SearchDto.shape
+);
+
 export type ICompanyCreateDTOType = z.infer<typeof CompanyCreateDTO>;
 export type ICompanyUpdateDTOType = z.infer<typeof CompanyUpdateDTO>;
 export type ICompanyAdminViewDtoType = z.infer<typeof CompanyAdminViewDto>;
@@ -130,3 +139,4 @@ export type ICompanyStatusDtoType = z.infer<typeof CompanyStatsDto>;
 export type ICompanyAdminDataType = z.infer<typeof CompanyAdminDto>;
 export type ICompanyFileCreateDTOType = z.infer<typeof CompanyFileCreateDTO>;
 export type ICompanyFileUpdateDTOType = z.infer<typeof CompanyFileUpdateDTO>;
+export type ICompanyComboboxDtoType = z.infer<typeof CompanyComboboxDto>;

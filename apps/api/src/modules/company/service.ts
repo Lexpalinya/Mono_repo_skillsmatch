@@ -3,6 +3,8 @@ import prisma from "@lib/prisma-client";
 import { QueryOptions, queryTable } from "@utils/pagination";
 import { Company, Prisma } from "@prisma/client";
 import {
+  IComboboxDtoType,
+  ICompanyComboboxDtoType,
   ICompanyCreateDTOType,
   ICompanyPaginationDtoType,
   ICompanyStatusDtoType,
@@ -251,6 +253,42 @@ export const GetStatsCompany = async (): Promise<ICompanyStatusDtoType> => {
     ]);
 
     return { total, active, verified, status };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const GetCompanyCombobox = async (
+  input: IComboboxDtoType
+): Promise<Array<{ value: string; label: string }>> => {
+  try {
+    const where: Prisma.CompanyWhereInput = {
+      isActive: true,
+      OR: [
+        {
+          name: {
+            contains: input.search,
+            mode: "insensitive",
+          },
+        },
+      ],
+    };
+    const items = await queryTable("company", {
+      page: input.offset,
+      limit: input.limit,
+      where,
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+    return items.data.map((item: { id: string; name: string }) => ({
+      label: item.name,
+      value: item.id,
+    }));
   } catch (error) {
     throw error;
   }

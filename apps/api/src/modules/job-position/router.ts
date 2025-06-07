@@ -3,10 +3,12 @@ import {
   DeleteJobPosition,
   GetJobPosition,
   GetJobPositionById,
+  GetJobPositionCombobox,
   GetStatsJobPosition,
   UpdateJobPosition,
 } from "./service";
 import {
+  ComboboxDto,
   idDto,
   IIdDtoType,
   IJobPositionCreateDtoType,
@@ -50,4 +52,9 @@ export const jobPositionRouter = t.router({
   fetchStats: t.procedure.query(async () => {
     return GetStatsJobPosition();
   }),
+  fetchJobPositionCombobox: t.procedure
+    .input(ComboboxDto)
+    .query(async ({ input }) => {
+      return GetJobPositionCombobox(input);
+    }),
 });

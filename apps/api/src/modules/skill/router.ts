@@ -4,6 +4,7 @@ import {
   DeleteSkill,
   GetSkill,
   GetSkillById,
+  GetSkillCombobox,
   GetStatsSkill,
   UpdateSkill,
 } from "./service";
@@ -14,6 +15,7 @@ import {
   SkillCreateDto,
   SkillUpdateDto,
   SkillPaginationDto,
+  ComboboxDto,
 } from "@skillsmatch/dto";
 import { t } from "../../lib/trpc"; // Ensure this uses `initTRPC().create()`
 
@@ -50,4 +52,9 @@ export const skillRouter = t.router({
   fetchStats: t.procedure.query(async () => {
     return GetStatsSkill();
   }),
+  fetchSkillCombobox: t.procedure
+    .input(ComboboxDto)
+    .query(async ({ input }) => {
+      return GetSkillCombobox(input);
+    }),
 });

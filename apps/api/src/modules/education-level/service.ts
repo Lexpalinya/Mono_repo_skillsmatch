@@ -1,4 +1,5 @@
 import {
+  IComboboxDtoType,
   IEducationLevelCreateDtoType,
   IEducationLevelPaginationDtoType,
   IEducationLevelUpdateDtoType,
@@ -6,8 +7,11 @@ import {
 import { ensureRecordExists, ensureUniqueRecord } from "../../utils/ensure";
 import prisma from "../../lib/prisma-client";
 import { queryTable } from "../../utils/pagination";
+import { Prisma } from "@prisma/client";
 
-export const CreateEducationLevel = async (data: IEducationLevelCreateDtoType) => {
+export const CreateEducationLevel = async (
+  data: IEducationLevelCreateDtoType
+) => {
   await ensureUniqueRecord({
     table: "educationLevel",
     column: "name",
@@ -19,14 +23,21 @@ export const CreateEducationLevel = async (data: IEducationLevelCreateDtoType) =
   return educationLevel;
 };
 
-export const UpdateEducationLevel = async (id: string, data: IEducationLevelUpdateDtoType) => {
+export const UpdateEducationLevel = async (
+  id: string,
+  data: IEducationLevelUpdateDtoType
+) => {
   if (data.name)
     await ensureUniqueRecord({
       table: "educationLevel",
       column: "name",
       value: data.name,
     });
-  await ensureRecordExists({ table: "educationLevel", column: "id", value: id });
+  await ensureRecordExists({
+    table: "educationLevel",
+    column: "id",
+    value: id,
+  });
   const educationLevel = await prisma.educationLevel.update({
     where: {
       id,
@@ -37,7 +48,11 @@ export const UpdateEducationLevel = async (id: string, data: IEducationLevelUpda
 };
 
 export const DeleteEducationLevel = async (id: string) => {
-  await ensureRecordExists({ table: "educationLevel", column: "id", value: id });
+  await ensureRecordExists({
+    table: "educationLevel",
+    column: "id",
+    value: id,
+  });
   const educationLevel = await prisma.educationLevel.update({
     where: {
       id,
@@ -127,4 +142,41 @@ export const GetEducationLevelById = async (id: string) => {
     },
   });
   return educationLevel;
+};
+
+export const GetEducationLevelCombobox = async (
+  input: IComboboxDtoType
+): Promise<Array<{ value: string; label: string }>> => {
+  try {
+    const where: Prisma.EducationLevelWhereInput = {
+      isActive: true,
+      visible: true,
+      OR: [
+        {
+          name: {
+            contains: input.search,
+            mode: "insensitive",
+          },
+        },
+      ],
+    };
+    const items = await queryTable("educationLevel", {
+      page: input.offset,
+      limit: input.limit,
+      where,
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+    return items.data.map((item: { id: string; name: string }) => ({
+      label: item.name,
+      value: item.id,
+    }));
+  } catch (error) {
+    throw error;
+  }
 };
