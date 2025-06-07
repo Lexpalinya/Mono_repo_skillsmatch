@@ -75,7 +75,10 @@ export const GetJobPosition = async ({
 
     return items;
   } catch (error) {
-    throw error;
+    console.error("Error fetching job position combobox data:", error);
+    throw new Error(
+      "Failed to fetch job position combobox data. Please try again later."
+    );
   }
 };
 
