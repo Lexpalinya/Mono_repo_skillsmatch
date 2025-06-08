@@ -12,11 +12,20 @@ import {
 } from "../../index";
 import { FormControl } from "./react-hook-form";
 
+function parseTimeStringToDate(timeStr: string): Date {
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  const now = new Date();
+  now.setHours(hours);
+  now.setMinutes(minutes);
+  now.setSeconds(0);
+  now.setMilliseconds(0);
+  return now;
+}
 export type TimePickerProps = {
   placeholder?: string;
   onChange?: (value: string | number) => void;
-  value?: string | number;
-  defaultValue?: string | number;
+  value?: string;
+  defaultValue?: string;
   disabled?: boolean;
   className?: string;
 };
@@ -34,8 +43,8 @@ export const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
     ref
   ) => {
     const parsedValue = useMemo(() => {
-      if (value) return new Date(value);
-      if (defaultValue) return new Date(defaultValue);
+      if (value) return parseTimeStringToDate(value);
+      if (defaultValue) return parseTimeStringToDate(defaultValue);
       return new Date();
     }, [value, defaultValue]);
 
@@ -61,10 +70,9 @@ export const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       } else if (type === "minute") {
         newDate.setMinutes(parseInt(newValue));
       }
-      console.log("newValue :>> ", newValue);
+
       newDate.setSeconds(0);
       newDate.setMilliseconds(0);
-      console.log("newDate :>> ", newDate);
       setDate(newDate);
       onChange?.(newDate.toTimeString().slice(0, 8));
     };

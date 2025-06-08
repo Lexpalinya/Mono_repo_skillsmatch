@@ -32,6 +32,7 @@ import { jobPositionComboboxService } from "@/modules/service/combobox/job-posit
 import { usePost } from "@/modules/post/context/usePost";
 import { workdays } from "@/modules/post/utils/workday";
 import { optionCurrency } from "@/modules/post/utils/option";
+import { skillComboboxService } from "@/modules/service/combobox/skill";
 
 export default function AddCompany({ open }: Readonly<{ open: boolean }>) {
   const {
@@ -41,6 +42,15 @@ export default function AddCompany({ open }: Readonly<{ open: boolean }>) {
   } = usePost();
 
   const form = useForm<IPostFileCreateDtoType>({
+    defaultValues: {
+      checkInTime: "08:00",
+      checkOutTime: "17:00",
+      currency: "KIP",
+      maxSalary: 0,
+      minSalary: 0,
+      gpa: 2.0,
+      workday: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    },
     resolver: zodResolver(PostFileCreateDto),
   });
   const {
@@ -52,6 +62,7 @@ export default function AddCompany({ open }: Readonly<{ open: boolean }>) {
     name: "jobPositions",
   });
 
+  console.log("form.watch() :>> ", form.watch().endDate);
   const onSubmit = async (values: IPostFileCreateDtoType) => {
     try {
       if (Array.isArray(values.image) && values.image[0] instanceof File) {
@@ -138,10 +149,18 @@ export default function AddCompany({ open }: Readonly<{ open: boolean }>) {
               <FormDialog.InputGroup.Select options={optionCurrency} />
             </FormDialog.Field>
             <FormDialog.Field name="minSalary" label="Minimum Salary">
-              <FormDialog.InputGroup.InputNumberField controls={false} />
+              <FormDialog.InputGroup.InputNumberField
+                controls={false}
+                min={0}
+                max={10000000000}
+              />
             </FormDialog.Field>
             <FormDialog.Field name="maxSalary" label="Maximum Salary">
-              <FormDialog.InputGroup.InputNumberField controls={false} />
+              <FormDialog.InputGroup.InputNumberField
+                controls={false}
+                min={0}
+                max={10000000000}
+              />
             </FormDialog.Field>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -162,10 +181,13 @@ export default function AddCompany({ open }: Readonly<{ open: boolean }>) {
               />
             </FormDialog.Field>
             <FormDialog.Field name="endDate" label="End Date">
-              <FormDialog.InputGroup.DatePicker />
+              <FormDialog.InputGroup.DatePicker
+                minDate={new Date(Date.now())}
+                maxDate={new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)}
+              />
             </FormDialog.Field>
           </div>
-          <FormDialog.Field name="workdays" label="Workdays">
+          <FormDialog.Field name="workday" label="Workdays">
             <FormDialog.InputGroup.Checkbox
               className="grid grid-cols-4 gap-4"
               options={workdays}
@@ -278,8 +300,9 @@ export default function AddCompany({ open }: Readonly<{ open: boolean }>) {
                   label="Required Skills"
                 >
                   <FormDialog.InputGroup.InfiniteCombobox
+                    multiple={true}
                     fetchItems={async ({ pageParam, search, limit = 10 }) =>
-                      jobPositionComboboxService({
+                      skillComboboxService({
                         pageParam,
                         search,
                         limit,

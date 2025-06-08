@@ -9,21 +9,27 @@ import { queryTable } from "@utils/pagination";
 import { Prisma } from "@prisma/client";
 
 export const CreatePost = async (data: IPostCreateDtoType) => {
-  const post = await prisma.post.create({
-    data,
-    include: {
-      PostCourseP: true,
-      PostMajor: true,
-      PostEducationLevel: true,
-      PostEducationInstitution: true,
-      PostJobPositionDetail: {
-        include: {
-          PostJobPositionDetailSkill: true,
+  try {
+    console.log("data :>> ", data);
+    const post = await prisma.post.create({
+      data,
+      include: {
+        post: true,
+        PostMajor: true,
+        PostEducationLevel: true,
+        PostEducationInstitution: true,
+        PostJobPositionDetail: {
+          include: {
+            PostJobPositionDetailSkill: true,
+          },
         },
       },
-    },
-  });
-  return post;
+    });
+    return post;
+  } catch (error) {
+    console.log("error :>> ", error);
+    throw error;
+  }
 };
 
 export const UpdatePost = async (id: string, data: IPostUpdateDtoType) => {

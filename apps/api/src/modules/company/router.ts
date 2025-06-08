@@ -1,9 +1,9 @@
 import { t } from "../../lib/trpc";
 import {
   CompanyPaginationDto,
-  CompanyCreateDTO,
+  CompanyCreateDto,
   idDto,
-  CompanyUpdateDTO,
+  CompanyUpdateDto,
   IIdDtoType,
   ComboboxDto,
 } from "@skillsmatch/dto";
@@ -28,12 +28,12 @@ export const companyRouter = t.router({
       return GetCompanyById(input.id);
     }),
 
-  create: t.procedure.input(CompanyCreateDTO).mutation(async ({ input }) => {
+  create: t.procedure.input(CompanyCreateDto).mutation(async ({ input }) => {
     return CreateCompany(input);
   }),
 
   update: t.procedure
-    .input(CompanyUpdateDTO.extend(idDto.shape))
+    .input(CompanyUpdateDto.extend(idDto.shape))
     .mutation(async ({ input }) => {
       const { id, ...data } = input;
       return UpdateCompany(id, data);

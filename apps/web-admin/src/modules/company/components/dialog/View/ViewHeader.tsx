@@ -12,7 +12,7 @@ export default function ViewHeader({
       <FullImageViewer
         width={80}
         height={80}
-        src={data.member.profile || "/placeholder.svg?height=80&width=80"}
+        src={data.member.profile ?? "/placeholder.svg?height=80&width=80"}
         alt={`${data.member.username}`}
       />
       <div className="space-y-1">

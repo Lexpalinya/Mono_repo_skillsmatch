@@ -1,17 +1,16 @@
 import { ensureRecordExists, ensureUniqueRecord } from "@utils/ensure";
 import prisma from "@lib/prisma-client";
-import { QueryOptions, queryTable } from "@utils/pagination";
-import { Company, Prisma } from "@prisma/client";
+import { queryTable } from "@utils/pagination";
+import { Prisma } from "@prisma/client";
 import {
   IComboboxDtoType,
-  ICompanyComboboxDtoType,
-  ICompanyCreateDTOType,
+  ICompanyCreateDtoType,
   ICompanyPaginationDtoType,
   ICompanyStatusDtoType,
-  ICompanyUpdateDTOType,
+  ICompanyUpdateDtoType,
 } from "@skillsmatch/dto";
 
-export const CreateCompany = async (data: ICompanyCreateDTOType) => {
+export const CreateCompany = async (data: ICompanyCreateDtoType) => {
   await ensureUniqueRecord({
     table: "company",
     column: "memberId",
@@ -29,7 +28,7 @@ export const CreateCompany = async (data: ICompanyCreateDTOType) => {
 
 export const UpdateCompany = async (
   id: string,
-  data: ICompanyUpdateDTOType
+  data: ICompanyUpdateDtoType
 ) => {
   if (data.memberId) {
     await ensureUniqueRecord({

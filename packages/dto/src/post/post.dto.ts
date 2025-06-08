@@ -6,15 +6,17 @@ import { fileSchema } from "../file.dto";
 const CurrencyEnum = z.enum(["KIP", "USD", "THB", "CNY"]);
 
 // 🔸 Time Format
-const TimeString = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/, {
-  message: "Time must be in HH:mm:ss format (24-hour)",
+const TimeString = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, {
+  message: "Time must be in HH:mm format (24-hour)",
 });
 
 // 🔸 Shared jobPosition schema
 const JobPositionSchema = z.object({
   jpId: z.string().uuid({ message: "Invalid JobPosition ID" }),
-  description: z.string().min(1, { message: "Description is required" }),
-  amount: z.number({ message: "Amount is required" }),
+  description: z.string().optional(),
+  amount: z
+    .number({ message: "Amount is required" })
+    .min(1, { message: "Amount must be greater than 0" }),
   skillIds: z
     .array(z.string().uuid({ message: "Each skill ID must be a valid UUID" }))
     .optional(),
@@ -33,16 +35,14 @@ const PostBaseFields = {
   image: z
     .array(z.string().url({ message: "Each image must be a valid URL" }))
     .min(1, { message: "At least one image is required" }),
-  minSalary: z.number({ message: "Minimum salary is required" }),
-  maxSalary: z.number({ message: "Maximum salary is required" }),
+  minSalary: z.number({ message: "Minimum salary is required" }).min(1),
+  maxSalary: z.number({ message: "Maximum salary is required" }).min(1),
   checkInTime: TimeString,
   checkOutTime: TimeString,
   gpa: z.number().min(0).max(4),
   currency: CurrencyEnum,
   workday: z.array(z.string()).min(1),
-  endDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: "End date must be a valid date",
-  }),
+  endDate: z.coerce.date({ message: "End date is required" }),
   welfare: z.string().min(1),
   more: z.string().min(1),
   courseIds: z
@@ -111,7 +111,7 @@ export const PostFileUpdateDto = PostUpdateBaseSchema.omit({
     .optional(),
 });
 
-// 🔸 Stats DTO
+// 🔸 Stats Dto
 export const PostStatsDto = z.object({
   totalPosts: z.number(),
   activePosts: z.number(),
@@ -123,12 +123,24 @@ export const PostStatsDto = z.object({
   expiredPosts: z.number(),
 });
 
-// 🔸 Detail DTOs
+// 🔸 Detail Dtos
 export const PostJobPositionDetailSkillDto = z.object({
-  sk: z.object({
+  id: z.string(),
+  amount: z.number(),
+  jp: z.object({
     id: z.string(),
     name: z.string(),
   }),
+  postJobPositionDetailSkill: z.array(
+    z.object({
+      pjpId: z.string(),
+      skId: z.string(),
+      sk: z.object({
+        id: z.string(),
+        name: z.string(),
+      }),
+    })
+  ),
 });
 
 export const PostJobPositionDetailDto = z.object({
@@ -146,19 +158,59 @@ export const PostAdminDto = z.object({
   workday: z.array(z.string()),
   company: z.object({
     name: z.string(),
-    address: z.string().optional(),
+    province: z.string().optional(),
+    district: z.string().optional(),
+    village: z.string().optional(),
+    bm: z.object({
+      name: z.string(),
+    }),
   }),
+  image: z.array(z.string()),
+  welfare: z.string(),
+  more: z.string(),
+  postJobPositionDetail: z.array(PostJobPositionDetailDto),
+
   currency: z.string(),
   minSalary: z.number(),
   maxSalary: z.number(),
   checkInTime: z.string(),
   checkOutTime: z.string(),
-  PostJobPositionDetail: z.array(PostJobPositionDetailDto).optional(),
   endDate: z.string(),
   isActive: z.boolean(),
 });
 
-// 🔸 Pagination DTO
+export const PostAdminViewDto = z.object({
+  id: z.string(),
+  title: z.string(),
+  gpa: z.number(),
+  workday: z.array(z.string()),
+  postCourse: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+    })
+  ),
+  postMajor: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+    })
+  ),
+  postEducationLevel: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+    })
+  ),
+  postEducationInstitution: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+    })
+  ),
+  postJobPositionDetail: z.array(PostJobPositionDetailDto),
+});
+// 🔸 Pagination Dto
 export const PostPaginationDto = QueryDto.extend({
   visible: z.boolean().optional(),
   status: z.string().optional(),
@@ -173,3 +225,4 @@ export type IPostFileUpdateDtoType = z.infer<typeof PostFileUpdateDto>;
 export type IPostStatsDtoType = z.infer<typeof PostStatsDto>;
 export type IPostAdminDtoType = z.infer<typeof PostAdminDto>;
 export type IPostPaginationDtoType = z.infer<typeof PostPaginationDto>;
+export type IPostAdminViewDtoType = z.infer<typeof PostAdminViewDto>;

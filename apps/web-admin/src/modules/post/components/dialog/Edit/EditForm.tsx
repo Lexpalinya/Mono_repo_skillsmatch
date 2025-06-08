@@ -14,25 +14,26 @@ import {
 } from "@skillsmatch/ui";
 
 import { uploadImageToCloudinary } from "@skillsmatch/config";
-import type {
-  ICompanyAdminViewDtoType,
-  ICompanyFileUpdateDTOType,
+import {
+  PostFileUpdateDto,
+  type IPostAdminViewDtoType,
+  type IPostFileUpdateDtoType,
 } from "@skillsmatch/dto";
-import { CompanyFileUpdateDTO } from "@skillsmatch/dto";
 
 import trpcClient from "@/libs/trpc-client";
 import { extractChangedFields } from "@/utils/extractChangedFields";
-import { useCompany } from "@/modules/company/context/useCompany";
-import { businessModelComboboxService } from "@/modules/service/combobox/business-model";
 
-interface CompanyFormProps {
+import { businessModelComboboxService } from "@/modules/service/combobox/business-model";
+import { usePost } from "@/modules/post/context/usePost";
+
+interface PostFormProps {
   readonly open: boolean;
-  readonly initialData: Partial<ICompanyAdminViewDtoType>;
+  readonly initialData: Partial<IPostAdminViewDtoType>;
 }
 
-export default function EditForm({ open, initialData }: CompanyFormProps) {
-  const form = useForm<ICompanyFileUpdateDTOType>({
-    resolver: zodResolver(CompanyFileUpdateDTO),
+export default function EditForm({ open, initialData }: PostFormProps) {
+  const form = useForm({
+    resolver: zodResolver(PostFileUpdateDto),
     values: {
       ...initialData,
     },
@@ -41,10 +42,10 @@ export default function EditForm({ open, initialData }: CompanyFormProps) {
   const {
     tableQuery: { refetch },
     setOpen,
-    resetCompanyState,
-  } = useCompany();
+    resetPostState,
+  } = usePost();
 
-  const onSubmit = async (values: ICompanyFileUpdateDTOType) => {
+  const onSubmit = async (values: IPostFileUpdateDtoType) => {
     try {
       const changedFields = extractChangedFields(initialData, values);
       if (Object.keys(changedFields).length === 0) {
@@ -53,29 +54,27 @@ export default function EditForm({ open, initialData }: CompanyFormProps) {
         });
         return;
       }
-
-      if (Array.isArray(changedFields.docImage)) {
+      if (Array.isArray(changedFields.image)) {
         const uploadedUrls = await Promise.all(
-          changedFields.docImage.map(async (fileOrUrl) =>
-            fileOrUrl instanceof File
+          changedFields.image.map(async (fileOrUrl) => {
+            return fileOrUrl instanceof File
               ? await uploadImageToCloudinary(fileOrUrl)
-              : fileOrUrl
-          )
+              : fileOrUrl;
+          })
         );
-        changedFields.docImage = uploadedUrls;
+        changedFields.image = uploadedUrls;
       }
 
-      await trpcClient.company.update.mutate({
+      await trpcClient.jobber.update.mutate({
         id: initialData.id ?? "",
         ...changedFields,
-        docImage:
-          Array.isArray(changedFields.docImage) &&
-          changedFields.docImage[0] instanceof File
+        image:
+          Array.isArray(changedFields.image) &&
+          changedFields.image[0] instanceof File
             ? []
-            : (changedFields.docImage as string[]),
+            : (changedFields.image as string[]),
       });
-
-      resetCompanyState();
+      resetPostState();
       refetch();
 
       toast.success("Company updated successfully!", {
@@ -184,7 +183,7 @@ export default function EditForm({ open, initialData }: CompanyFormProps) {
           <FormDialog.Field name="reason" label="Notes/Reason">
             <FormDialog.InputGroup.Input placeholder="Any additional notes about this company" />
           </FormDialog.Field>
-          <FormDialog.Field name="docImage" label="Document Image">
+          <FormDialog.Field name="image" label="Document Image">
             <FormDialog.InputGroup.ImageInputMulti />
           </FormDialog.Field>
         </TabsContent>

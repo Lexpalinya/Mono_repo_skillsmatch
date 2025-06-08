@@ -6,7 +6,7 @@ import {
   SearchDto,
 } from "../query/query.dto";
 
-export const CompanyCreateDTO = z.object({
+export const CompanyCreateDto = z.object({
   isActive: z.boolean().optional(), // default = true
   isVerify: z.boolean().optional(), // default = false
   memberId: z.string().uuid({ message: "Invalid member ID" }),
@@ -22,7 +22,7 @@ export const CompanyCreateDTO = z.object({
   docImage: z.array(z.string().url({ message: "Invalid document image URL" })),
   reason: z.string().optional(),
 });
-export const CompanyFileCreateDTO = CompanyCreateDTO.omit({
+export const CompanyFileCreateDto = CompanyCreateDto.omit({
   docImage: true,
 }).extend({
   docImage: z
@@ -30,7 +30,7 @@ export const CompanyFileCreateDTO = CompanyCreateDTO.omit({
     .optional(),
 });
 
-export const CompanyUpdateDTO = z.object({
+export const CompanyUpdateDto = z.object({
   isActive: z.boolean().optional(),
   isVerify: z.boolean().optional(),
   memberId: z.string().uuid().optional(),
@@ -46,7 +46,7 @@ export const CompanyUpdateDTO = z.object({
   docImage: z.array(z.string().url()).optional(),
   reason: z.string().optional(),
 });
-export const CompanyFileUpdateDTO = CompanyUpdateDTO.omit({
+export const CompanyFileUpdateDto = CompanyUpdateDto.omit({
   docImage: true,
 }).extend({
   docImage: z
@@ -131,12 +131,12 @@ export const CompanyComboboxDto = OffsetPaginateRequestDto.extend(
   SearchDto.shape
 );
 
-export type ICompanyCreateDTOType = z.infer<typeof CompanyCreateDTO>;
-export type ICompanyUpdateDTOType = z.infer<typeof CompanyUpdateDTO>;
+export type ICompanyCreateDtoType = z.infer<typeof CompanyCreateDto>;
+export type ICompanyUpdateDtoType = z.infer<typeof CompanyUpdateDto>;
 export type ICompanyAdminViewDtoType = z.infer<typeof CompanyAdminViewDto>;
 export type ICompanyPaginationDtoType = z.infer<typeof CompanyPaginationDto>;
 export type ICompanyStatusDtoType = z.infer<typeof CompanyStatsDto>;
 export type ICompanyAdminDataType = z.infer<typeof CompanyAdminDto>;
-export type ICompanyFileCreateDTOType = z.infer<typeof CompanyFileCreateDTO>;
-export type ICompanyFileUpdateDTOType = z.infer<typeof CompanyFileUpdateDTO>;
+export type ICompanyFileCreateDtoType = z.infer<typeof CompanyFileCreateDto>;
+export type ICompanyFileUpdateDtoType = z.infer<typeof CompanyFileUpdateDto>;
 export type ICompanyComboboxDtoType = z.infer<typeof CompanyComboboxDto>;

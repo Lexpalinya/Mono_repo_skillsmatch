@@ -6,9 +6,8 @@ import {
 } from "@skillsmatch/dto";
 import { ensureRecordExists, ensureUniqueRecord } from "@utils/ensure";
 import prisma from "@lib/prisma-client";
-import { QueryOptions, queryTable } from "@utils/pagination";
-import { Jobber, Prisma } from "@prisma/client";
-import { z } from "zod";
+import { queryTable } from "@utils/pagination";
+import { Prisma } from "@prisma/client";
 
 export const CreateJobber = async (data: IJobberCreateDtoType) => {
   await ensureUniqueRecord({
