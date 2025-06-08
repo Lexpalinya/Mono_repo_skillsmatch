@@ -4,6 +4,7 @@ export interface IEducationalInstitutionProps {
   open: boolean;
 }
 
-export interface IEducationalInstitutionCurrentRowProps extends IEducationalInstitutionProps {
-  currentRow: IEducationalInstitutionAdminDtoType;
+export interface IEducationalInstitutionCurrentRowProps
+  extends IEducationalInstitutionProps {
+  readonly currentRow: IEducationalInstitutionAdminDtoType;
 }

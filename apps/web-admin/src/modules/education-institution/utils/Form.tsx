@@ -25,8 +25,8 @@ const EducationalInstitutionForm = <T extends FieldValues>({
       classNameDialog="w-[350px]"
       formInstance={form}
       onSubmit={onSubmit}
-      title={title || "Educational Institution Form"}
-      description={description || "Update the details for this institution."}
+      title={title ?? "Educational Institution Form"}
+      description={description ?? "Update the details for this institution."}
     >
       <FormDialog.Field
         name="name"

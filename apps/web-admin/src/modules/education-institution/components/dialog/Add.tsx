@@ -1,11 +1,11 @@
 import type { IEducationalInstitutionProps } from "../../utils/type";
-import EducationalInstitutionForm from "../../utils/Form"; // เปลี่ยนชื่อ Form ให้ตรงกับ EducationalInstitution
-import { useEducationalInstitution } from "../../context/useEducationalInstitution"; // เปลี่ยน context ให้ตรงกัน
+import EducationalInstitutionForm from "../../utils/Form";
+import { useEducationalInstitution } from "../../context/useEducationalInstitution";
 import { useForm } from "react-hook-form";
 import {
   EducationalInstitutionCreateDto,
   type IEducationalInstitutionCreateDtoType,
-} from "@skillsmatch/dto"; // เปลี่ยน DTO
+} from "@skillsmatch/dto";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { CheckCircle } from "lucide-react";
@@ -29,8 +29,6 @@ export default function Add({ open }: IEducationalInstitutionProps) {
 
   const onSubmit = async (values: IEducationalInstitutionCreateDtoType) => {
     try {
-      // TODO: upload image to s3
-
       await trpcClient.educationInstitution.create.mutate({
         ...values,
       });
