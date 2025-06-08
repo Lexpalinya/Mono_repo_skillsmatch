@@ -27,11 +27,10 @@ export default function MajorAction({
 
   const handleDelete = async () => {
     try {
-      console.log("Deleting major with ID: ", row.original.id);
-      await trpcClient.major.delete.mutate({ id: row.original.id }); 
+      await trpcClient.major.delete.mutate({ id: row.original.id });
       resetMajorState();
       refetch();
-    } catch (error) {
+    } catch {
       confirm({
         actionText: "Retry",
         title: "Failed to delete Major",

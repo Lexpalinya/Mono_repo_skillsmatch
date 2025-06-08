@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   CalendarIcon,
   ChevronDown,
@@ -10,11 +10,16 @@ import {
   X,
 } from "lucide-react";
 import { format, addMonths, addYears, isToday } from "date-fns";
-import { useState, useEffect, useRef } from "react";
-import { cn } from '../../lib/utils';
+import { cn } from "../../lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { Calendar } from "../ui/calendar";
 
 interface DatePickerProps {
@@ -24,6 +29,8 @@ interface DatePickerProps {
   className?: string;
   placeholder?: string;
   ref?: React.Ref<HTMLDivElement>;
+  minDate?: Date;
+  maxDate?: Date;
 }
 
 export function DatePicker({
@@ -33,26 +40,24 @@ export function DatePicker({
   className,
   placeholder = "Pick a date",
   ref,
+  minDate,
+  maxDate = new Date(Date.now()),
 }: DatePickerProps) {
-  // Convert string to Date if needed
   const dateValue = value
     ? typeof value === "string"
       ? new Date(value)
       : value
     : undefined;
+
   const [currentMonth, setCurrentMonth] = useState<Date>(
     dateValue || new Date()
   );
   const calendarRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
 
-  // Generate years array (1900 to current year + 10)
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 1889 }, (_, i) => 1900 + i);
-
-  // Generate months array
   const months = [
     "January",
     "February",
@@ -68,7 +73,6 @@ export function DatePicker({
     "December",
   ];
 
-  // Quick date presets
   const quickPresets = [
     { label: "Today", value: new Date(), icon: Clock },
     { label: "Yesterday", value: new Date(Date.now() - 24 * 60 * 60 * 1000) },
@@ -79,7 +83,6 @@ export function DatePicker({
     },
   ];
 
-  // Handle month change with animation
   const handleMonthChange = (month: string) => {
     const monthIndex = months.indexOf(month);
     if (monthIndex !== -1) {
@@ -93,7 +96,6 @@ export function DatePicker({
     }
   };
 
-  // Handle year change with animation
   const handleYearChange = (year: string) => {
     setIsAnimating(true);
     setTimeout(() => {
@@ -104,7 +106,6 @@ export function DatePicker({
     }, 150);
   };
 
-  // Handle quick navigation
   const navigateMonth = (direction: number) => {
     setIsAnimating(true);
     setTimeout(() => {
@@ -121,19 +122,16 @@ export function DatePicker({
     }, 150);
   };
 
-  // Handle preset selection
   const handlePresetSelect = (date: Date) => {
     setCurrentMonth(date);
     onChange?.(date);
     setIsOpen(false);
   };
 
-  // Clear selection
   const clearSelection = () => {
     onChange?.(undefined);
   };
 
-  // Handle mouse wheel scrolling
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       if (!isOpen || !calendarRef.current || isAnimating) return;
@@ -148,7 +146,6 @@ export function DatePicker({
       if (isOverCalendar) {
         e.preventDefault();
         e.stopPropagation();
-
         const delta = e.deltaY > 0 ? 1 : -1;
 
         if (e.ctrlKey || e.metaKey) {
@@ -241,7 +238,7 @@ export function DatePicker({
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                {quickPresets.slice(0, 4).map((preset) => (
+                {quickPresets.map((preset) => (
                   <Button
                     key={preset.label}
                     variant="ghost"
@@ -256,7 +253,7 @@ export function DatePicker({
               </div>
             </div>
 
-            {/* Enhanced Month/Year Navigation */}
+            {/* Month/Year Selectors */}
             <div className="p-4 border-b bg-gradient-to-r from-muted/20 to-muted/10">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold">Navigate</h3>
@@ -265,7 +262,7 @@ export function DatePicker({
                     variant="ghost"
                     size="sm"
                     onClick={() => navigateYear(-1)}
-                    className="h-7 w-7 p-0 hover:bg-primary/10"
+                    className="h-7 w-7 p-0"
                   >
                     <ChevronLeft className="h-3 w-3" />
                   </Button>
@@ -273,7 +270,7 @@ export function DatePicker({
                     variant="ghost"
                     size="sm"
                     onClick={() => navigateMonth(-1)}
-                    className="h-7 w-7 p-0 hover:bg-primary/10"
+                    className="h-7 w-7 p-0"
                   >
                     <ChevronLeft className="h-3 w-3" />
                   </Button>
@@ -281,7 +278,7 @@ export function DatePicker({
                     variant="ghost"
                     size="sm"
                     onClick={() => navigateMonth(1)}
-                    className="h-7 w-7 p-0 hover:bg-primary/10"
+                    className="h-7 w-7 p-0"
                   >
                     <ChevronRight className="h-3 w-3" />
                   </Button>
@@ -289,15 +286,13 @@ export function DatePicker({
                     variant="ghost"
                     size="sm"
                     onClick={() => navigateYear(1)}
-                    className="h-7 w-7 p-0 hover:bg-primary/10"
+                    className="h-7 w-7 p-0"
                   >
                     <ChevronRight className="h-3 w-3" />
                   </Button>
                 </div>
               </div>
-
               <div className="grid grid-cols-2 gap-3">
-                {/* Month Selection */}
                 <div className="space-y-1">
                   <label className="text-xs font-medium text-muted-foreground">
                     Month
@@ -310,145 +305,50 @@ export function DatePicker({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="max-h-60">
-                      <div className="grid grid-cols-1 gap-1 p-1">
-                        {months.map((month, index) => (
-                          <SelectItem
-                            key={month}
-                            value={month}
-                            className={cn(
-                              "cursor-pointer rounded-md px-3 py-2 text-sm hover:bg-accent",
-                              index === currentMonth.getMonth() &&
-                                "bg-primary/10 text-primary"
-                            )}
-                          >
-                            {month}
-                          </SelectItem>
-                        ))}
-                      </div>
+                      {months.map((month) => (
+                        <SelectItem key={month} value={month}>
+                          {month}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
-
-                {/* Year Selection */}
                 <div className="space-y-1">
                   <label className="text-xs font-medium text-muted-foreground">
                     Year
                   </label>
                   <Select
-                    value={currentMonth.getFullYear().toString()}
+                    value={String(currentMonth.getFullYear())}
                     onValueChange={handleYearChange}
                   >
                     <SelectTrigger className="w-full h-9 text-sm">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="max-h-60">
-                      <div className="grid grid-cols-3 gap-1 p-1">
-                        {years.reverse().map((year) => (
-                          <SelectItem
-                            key={year}
-                            value={year.toString()}
-                            className={cn(
-                              "cursor-pointer rounded-md px-2 py-1 text-sm hover:bg-accent text-center",
-                              year === currentMonth.getFullYear() &&
-                                "bg-primary/10 text-primary"
-                            )}
-                          >
-                            {year}
-                          </SelectItem>
-                        ))}
-                      </div>
+                    <SelectContent className="max-h-60 overflow-y-auto">
+                      {years.map((year) => (
+                        <SelectItem key={year} value={String(year)}>
+                          {year}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
               </div>
             </div>
 
-            {/* Calendar with Animation */}
-            <div
-              className={cn(
-                "transition-opacity duration-150",
-                isAnimating && "opacity-50"
-              )}
-            >
-              <Calendar
-                mode="single"
-                selected={dateValue}
-                onSelect={(date) => {
-                  onChange?.(date);
-                  if (date) {
-                    setIsOpen(false);
-                  }
-                }}
-                month={currentMonth}
-                onMonthChange={setCurrentMonth}
-                disabled={(date) =>
-                  date > new Date() || date < new Date("1900-01-01")
-                }
-                initialFocus
-                captionLayout="buttons"
-                showOutsideDays={true}
-                classNames={{
-                  months:
-                    "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 p-4",
-                  month: "space-y-4",
-                  caption: "hidden",
-                  table: "w-full border-collapse space-y-1",
-                  head_row: "flex",
-                  head_cell:
-                    "text-muted-foreground rounded-md w-10 font-medium text-[0.8rem] h-10 flex items-center justify-center",
-                  row: "flex w-full mt-1",
-                  cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent/50 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                  day: cn(
-                    "inline-flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-200",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                    "disabled:opacity-50 disabled:pointer-events-none aria-selected:opacity-100",
-                    "h-10 w-10 hover:bg-accent hover:text-accent-foreground hover:scale-105",
-                    "relative overflow-hidden"
-                  ),
-                  day_selected: cn(
-                    "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
-                    "focus:bg-primary focus:text-primary-foreground shadow-md scale-105"
-                  ),
-                  day_today:
-                    "bg-accent text-accent-foreground font-bold ring-2 ring-primary/20",
-                  day_outside:
-                    "text-muted-foreground opacity-40 hover:opacity-60",
-                  day_disabled: "text-muted-foreground opacity-30",
-                  day_range_middle:
-                    "aria-selected:bg-accent aria-selected:text-accent-foreground",
-                  day_hidden: "invisible",
-                }}
-              />
-            </div>
-
-            {/* Footer Actions */}
-            <div className="p-3 border-t bg-muted/10 flex items-center justify-between">
-              <div className="text-xs text-muted-foreground">
-                {dateValue
-                  ? `Selected: ${format(dateValue, "MMM d, yyyy")}`
-                  : "No date selected"}
-              </div>
-              <div className="flex gap-2">
-                {dateValue && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={clearSelection}
-                    className="h-8 text-xs"
-                  >
-                    Clear
-                  </Button>
-                )}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handlePresetSelect(new Date())}
-                  className="h-8 text-xs"
-                >
-                  Today
-                </Button>
-              </div>
-            </div>
+            {/* Calendar */}
+            <Calendar
+              mode="single"
+              selected={dateValue}
+              onSelect={(date) => {
+                onChange?.(date);
+                setIsOpen(false);
+              }}
+              month={currentMonth}
+              onMonthChange={setCurrentMonth}
+              fromDate={minDate}
+              toDate={maxDate}
+            />
           </div>
         </PopoverContent>
       </Popover>

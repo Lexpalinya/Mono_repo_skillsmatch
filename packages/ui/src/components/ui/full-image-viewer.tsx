@@ -22,7 +22,7 @@ interface FullImageViewerProps {
   onImageChange?: (index: number) => void;
 }
 
-export default function FullImageViewer({
+export function FullImageViewer({
   src,
   alt,
   width = 400,
@@ -265,19 +265,19 @@ export default function FullImageViewer({
     <>
       {/* Thumbnail */}
       <div
-        className={`relative cursor-pointer transition-all duration-200 hover:opacity-80 group ${thumbnailClassName}`}
+        className={`relative cursor-pointer  bg-black/80  transition-all duration-200 hover:opacity-80 group border ${thumbnailClassName}`}
         onClick={() => setIsOpen(true)}
       >
         <img
-          src={src}
-          alt={alt}
           width={width}
           height={height}
-          className={`rounded-lg object-cover ${className}`}
+          src={src}
+          alt={alt}
+          className={`rounded-lg object-cover ${className}  `}
         />
 
         {/* Image info overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 rounded-lg flex flex-col items-center justify-center">
+        {/* <div className="absolute inset-0  bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 rounded-lg flex flex-col items-center justify-center z-0 ">
           <ZoomIn
             className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 mb-2"
             size={24}
@@ -285,13 +285,13 @@ export default function FullImageViewer({
           <div className="text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black bg-opacity-50 px-2 py-1 rounded">
             {width} × {height}
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Modal */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center p-4"
+          className="fixed bg-black/80  flex items-center justify-center p-4 w-h inset-0 z-50"
           onClick={handleBackdropClick}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -363,21 +363,8 @@ export default function FullImageViewer({
             </div>
           )}
 
-          {/* Image info display */}
-          {imageDimensions.width > 0 && (
-            <div className="absolute top-16 left-4 z-10 text-white bg-black bg-opacity-50 px-3 py-2 rounded-lg text-sm space-y-1">
-              <div className="font-medium">Image Info</div>
-              <div>
-                {imageDimensions.width} × {imageDimensions.height} px
-              </div>
-              {imageDimensions.fileSize && (
-                <div>{imageDimensions.fileSize}</div>
-              )}
-            </div>
-          )}
-
           {/* Full size image */}
-          <div className="relative max-w-[95vw] max-h-[95vh] overflow-hidden">
+          <div className="relative max-w-[95vw] max-h-[95vh]">
             <img
               ref={imageRef}
               src={currentImage.src}
@@ -387,18 +374,12 @@ export default function FullImageViewer({
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
-              className="max-w-full max-h-full object-contain cursor-grab active:cursor-grabbing"
+              className=" object-contain cursor-grab active:cursor-grabbing"
               style={{
                 transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
                 transition: isDragging ? "none" : "transform 0.2s ease-out",
               }}
             />
-          </div>
-
-          {/* Instructions */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-sm bg-black bg-opacity-50 px-4 py-2 rounded-full">
-            {imageList.length > 1 ? "← → Navigate • " : ""}Scroll to zoom • Drag
-            to pan • ESC to close
           </div>
         </div>
       )}

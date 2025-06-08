@@ -20,8 +20,8 @@ import {
   JobberFileCreateDto,
   type IJobberFileCreateDtoType,
 } from "@skillsmatch/dto";
-import { memberComboboxService } from "@/modules/service/combobox/member";
-import { jobberStatusComboboxService } from "@/modules/service/combobox/jobber-status";
+import { memberJobberComboboxService } from "@/service/combobox/member";
+import { jobberStatusComboboxService } from "@/service/combobox/jobber-status";
 
 export default function Add({ open }: IJobberProps) {
   const {
@@ -166,7 +166,7 @@ export default function Add({ open }: IJobberProps) {
               <FormDialog.InputGroup.InfiniteCombobox
                 placeholder="Select Member Account"
                 fetchItems={async ({ pageParam, search, limit = 10 }) =>
-                  memberComboboxService({ pageParam, search, limit })
+                  memberJobberComboboxService({ pageParam, search, limit })
                 }
               />
             </FormDialog.Field>

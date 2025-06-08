@@ -10,7 +10,14 @@ import {
   DropdownMenuTrigger,
 } from "@skillsmatch/ui";
 import type { Row } from "@tanstack/react-table";
-import { CheckCircle, Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {
+  CheckCircle,
+  Eye,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  XCircle,
+} from "lucide-react";
 import { type PropsWithChildren } from "react";
 
 import trpcClient from "@/libs/trpc-client";
@@ -35,7 +42,7 @@ export default function JobberAction({
       toast.success("Jobber deleted successfully!", {
         icon: <CheckCircle className="text-success size-4" />,
       });
-    } catch (error) {
+    } catch {
       confirm({
         actionText: "Retry",
         title: "Failed to delete jobber",
@@ -84,7 +91,26 @@ export default function JobberAction({
           <Pencil className="mr-2 h-4 w-4" />
           Edit jobber
         </DropdownMenuItem>
-
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={() => {
+            setOpen("verified");
+            setCurrentRow(row.original);
+          }}
+        >
+          {row.original.isVerify ? (
+            <>
+              <XCircle className="mr-2 h-4 w-4" />
+              Revoke verification
+            </>
+          ) : (
+            <>
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Verify jobber
+            </>
+          )}
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={async () => {
             const next = await confirm({

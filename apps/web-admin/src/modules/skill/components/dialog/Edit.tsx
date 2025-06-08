@@ -25,7 +25,6 @@ export default function Edit({ open, currentRow }: ISkillCurrentRowProps) {
 
   const onSubmit = async (values: ISkillUpdateDtoType) => {
     try {
-      // TODO: upload image to s3
       const changedFields = extractChangedFields(currentRow, values);
       if (Object.keys(changedFields).length === 0) {
         toast.info("No changes detected.", {

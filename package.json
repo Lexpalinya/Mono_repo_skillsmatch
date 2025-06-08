@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "api": "cd apps/api; bun dev",
-    "web": "cd apps/web-admin; bun dev"
+    "web": "cd apps/web-admin; bun dev",
+    "db:studio": "bunx prisma studio",
+    "db:push": "bunx prisma db push",
+    "db:pull": "bunx prisma db pull",
+    "db:migrate": "bunx prisma migrate dev"
   },
   "workspaces": [
     "apps/*",
@@ -103,7 +107,7 @@
     "@types/node": "^22.15.17",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
-    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react": "^4.5.1",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
     "eslint-plugin-react-hooks": "^5.2.0",

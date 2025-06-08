@@ -1,6 +1,6 @@
 import trpcClient from "@/libs/trpc-client";
 
-export const memberComboboxService = async ({
+export const courseComboboxService = async ({
   pageParam,
   limit,
   search,
@@ -12,11 +12,10 @@ export const memberComboboxService = async ({
   items: any[];
   nextOffset?: number;
 }> => {
-  const result = await trpcClient.member.fetchMemberCombobox.query({
+  const result = await trpcClient.course.fetchCourseCombobox.query({
     offset: pageParam + 1,
     limit,
     search,
-    role: "jobber",
   });
 
   return {

@@ -22,7 +22,7 @@ export default function Add({ open }: IBusinessModelProps) {
   const form = useForm<IBusinessModelCreateDtoType>({
     defaultValues: {
       name: "",
-      visible: false,
+      visible: true,
     },
     resolver: zodResolver(BusinessModelCreateDto),
   });

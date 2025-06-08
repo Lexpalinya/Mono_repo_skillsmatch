@@ -51,18 +51,19 @@ model Member {
   updatedAt    DateTime  @updatedAt
   Jobber       Jobber[]
   Company      Company[]
+  Review       Review[]
 }
 
 model Course {
-  id               String        @id @default(uuid()) @db.VarChar(36)
-  isActive         Boolean       @default(true)
-  visible          Boolean       @default(false)
+  id               String       @id @default(uuid()) @db.VarChar(36)
+  isActive         Boolean      @default(true)
+  visible          Boolean      @default(false)
   name             String
-  postUsageCount   Int           @default(0)
-  jobberUsageCount Int           @default(0)
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
-  PostCourseP      PostCourseP[]
+  postUsageCount   Int          @default(0)
+  jobberUsageCount Int          @default(0)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  PostCourse       PostCourse[]
 }
 
 model Major {
@@ -217,14 +218,14 @@ model Post {
   createdAt                DateTime                   @default(now())
   updatedAt                DateTime                   @updatedAt
   company                  Company                    @relation(fields: [cId], references: [id])
-  PostCourseP              PostCourseP[]
-  PostMajor                PostMajor[]
-  PostEducationLevel       PostEducationLevel[]
-  PostEducationInstitution PostEducationInstitution[]
-  PostJobPositionDetail    PostJobPositionDetail[]
+  postCourse               PostCourse[]
+  postMajor                PostMajor[]
+  postEducationLevel       PostEducationLevel[]
+  postEducationInstitution PostEducationInstitution[]
+  postJobPositionDetail    PostJobPositionDetail[]
 }
 
-model PostCourseP {
+model PostCourse {
   pId  String
   crId String
   post Post   @relation(fields: [pId], references: [id])
@@ -261,14 +262,14 @@ model PostEducationInstitution {
 }
 
 model PostJobPositionDetail {
-  id String @id @default(uuid()) @db.VarChar(36)
-
+  id                         String                       @id @default(uuid()) @db.VarChar(36)
+  amount                     Int                          @default(1)
   pId                        String
   jpId                       String
   description                String                       @db.Text()
   post                       Post                         @relation(fields: [pId], references: [id])
   jp                         JobPosition                  @relation(fields: [jpId], references: [id])
-  PostJobPositionDetailSkill PostJobPositionDetailSkill[]
+  postJobPositionDetailSkill PostJobPositionDetailSkill[]
 }
 
 model PostJobPositionDetailSkill {
@@ -303,4 +304,14 @@ model AttendInterView {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   aj        ApplyForJob @relation(fields: [ajId], references: [id])
+}
+
+model Review {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  memberId  String
+  comment   String
+  score     Int
+  member    Member   @relation(fields: [memberId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

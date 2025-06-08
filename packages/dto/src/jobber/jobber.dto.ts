@@ -57,7 +57,7 @@ export const JobberFileUpdateDto = JobberUpdateDto.omit({
   docImage: true,
 }).extend({
   docImage: z
-    .union([fileSchema.array(), z.array(z.string().url()), z.null()])
+    .union([z.array(z.union([fileSchema, z.string().url()])), z.null()])
     .optional(),
 });
 
@@ -68,21 +68,19 @@ export const JobberAdminDto = z.object({
   firstName: z.string(),
   lastName: z.string(),
   birthday: z.string(),
-  isVerify: z.boolean().optional(),
+  isVerify: z.boolean(),
   nationality: z.string(),
   createdAt: z.string(),
-  statusId: z.string().optional(),
-  status: z
-    .object({
-      name: z.string(),
-    })
-    .optional(),
-  member: z
-    .object({
-      username: z.string(),
-      profile: z.string(),
-    })
-    .optional(),
+  statusId: z.string(),
+  reason: z.string(),
+  status: z.object({
+    name: z.string(),
+  }),
+  member: z.object({
+    username: z.string(),
+    profile: z.string(),
+    email: z.string(),
+  }),
 });
 export const JobberPaginationDto = QueryDto.extend({
   visible: z.boolean().optional(),
@@ -111,6 +109,8 @@ export const JobberAdminViewDto = z.object({
     phoneNumber: z.string(),
     profile: z.string().nullable().optional(),
   }),
+  memberId: z.string(),
+  statusId: z.string(),
   gender: z.nativeEnum(EGender),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
@@ -125,11 +125,11 @@ export const JobberAdminViewDto = z.object({
   cDistrict: z.string(),
   cVillage: z.string(),
   docImage: z.array(z.string()),
-  reason: z.string().nullable().optional(),
+  reason: z.string().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
-export const JobberStatusStatsDto = z.object({
+export const JobberStatsCompanyDto = z.object({
   id: z.string(),
   name: z.string(),
   companyUsageCount: z.number(),

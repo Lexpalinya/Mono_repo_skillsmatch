@@ -7,7 +7,7 @@ import {
 
 import { TRPCError } from "@trpc/server";
 
-import { Member, Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { ensureUniqueRecord } from "@utils/ensure";
 
 import { HashedPassword } from "@utils/password";
@@ -43,7 +43,11 @@ export const CreateMember = async (data: IMemberCreateDtoType) => {
 
     return member;
   } catch (error) {
-    throw error;
+    console.error("Error occurred while creating a member:", error);
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "An error occurred while creating the member.",
+    });
   }
 };
 
@@ -68,7 +72,11 @@ export const UpdateMember = async (
 
     return member;
   } catch (error) {
-    throw error;
+    console.error("Error occurred while updating a member:", error);
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "An error occurred while updating the member.",
+    });
   }
 };
 
@@ -83,7 +91,11 @@ export const DeleteMember = async (id: string[]) => {
 
     return member;
   } catch (error) {
-    throw error;
+    console.error("Error occurred while fetching the member:", error);
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "An error occurred while fetching the member.",
+    });
   }
 };
 
@@ -110,7 +122,11 @@ export const GetMember = async (id: string) => {
 
     return member;
   } catch (error) {
-    throw error;
+    console.error("Error occurred while fetching members:", error);
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "An error occurred while fetching members.",
+    });
   }
 };
 
@@ -126,6 +142,7 @@ export const GetMembers = async ({
     let where: Prisma.MemberWhereInput = { isActive: true };
     if (search) {
       where = {
+        ...where,
         OR: [
           {
             username: {
@@ -174,25 +191,38 @@ export const GetMembers = async ({
 
     return items;
   } catch (error) {
-    throw error;
+    console.error("Error occurred while fetching member combobox data:", error);
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "An error occurred while fetching member combobox data.",
+    });
   }
 };
 
 export const GetStatsMember = async () => {
   try {
-    const members = await prisma.member.findMany({
-      where: { isActive: true },
-      select: { role: true },
-    });
-
-    const total = members.length;
-    const active = members.filter((m) => m.role !== "admin").length;
-    const jobber = members.filter((m) => m.role === "jobber").length;
-    const company = members.filter((m) => m.role === "company").length;
+    const [total, active, jobber, company] = await Promise.all([
+      prisma.member.count({
+        where: { isActive: true },
+      }),
+      prisma.member.count({
+        where: { isActive: true, visible: true },
+      }),
+      prisma.member.count({
+        where: { isActive: true, visible: true, role: "jobber" },
+      }),
+      prisma.member.count({
+        where: { isActive: true, visible: true, role: "company" },
+      }),
+    ]);
 
     return { total, active, jobber, company };
   } catch (error) {
-    throw error;
+    console.error("Error occurred while fetching member combobox data:", error);
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "An error occurred while fetching member combobox data.",
+    });
   }
 };
 

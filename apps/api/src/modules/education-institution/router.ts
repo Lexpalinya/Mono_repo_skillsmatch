@@ -4,6 +4,7 @@ import {
   DeleteEducationalInstitution,
   GetEducationalInstitution,
   GetEducationalInstitutionById,
+  GetEducationalInstitutionCombobox,
   GetStatsEducationalInstitution,
   UpdateEducationalInstitution,
 } from "./service";
@@ -14,13 +15,16 @@ import {
   EducationalInstitutionCreateDto,
   EducationalInstitutionUpdateDto,
   EducationalInstitutionPaginationDto,
-} from "@skillsmatch/dto"; 
+  ComboboxDto,
+} from "@skillsmatch/dto";
 import { t } from "../../lib/trpc";
 
 export const educationalInstitutionRouter = t.router({
-  getAll: t.procedure.input(EducationalInstitutionPaginationDto).query(async ({ input }) => {
-    return GetEducationalInstitution(input);
-  }),
+  getAll: t.procedure
+    .input(EducationalInstitutionPaginationDto)
+    .query(async ({ input }) => {
+      return GetEducationalInstitution(input);
+    }),
 
   getById: t.procedure
     .input(idDto)
@@ -30,9 +34,11 @@ export const educationalInstitutionRouter = t.router({
 
   create: t.procedure
     .input(EducationalInstitutionCreateDto)
-    .mutation(async ({ input }: { input: IEducationalInstitutionCreateDtoType }) => {
-      return CreateEducationalInstitution(input);
-    }),
+    .mutation(
+      async ({ input }: { input: IEducationalInstitutionCreateDtoType }) => {
+        return CreateEducationalInstitution(input);
+      }
+    ),
 
   update: t.procedure
     .input(EducationalInstitutionUpdateDto.extend(idDto.shape))
@@ -50,4 +56,9 @@ export const educationalInstitutionRouter = t.router({
   fetchStats: t.procedure.query(async () => {
     return GetStatsEducationalInstitution();
   }),
+  fetchEducationalInstitutionCombobox: t.procedure
+    .input(ComboboxDto)
+    .query(async ({ input }) => {
+      return GetEducationalInstitutionCombobox(input);
+    }),
 });

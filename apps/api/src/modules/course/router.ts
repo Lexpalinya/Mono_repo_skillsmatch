@@ -4,6 +4,7 @@ import {
   DeleteCourse,
   GetCourse,
   GetCourseById,
+  GetCourseCombobox,
   GetStatsCourse,
   UpdateCourse,
 } from "./service";
@@ -14,7 +15,8 @@ import {
   CourseCreateDto,
   CourseUpdateDto,
   CoursePaginationDto,
-} from "@skillsmatch/dto"; 
+  ComboboxDto,
+} from "@skillsmatch/dto";
 import { t } from "../../lib/trpc";
 
 export const courseRouter = t.router({
@@ -50,4 +52,9 @@ export const courseRouter = t.router({
   fetchStats: t.procedure.query(async () => {
     return GetStatsCourse();
   }),
+  fetchCourseCombobox: t.procedure
+    .input(ComboboxDto)
+    .query(async ({ input }) => {
+      return GetCourseCombobox(input);
+    }),
 });

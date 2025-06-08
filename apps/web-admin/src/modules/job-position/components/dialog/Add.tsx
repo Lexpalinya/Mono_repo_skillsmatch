@@ -2,7 +2,10 @@ import type { IJobPositionProps } from "../../utils/type";
 import JobPositionForm from "../../utils/Form";
 import { useJobPosition } from "../../context/useJobPosition";
 import { useForm } from "react-hook-form";
-import { JobPositionCreateDto, type IJobPositionCreateDtoType } from "@skillsmatch/dto";
+import {
+  JobPositionCreateDto,
+  type IJobPositionCreateDtoType,
+} from "@skillsmatch/dto";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { CheckCircle } from "lucide-react";
@@ -19,7 +22,7 @@ export default function Add({ open }: IJobPositionProps) {
   const form = useForm<IJobPositionCreateDtoType>({
     defaultValues: {
       name: "",
-      visible: false,
+      visible: true,
     },
     resolver: zodResolver(JobPositionCreateDto),
   });

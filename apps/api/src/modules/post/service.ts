@@ -1,94 +1,232 @@
-import { IPostCreateDTOType, IPostUpdateDTOType } from "@skillsmatch/dto";
+import {
+  IPostCreateDtoType,
+  IPostPaginationDtoType,
+  IPostUpdateDtoType,
+} from "@skillsmatch/dto";
 import { ensureRecordExists } from "@utils/ensure";
 import prisma from "@lib/prisma-client";
-import { QueryOptions, queryTable } from "@utils/pagination";
-import { Post } from "@prisma/client";
+import { queryTable } from "@utils/pagination";
+import { Prisma } from "@prisma/client";
 
-export const CreatePost = async (data: IPostCreateDTOType) => {
+export const CreatePost = async (data: IPostCreateDtoType) => {
+  try {
     const post = await prisma.post.create({
-        data,
-        include: {
-            PostCourseP: true,
-            PostMajor: true,
-            PostEducationLevel: true,
-            PostEducationInstitution: true,
-            PostJobPositionDetail: {
-                include: {
-                    PostJobPositionDetailSkill: true,
-                },
-            },
+      data,
+      include: {
+        postCourse: true,
+        postMajor: true,
+        postEducationLevel: true,
+        postEducationInstitution: true,
+        postJobPositionDetail: {
+          include: {
+            postJobPositionDetailSkill: true,
+          },
         },
+      },
     });
     return post;
+  } catch (error) {
+    console.log("error :>> ", error);
+    throw error;
+  }
 };
 
-export const UpdatePost = async (id: string, data: IPostUpdateDTOType) => {
-    await ensureRecordExists({ table: "post", column: "id", value: id });
+export const UpdatePost = async (id: string, data: IPostUpdateDtoType) => {
+  await ensureRecordExists({ table: "post", column: "id", value: id });
 
-    const post = await prisma.post.update({
-        where: { id },
-        data,
+  const post = await prisma.post.update({
+    where: { id },
+    data,
+    include: {
+      postCourse: true,
+      postMajor: true,
+      postEducationLevel: true,
+      postEducationInstitution: true,
+      postJobPositionDetail: {
         include: {
-            PostCourseP: true,
-            PostMajor: true,
-            PostEducationLevel: true,
-            PostEducationInstitution: true,
-            PostJobPositionDetail: {
-                include: {
-                    PostJobPositionDetailSkill: true,
-                },
-            },
+          postJobPositionDetailSkill: true,
         },
-    });
+      },
+    },
+  });
 
-    return post;
+  return post;
 };
 
 export const DeletePost = async (id: string) => {
-    await ensureRecordExists({ table: "post", column: "id", value: id });
+  await ensureRecordExists({ table: "post", column: "id", value: id });
 
-    const post = await prisma.post.update({
-        where: { id },
-        data: { isActive: false },
-    });
+  const post = await prisma.post.update({
+    where: { id },
+    data: { isActive: false },
+  });
 
-    return post;
+  return post;
 };
 
 export const GetPost = async ({
-    where = { isActive: true },
-    page = 1,
-    pageSize = 10,
-    orderBy,
-    include,
-}: QueryOptions<Post>) => {
-    return queryTable("post", {
-        where,
-        page,
-        pageSize,
-        orderBy,
-        include,
+  page,
+  limit,
+  search,
+  sortOrder = "asc",
+  sortBy,
+}: IPostPaginationDtoType) => {
+  try {
+    let where: Prisma.PostWhereInput = { isActive: true };
+    if (search) {
+      where = {
+        ...where,
+        OR: [
+          {
+            title: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          {
+            company: {
+              name: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          },
+        ],
+      };
+    }
+    const select: Prisma.PostSelect = {
+      id: true,
+      title: true,
+      gpa: true,
+      workday: true,
+      currency: true,
+      minSalary: true,
+      maxSalary: true,
+      checkInTime: true,
+      checkOutTime: true,
+      endDate: true,
+      isActive: true,
+      company: {
+        select: {
+          name: true,
+          province: true,
+          district: true,
+          village: true,
+        },
+      },
+
+      postJobPositionDetail: {
+        select: {
+          jp: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          postJobPositionDetailSkill: {
+            select: {
+              sk: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const items = await queryTable("post", {
+      page,
+      limit,
+      where,
+      select,
+      orderBy: {
+        [sortBy]: sortOrder,
+      },
     });
+
+    return items;
+  } catch (error) {
+    console.error("Error occurred while fetching post statistics:", error);
+    throw error; // Rethrow the error after logging
+  }
 };
 
 export const GetPostById = async (id: string) => {
-    const post = await prisma.post.findUniqueOrThrow({
-        where: {
-            id,
-            isActive: true,
-        },
+  const post = await prisma.post.findUniqueOrThrow({
+    where: {
+      id,
+      isActive: true,
+    },
+    include: {
+      postCourse: true,
+      postMajor: true,
+      postEducationLevel: true,
+      postEducationInstitution: true,
+      postJobPositionDetail: {
         include: {
-            PostCourseP: true,
-            PostMajor: true,
-            PostEducationLevel: true,
-            PostEducationInstitution: true,
-            PostJobPositionDetail: {
-                include: {
-                    PostJobPositionDetailSkill: true,
-                },
-            },
+          postJobPositionDetailSkill: true,
         },
-    });
+      },
+    },
+  });
 
-    return post;
+  return post;
+};
+export const GetStatsPost = async () => {
+  try {
+    const [
+      totalPosts,
+      activePosts,
+      uniqueCompanies,
+      totalPositions,
+      expiredPosts,
+      averageSalaryResult,
+      averageGPAResult,
+    ] = await Promise.all([
+      prisma.post.count(),
+      prisma.post.count({ where: { isActive: true } }),
+      prisma.company.count({ where: { isActive: true } }),
+      prisma.jobPosition.count({ where: { isActive: true } }),
+      prisma.post.count({ where: { isActive: false } }),
+      prisma.post.aggregate({
+        _avg: {
+          maxSalary: true,
+          minSalary: true,
+        },
+        where: { isActive: true },
+      }),
+      prisma.post.aggregate({
+        _avg: {
+          gpa: true,
+        },
+        where: { isActive: true },
+      }),
+    ]);
+
+    const minSalary = averageSalaryResult._avg.minSalary ?? 0;
+    const maxSalary = averageSalaryResult._avg.maxSalary ?? 0;
+
+    const averageSalary = (Number(minSalary) + Number(maxSalary)) / 2;
+    const averageGPA = averageGPAResult._avg.gpa ?? 0;
+
+    const activePercentage = totalPosts
+      ? Math.round((activePosts / totalPosts) * 100)
+      : 0;
+
+    return {
+      totalPosts,
+      activePosts,
+      activePercentage,
+      uniqueCompanies,
+      totalPositions,
+      averageSalary: Number(averageSalary.toFixed(2)),
+      averageGPA: Number(averageGPA.toFixed(2)),
+      expiredPosts,
+    };
+  } catch (error) {
+    throw error;
+  }
 };

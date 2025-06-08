@@ -1,4 +1,5 @@
 import {
+  IComboboxDtoType,
   IMajorCreateDtoType,
   IMajorPaginationDtoType,
   IMajorUpdateDtoType,
@@ -6,6 +7,7 @@ import {
 import { ensureRecordExists, ensureUniqueRecord } from "../../utils/ensure";
 import prisma from "../../lib/prisma-client";
 import { queryTable } from "../../utils/pagination";
+import { Prisma } from "@prisma/client";
 
 export const CreateMajor = async (data: IMajorCreateDtoType) => {
   await ensureUniqueRecord({
@@ -127,4 +129,41 @@ export const GetMajorById = async (id: string) => {
     },
   });
   return major;
+};
+
+export const GetMajorCombobox = async (
+  input: IComboboxDtoType
+): Promise<Array<{ value: string; label: string }>> => {
+  try {
+    const where: Prisma.MajorWhereInput = {
+      isActive: true,
+      visible: true,
+      OR: [
+        {
+          name: {
+            contains: input.search,
+            mode: "insensitive",
+          },
+        },
+      ],
+    };
+    const items = await queryTable("major", {
+      page: input.offset,
+      limit: input.limit,
+      where,
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+    return items.data.map((item: { id: string; name: string }) => ({
+      label: item.name,
+      value: item.id,
+    }));
+  } catch (error) {
+    throw error;
+  }
 };

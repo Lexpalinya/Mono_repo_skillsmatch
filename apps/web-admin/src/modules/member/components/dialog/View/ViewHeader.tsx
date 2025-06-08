@@ -1,4 +1,5 @@
 import type { IMemberAdminViewDtoType } from "@skillsmatch/dto";
+import { FullImageViewer } from "@skillsmatch/ui";
 
 export default function ViewHeader({
   data,
@@ -7,11 +8,11 @@ export default function ViewHeader({
 }) {
   return (
     <div className="relative w-full mb-24">
-      <div className="bg-gray-300">
-        <img
+      <div className="flex justify-center border h-30">
+        <FullImageViewer
           src={data?.background ?? ""}
+          className="w-full h-full"
           alt={data?.username}
-          className="object-contain h-32 w-full"
         />
       </div>
 

@@ -9,7 +9,9 @@ import { jobberRouter } from "./modules/jobber/router";
 import { majorRouter } from "./modules/major/router";
 import { memberAuthRouter, memberRouter } from "./modules/member/router";
 import { skillRouter } from "./modules/skill/router";
-
+import { companyRouter } from "./modules/company/router";
+import { postRouter } from "./modules/post/router";
+import { reviewRouter } from "./modules/review-application/router";
 export const appRouter = router({
   businessModel: businessModelRouter,
   course: courseRouter,
@@ -22,6 +24,9 @@ export const appRouter = router({
   auth: memberAuthRouter,
   jobber: jobberRouter,
   jobberStatus: jobberStatusRouter,
+  company: companyRouter,
+  post: postRouter,
+  review: reviewRouter,
 });
 
 export default appRouter;

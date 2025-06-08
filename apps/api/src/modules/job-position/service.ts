@@ -1,4 +1,5 @@
 import {
+  IComboboxDtoType,
   IJobPositionCreateDtoType,
   IJobPositionPaginationDtoType,
   IJobPositionUpdateDtoType,
@@ -6,6 +7,7 @@ import {
 import { ensureRecordExists, ensureUniqueRecord } from "../../utils/ensure";
 import prisma from "../../lib/prisma-client";
 import { queryTable } from "../../utils/pagination";
+import { Prisma } from "@prisma/client";
 
 export const CreateJobPosition = async (data: IJobPositionCreateDtoType) => {
   await ensureUniqueRecord({
@@ -73,7 +75,10 @@ export const GetJobPosition = async ({
 
     return items;
   } catch (error) {
-    throw error;
+    console.error("Error fetching job position combobox data:", error);
+    throw new Error(
+      "Failed to fetch job position combobox data. Please try again later."
+    );
   }
 };
 
@@ -120,3 +125,41 @@ export const GetJobPositionById = async (id: string) => {
   });
   return jobPosition;
 };
+
+export const GetJobPositionCombobox = async (
+  input: IComboboxDtoType
+): Promise<Array<{ value: string; label: string }>> => {
+  try {
+    const where: Prisma.JobPositionWhereInput = {
+      isActive: true,
+      visible: true,
+      OR: [
+        {
+          name: {
+            contains: input.search,
+            mode: "insensitive",
+          },
+        },
+      ],
+    };
+    const items = await queryTable("jobPosition", {
+      page: input.offset,
+      limit: input.limit,
+      where,
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+    return items.data.map((item: { id: string; name: string }) => ({
+      label: item.name,
+      value: item.id,
+    }));
+  } catch (error) {
+    throw error;
+  }
+};
+

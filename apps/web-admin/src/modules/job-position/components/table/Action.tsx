@@ -27,11 +27,10 @@ export default function JobPositionAction({
 
   const handleDelete = async () => {
     try {
-      console.log("Deleting job position with ID: ", row.original.id);
       await trpcClient.jobPosition.delete.mutate({ id: row.original.id });
       resetJobPositionState();
       refetch();
-    } catch (error) {
+    } catch {
       confirm({
         actionText: "Retry",
         title: "Failed to delete Job Position",

@@ -27,11 +27,10 @@ export default function CourseAction({
 
   const handleDelete = async () => {
     try {
-      console.log("Deleting course with ID: ", row.original.id);
       await trpcClient.course.delete.mutate({ id: row.original.id });
       resetCourseState();
       refetch();
-    } catch (error) {
+    } catch {
       confirm({
         actionText: "Retry",
         title: "Failed to delete Course",

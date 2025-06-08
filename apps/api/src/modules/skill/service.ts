@@ -1,4 +1,5 @@
 import {
+  IComboboxDtoType,
   ISkillCreateDtoType,
   ISkillPaginationDtoType,
   ISkillUpdateDtoType,
@@ -6,6 +7,7 @@ import {
 import { ensureRecordExists, ensureUniqueRecord } from "../../utils/ensure";
 import prisma from "../../lib/prisma-client";
 import { queryTable } from "../../utils/pagination";
+import { Prisma } from "@prisma/client";
 
 export const CreateSkill = async (data: ISkillCreateDtoType) => {
   await ensureUniqueRecord({
@@ -65,7 +67,7 @@ export const GetSkill = async ({
         mode: "insensitive",
       };
     if (typeof visible === "boolean") where.visible = visible;
-    console.log("where :>> ", where);
+
     const members = await queryTable("skill", {
       page,
       limit,
@@ -128,4 +130,41 @@ export const GetSkillById = async (id: string) => {
     },
   });
   return skill;
+};
+
+export const GetSkillCombobox = async (
+  input: IComboboxDtoType
+): Promise<Array<{ value: string; label: string }>> => {
+  try {
+    const where: Prisma.SkillWhereInput = {
+      isActive: true,
+      visible: true,
+      OR: [
+        {
+          name: {
+            contains: input.search,
+            mode: "insensitive",
+          },
+        },
+      ],
+    };
+    const items = await queryTable("skill", {
+      page: input.offset,
+      limit: input.limit,
+      where,
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+    return items.data.map((item: { id: string; name: string }) => ({
+      label: item.name,
+      value: item.id,
+    }));
+  } catch (error) {
+    throw error;
+  }
 };

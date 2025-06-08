@@ -4,6 +4,7 @@ import {
   DeleteMajor,
   GetMajor,
   GetMajorById,
+  GetMajorCombobox,
   GetStatsMajor,
   UpdateMajor,
 } from "./service";
@@ -14,7 +15,8 @@ import {
   MajorCreateDto,
   MajorUpdateDto,
   MajorPaginationDto,
-} from "@skillsmatch/dto"; 
+  ComboboxDto,
+} from "@skillsmatch/dto";
 import { t } from "../../lib/trpc";
 
 export const majorRouter = t.router({
@@ -50,4 +52,9 @@ export const majorRouter = t.router({
   fetchStats: t.procedure.query(async () => {
     return GetStatsMajor();
   }),
+  fetchMajorCombobox: t.procedure
+    .input(ComboboxDto)
+    .query(async ({ input }) => {
+      return GetMajorCombobox(input);
+    }),
 });

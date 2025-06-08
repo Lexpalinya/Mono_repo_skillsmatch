@@ -50,7 +50,8 @@ export const ImageInputMulti: React.FC<ImageInputProps> = ({
     const urls = (value || []).map((v) =>
       typeof v === "string" ? v : URL.createObjectURL(v)
     );
-    setPreviews(urls);
+
+    if (urls.length > 0) setPreviews(urls);
 
     return () => {
       value?.forEach((v) => {

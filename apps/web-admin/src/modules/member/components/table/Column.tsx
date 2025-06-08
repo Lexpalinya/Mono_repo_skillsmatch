@@ -8,6 +8,7 @@ import {
   Checkbox,
   cn,
   DataTableColumnHeader,
+  FullImageViewer,
 } from "@skillsmatch/ui";
 import type { ColumnDef } from "@tanstack/react-table";
 import MemberAction from "./Action";
@@ -51,15 +52,12 @@ export const MemberColumn: ColumnDef<IMemberAdminDtoType>[] = [
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
-        <Avatar className="h-8 w-8">
-          <AvatarImage
-            src={row.original.profile || "/placeholder.svg?height=32&width=32"}
-            alt={row.original.username}
-          />
-          <AvatarFallback>
-            <UserRound className="h-4 w-4" />
-          </AvatarFallback>
-        </Avatar>
+        <FullImageViewer
+          width={35}
+          height={35}
+          src={row.original.profile || "/placeholder.svg?height=80&width=80"}
+          alt={row.original.username}
+        />
         <span className="font-medium">{row.original.username}</span>
       </div>
     ),

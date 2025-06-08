@@ -1,4 +1,5 @@
 import {
+  IComboboxDtoType,
   IEducationalInstitutionCreateDtoType,
   IEducationalInstitutionPaginationDtoType,
   IEducationalInstitutionUpdateDtoType,
@@ -6,8 +7,11 @@ import {
 import { ensureRecordExists, ensureUniqueRecord } from "../../utils/ensure";
 import prisma from "../../lib/prisma-client";
 import { queryTable } from "../../utils/pagination";
+import { Prisma } from "@prisma/client";
 
-export const CreateEducationalInstitution = async (data: IEducationalInstitutionCreateDtoType) => {
+export const CreateEducationalInstitution = async (
+  data: IEducationalInstitutionCreateDtoType
+) => {
   await ensureUniqueRecord({
     table: "educationalInstitution",
     column: "name",
@@ -19,14 +23,21 @@ export const CreateEducationalInstitution = async (data: IEducationalInstitution
   return institution;
 };
 
-export const UpdateEducationalInstitution = async (id: string, data: IEducationalInstitutionUpdateDtoType) => {
+export const UpdateEducationalInstitution = async (
+  id: string,
+  data: IEducationalInstitutionUpdateDtoType
+) => {
   if (data.name)
     await ensureUniqueRecord({
       table: "educationalInstitution",
       column: "name",
       value: data.name,
     });
-  await ensureRecordExists({ table: "educationalInstitution", column: "id", value: id });
+  await ensureRecordExists({
+    table: "educationalInstitution",
+    column: "id",
+    value: id,
+  });
   const institution = await prisma.educationalInstitution.update({
     where: {
       id,
@@ -37,7 +48,11 @@ export const UpdateEducationalInstitution = async (id: string, data: IEducationa
 };
 
 export const DeleteEducationalInstitution = async (id: string) => {
-  await ensureRecordExists({ table: "educationalInstitution", column: "id", value: id });
+  await ensureRecordExists({
+    table: "educationalInstitution",
+    column: "id",
+    value: id,
+  });
   const institution = await prisma.educationalInstitution.update({
     where: {
       id,
@@ -127,4 +142,41 @@ export const GetEducationalInstitutionById = async (id: string) => {
     },
   });
   return institution;
+};
+
+export const GetEducationalInstitutionCombobox = async (
+  input: IComboboxDtoType
+): Promise<Array<{ value: string; label: string }>> => {
+  try {
+    const where: Prisma.EducationalInstitutionWhereInput = {
+      isActive: true,
+      visible: true,
+      OR: [
+        {
+          name: {
+            contains: input.search,
+            mode: "insensitive",
+          },
+        },
+      ],
+    };
+    const items = await queryTable("educationalInstitution", {
+      page: input.offset,
+      limit: input.limit,
+      where,
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+    return items.data.map((item: { id: string; name: string }) => ({
+      label: item.name,
+      value: item.id,
+    }));
+  } catch (error) {
+    throw error;
+  }
 };

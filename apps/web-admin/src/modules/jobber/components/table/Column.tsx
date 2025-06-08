@@ -1,15 +1,13 @@
-import { ArrowUpDown, CheckCircle, UserRound, XCircle } from "lucide-react";
+import { CheckCircle, XCircle } from "lucide-react";
 import {
-  AvatarFallback,
-  AvatarImage,
   Badge,
-  Button,
   Checkbox,
+  DataTableColumnHeader,
+  FullImageViewer,
 } from "@skillsmatch/ui";
 import { format } from "date-fns";
 import type { ColumnDef } from "@tanstack/react-table";
 
-import { Avatar } from "@radix-ui/react-avatar";
 import type { IJobberAdminDtoType } from "@skillsmatch/dto";
 import { calculateAge } from "@/utils/extractChangedFields";
 import JobberAction from "./Action";
@@ -38,31 +36,20 @@ export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "firstName",
     header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Name
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
+      <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
       const data = row.original;
       return (
         <div className="flex items-center gap-2">
-          <Avatar className="h-8 w-8">
-            <AvatarImage
-              src={
-                data.member?.profile || "/placeholder.svg?height=32&width=32"
-              }
-              alt={`${data.firstName} ${data.lastName}`}
-            />
-            <AvatarFallback>
-              <UserRound className="h-4 w-4" />
-            </AvatarFallback>
-          </Avatar>
+          <FullImageViewer
+            width={35}
+            height={35}
+            src={data.member?.profile || "/placeholder.svg?height=80&width=80"}
+            alt={`${data.firstName} ${data.lastName}`}
+          />
           <div>
             <div className="font-medium">
               {data.firstName} {data.lastName}
@@ -85,12 +72,16 @@ export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
   },
   {
     accessorKey: "gender",
-    header: "Gender",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Gender" />
+    ),
     cell: ({ row }) => <div>{row.getValue("gender")}</div>,
   },
   {
     accessorKey: "birthday",
-    header: "Age",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Age" />
+    ),
     cell: ({ row }) => {
       const birthday = row.getValue("birthday") as Date;
 
@@ -100,21 +91,39 @@ export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
   },
   {
     accessorKey: "nationality",
-    header: "Nationality",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Nationality" />
+    ),
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
     cell: ({ row }) => {
       const status = row.original.status?.name ?? "Unknown";
-      const variant =
-        status === "Active"
-          ? "default"
-          : status === "Pending"
-            ? "outline"
-            : status === "Suspended"
-              ? "destructive"
-              : "secondary";
+      function getStatusBadgeColor({
+        status,
+      }: {
+        status: string;
+      }):
+        | "default"
+        | "secondary"
+        | "destructive"
+        | "outline"
+        | null
+        | undefined {
+        if (status === "Active") {
+          return "default";
+        } else if (status === "Pending") {
+          return "outline";
+        } else if (status === "Suspended") {
+          return "destructive";
+        } else {
+          return "secondary";
+        }
+      }
+      const variant = getStatusBadgeColor({ status });
 
       return <Badge variant={variant}>{status}</Badge>;
     },
@@ -125,9 +134,11 @@ export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
   },
   {
     accessorKey: "isVerify",
-    header: "Verification",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Verification" />
+    ),
     cell: ({ row }) => {
-      const isVerified = row.getValue("isVerify") as boolean;
+      const isVerified = row.getValue("isVerify");
       return (
         <div className="flex items-center">
           {isVerified ? (
@@ -144,23 +155,12 @@ export const jobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
         </div>
       );
     },
-    filterFn: (row, value) => {
-      if (value === "all") return true;
-      const isVerified = row.getValue("isVerify") as boolean;
-      return value === "verified" ? isVerified : !isVerified;
-    },
   },
 
   {
     accessorKey: "createdAt",
     header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Joined
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
+      <DataTableColumnHeader column={column} title="Joined" />
     ),
     cell: ({ row }) => format(row.getValue("createdAt"), "MMM d, yyyy"),
   },

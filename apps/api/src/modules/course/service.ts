@@ -1,4 +1,5 @@
 import {
+  IComboboxDtoType,
   ICourseCreateDtoType,
   ICoursePaginationDtoType,
   ICourseUpdateDtoType,
@@ -6,6 +7,7 @@ import {
 import { ensureRecordExists, ensureUniqueRecord } from "../../utils/ensure";
 import prisma from "../../lib/prisma-client";
 import { queryTable } from "../../utils/pagination";
+import { Prisma } from "@prisma/client";
 
 export const CreateCourse = async (data: ICourseCreateDtoType) => {
   await ensureUniqueRecord({
@@ -127,4 +129,41 @@ export const GetCourseById = async (id: string) => {
     },
   });
   return course;
+};
+
+export const GetCourseCombobox = async (
+  input: IComboboxDtoType
+): Promise<Array<{ value: string; label: string }>> => {
+  try {
+    const where: Prisma.CourseWhereInput = {
+      isActive: true,
+      visible: true,
+      OR: [
+        {
+          name: {
+            contains: input.search,
+            mode: "insensitive",
+          },
+        },
+      ],
+    };
+    const items = await queryTable("course", {
+      page: input.offset,
+      limit: input.limit,
+      where,
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+    return items.data.map((item: { id: string; name: string }) => ({
+      label: item.name,
+      value: item.id,
+    }));
+  } catch (error) {
+    throw error;
+  }
 };

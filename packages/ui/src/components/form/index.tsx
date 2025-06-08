@@ -24,7 +24,7 @@ import { Select } from "./select";
 import { RadioGroupField } from "./radio-group";
 import { CheckboxFormField } from "./checkbox";
 
-import { DateTimePicker } from "./datetime-picker";
+import { TimePicker } from "./time-picker";
 import { DatePicker } from "./date-picker";
 import { VirtualizerCombobox } from "./virtualizer-combobox";
 import { FormCheckbox } from "./form-checkbox";
@@ -157,7 +157,7 @@ const InputGroup = {
   Radio: RadioGroupField,
   Checkbox: CheckboxFormField,
   FormCheckbox: FormCheckbox,
-  DateTimePicker,
+  TimePicker,
   DatePicker,
   VirtualizerCombobox,
   InfiniteCombobox: InfiniteComboboxField,

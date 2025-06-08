@@ -112,7 +112,7 @@ export const MemberStatsDto = z.object({
 export const MemberComboboxDto = OffsetPaginateRequestDto.extend(
   SearchDto.shape
 ).extend({
-  role: z.nativeEnum(EUserRole),
+  role: z.nativeEnum(EUserRole).optional(),
 });
 
 // ✅ Export TypeScript types

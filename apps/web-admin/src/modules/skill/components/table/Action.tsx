@@ -26,11 +26,10 @@ export default function SkillAction({
   } = useSkill();
   const handleDelete = async () => {
     try {
-      console.log("Deleting skill with ID: ", row.original.id);
       await trpcClient.skill.delete.mutate({ id: row.original.id });
       resetSkillState();
       refetch();
-    } catch (error) {
+    } catch {
       confirm({
         actionText: "Retry",
         title: "Failed to delete Skill",

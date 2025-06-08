@@ -1,18 +1,28 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@skillsmatch/ui";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  Badge,
+} from "@skillsmatch/ui";
 import type { LucideIcon } from "lucide-react";
 
-type StatsCardProps = {
-  name: string;
-  icon: LucideIcon;
-  value: string | number;
-  description?: string;
-};
+type StatsCardProps = Readonly<{
+  readonly name: string;
+  readonly icon: LucideIcon;
+  readonly value: string | number;
+  readonly description?: string;
+  readonly badge?: string;
+  readonly badgeVariant?: "default" | "secondary" | "destructive";
+}>;
 
 export function StatsCard({
   name,
   icon: Icon,
   value,
   description,
+  badge,
+  badgeVariant = "default",
 }: StatsCardProps) {
   return (
     <Card>
@@ -22,9 +32,16 @@ export function StatsCard({
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
-        {description && (
-          <p className="text-xs text-muted-foreground">{description}</p>
-        )}
+        <div className="flex items-center space-x-1">
+          {description && (
+            <p className="text-xs text-muted-foreground">{description}</p>
+          )}
+          {badge && (
+            <Badge variant={badgeVariant} className="text-xs">
+              {badge}
+            </Badge>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

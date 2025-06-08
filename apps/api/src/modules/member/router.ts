@@ -28,7 +28,6 @@ import {
   GetStatsMember,
   UpdateMember,
 } from "./services/member";
-import { jobPositionRouter } from "../job-position/router";
 
 export const memberAuthRouter = router({
   register: t.procedure
@@ -69,7 +68,7 @@ export const memberAuthRouter = router({
   forgotPassword: t.procedure
     .input(MemberLoginDtoType)
     .mutation(async ({ input }) => {
-      const res = await ForgotPasswordMember(input);
+      await ForgotPasswordMember(input);
 
       return { message: "Password reset instructions sent" };
     }),
@@ -77,7 +76,7 @@ export const memberAuthRouter = router({
   changePassword: t.procedure
     .input(MemberChangePasswordDtoType)
     .mutation(async ({ input }) => {
-      const res = await ChangePasswordMember(input);
+      await ChangePasswordMember(input);
 
       return { message: "Password changed successfully" };
     }),

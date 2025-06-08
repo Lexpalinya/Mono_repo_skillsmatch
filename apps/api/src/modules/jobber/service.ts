@@ -1,16 +1,13 @@
 import {
-  IJobberAdminDtoType,
   IJobberCreateDtoType,
   IJobberPaginationDtoType,
   IJobberStatsDtoType,
-  IJobberStatusAdminDtoType,
   IJobberUpdateDtoType,
 } from "@skillsmatch/dto";
 import { ensureRecordExists, ensureUniqueRecord } from "@utils/ensure";
 import prisma from "@lib/prisma-client";
-import { QueryOptions, queryTable } from "@utils/pagination";
-import { Jobber, Prisma } from "@prisma/client";
-import { z } from "zod";
+import { queryTable } from "@utils/pagination";
+import { Prisma } from "@prisma/client";
 
 export const CreateJobber = async (data: IJobberCreateDtoType) => {
   await ensureUniqueRecord({
@@ -131,6 +128,7 @@ export const GetJobbers = async ({
       nationality: true,
       createdAt: true,
       statusId: true,
+      reason: true,
       status: {
         select: {
           name: true,
@@ -140,6 +138,7 @@ export const GetJobbers = async ({
         select: {
           username: true,
           profile: true,
+          email: true,
         },
       },
     };
@@ -156,6 +155,7 @@ export const GetJobbers = async ({
 
     return items;
   } catch (error) {
+    console.error("object :>> error", error);
     throw error;
   }
 };
