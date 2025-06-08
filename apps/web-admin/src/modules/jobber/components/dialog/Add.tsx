@@ -20,8 +20,8 @@ import {
   JobberFileCreateDto,
   type IJobberFileCreateDtoType,
 } from "@skillsmatch/dto";
-import { memberJobberComboboxService } from "@/modules/service/combobox/member";
-import { jobberStatusComboboxService } from "@/modules/service/combobox/jobber-status";
+import { memberJobberComboboxService } from "@/service/combobox/member";
+import { jobberStatusComboboxService } from "@/service/combobox/jobber-status";
 
 export default function Add({ open }: IJobberProps) {
   const {

@@ -22,17 +22,17 @@ import {
 
 import { uploadImageToCloudinary } from "@skillsmatch/config";
 
-import { companyComboboxService } from "@/modules/service/combobox/company";
+import { companyComboboxService } from "@/service/combobox/company";
 
-import { courseComboboxService } from "@/modules/service/combobox/course";
-import { majorComboboxService } from "@/modules/service/combobox/major";
-import { educationLevelComboboxService } from "@/modules/service/combobox/education-level";
-import { educationInstitutionComboboxService } from "@/modules/service/combobox/educational-institution";
-import { jobPositionComboboxService } from "@/modules/service/combobox/job-position";
+import { courseComboboxService } from "@/service/combobox/course";
+import { majorComboboxService } from "@/service/combobox/major";
+import { educationLevelComboboxService } from "@/service/combobox/education-level";
+import { educationInstitutionComboboxService } from "@/service/combobox/educational-institution";
+import { jobPositionComboboxService } from "@/service/combobox/job-position";
 import { usePost } from "@/modules/post/context/usePost";
 import { workdays } from "@/modules/post/utils/workday";
 import { optionCurrency } from "@/modules/post/utils/option";
-import { skillComboboxService } from "@/modules/service/combobox/skill";
+import { skillComboboxService } from "@/service/combobox/skill";
 
 export default function AddCompany({ open }: Readonly<{ open: boolean }>) {
   const {

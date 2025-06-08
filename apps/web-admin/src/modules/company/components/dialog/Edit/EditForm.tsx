@@ -23,7 +23,7 @@ import { CompanyFileUpdateDto } from "@skillsmatch/dto";
 import trpcClient from "@/libs/trpc-client";
 import { extractChangedFields } from "@/utils/extractChangedFields";
 import { useCompany } from "@/modules/company/context/useCompany";
-import { businessModelComboboxService } from "@/modules/service/combobox/business-model";
+import { businessModelComboboxService } from "@/service/combobox/business-model";
 
 interface CompanyFormProps {
   readonly open: boolean;

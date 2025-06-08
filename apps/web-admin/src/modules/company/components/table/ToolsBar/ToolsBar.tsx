@@ -1,5 +1,5 @@
 import { companyRoute } from "@/modules/company/router";
-import { businessModelComboboxService } from "@/modules/service/combobox/business-model";
+import { businessModelComboboxService } from "@/service/combobox/business-model";
 import { DataTableToolbar, InfiniteCombobox } from "@skillsmatch/ui";
 import type { Table } from "@tanstack/react-table";
 

@@ -17,8 +17,8 @@ import {
   CompanyFileCreateDto,
   type ICompanyFileCreateDtoType,
 } from "@skillsmatch/dto";
-import { memberCompanyComboboxService } from "@/modules/service/combobox/member";
-import { businessModelComboboxService } from "@/modules/service/combobox/business-model";
+import { memberCompanyComboboxService } from "@/service/combobox/member";
+import { businessModelComboboxService } from "@/service/combobox/business-model";
 import { uploadImageToCloudinary } from "@skillsmatch/config";
 
 export default function AddCompany({ open }: Readonly<{ open: boolean }>) {

@@ -16,3 +16,4 @@ export * from "./apply-for-job/apply-for-job.dto";
 export * from "./attend-interview/attend-interview.dto";
 export * from "./company/company.dto";
 export * from "./post/post.dto";
+export * from "./review-application/review-application.dto";

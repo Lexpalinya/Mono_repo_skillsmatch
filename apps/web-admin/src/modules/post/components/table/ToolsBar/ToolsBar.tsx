@@ -1,7 +1,7 @@
 import { postRoute } from "@/modules/post/router";
 import { DataTableToolbar, InfiniteCombobox } from "@skillsmatch/ui";
 import type { Table } from "@tanstack/react-table";
-import { companyComboboxService } from "../../../../service/combobox/company";
+import { companyComboboxService } from "../../../../../service/combobox/company";
 
 interface Props<T> {
   readonly table: Table<T>;

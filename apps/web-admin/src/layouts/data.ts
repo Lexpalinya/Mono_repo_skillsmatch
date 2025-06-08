@@ -26,6 +26,7 @@ export function getSidebarData(): ISidebarData {
         { title: "Member", url: "/member" },
         { title: "Post", url: "/post" },
         { title: "Skill", url: "/skill" },
+        { title: "Review Application", url: "/review-application" },
       ].sort((a, b) => a.title.localeCompare(b.title)),
     },
     {

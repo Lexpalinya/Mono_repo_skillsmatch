@@ -2,7 +2,10 @@ import type { IEducationLevelProps } from "../../utils/type";
 import EducationLevelForm from "../../utils/Form";
 import { useEducationLevel } from "../../context/useEducationLevel";
 import { useForm } from "react-hook-form";
-import { EducationLevelCreateDto, type IEducationLevelCreateDtoType } from "@skillsmatch/dto";
+import {
+  EducationLevelCreateDto,
+  type IEducationLevelCreateDtoType,
+} from "@skillsmatch/dto";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { CheckCircle } from "lucide-react";
@@ -19,7 +22,7 @@ export default function Add({ open }: IEducationLevelProps) {
   const form = useForm<IEducationLevelCreateDtoType>({
     defaultValues: {
       name: "",
-      visible: false,
+      visible: true,
     },
     resolver: zodResolver(EducationLevelCreateDto),
   });

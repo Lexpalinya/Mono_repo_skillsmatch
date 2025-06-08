@@ -14,6 +14,7 @@ import businessModel from "@/modules/business-model/router";
 import skillRoute from "@/modules/skill/router";
 
 import jobberStatusRoute from "@/modules/jobber-status/router";
+import reviewApplicationRoute from "@/modules/review-application/router";
 const routeTree = rootRoute.addChildren([
   ...loginRoute,
   appLayoutRoute.addChildren([
@@ -29,6 +30,7 @@ const routeTree = rootRoute.addChildren([
     ...businessModel,
     ...skillRoute,
     ...jobberStatusRoute,
+    ...reviewApplicationRoute,
   ]),
 ]);
 

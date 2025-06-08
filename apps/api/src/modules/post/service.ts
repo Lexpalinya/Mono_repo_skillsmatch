@@ -10,17 +10,16 @@ import { Prisma } from "@prisma/client";
 
 export const CreatePost = async (data: IPostCreateDtoType) => {
   try {
-    console.log("data :>> ", data);
     const post = await prisma.post.create({
       data,
       include: {
-        post: true,
-        PostMajor: true,
-        PostEducationLevel: true,
-        PostEducationInstitution: true,
-        PostJobPositionDetail: {
+        postCourse: true,
+        postMajor: true,
+        postEducationLevel: true,
+        postEducationInstitution: true,
+        postJobPositionDetail: {
           include: {
-            PostJobPositionDetailSkill: true,
+            postJobPositionDetailSkill: true,
           },
         },
       },
@@ -39,13 +38,13 @@ export const UpdatePost = async (id: string, data: IPostUpdateDtoType) => {
     where: { id },
     data,
     include: {
-      PostCourseP: true,
-      PostMajor: true,
-      PostEducationLevel: true,
-      PostEducationInstitution: true,
-      PostJobPositionDetail: {
+      postCourse: true,
+      postMajor: true,
+      postEducationLevel: true,
+      postEducationInstitution: true,
+      postJobPositionDetail: {
         include: {
-          PostJobPositionDetailSkill: true,
+          postJobPositionDetailSkill: true,
         },
       },
     },
@@ -116,7 +115,7 @@ export const GetPost = async ({
         },
       },
 
-      PostJobPositionDetail: {
+      postJobPositionDetail: {
         select: {
           jp: {
             select: {
@@ -124,7 +123,7 @@ export const GetPost = async ({
               name: true,
             },
           },
-          PostJobPositionDetailSkill: {
+          postJobPositionDetailSkill: {
             select: {
               sk: {
                 select: {
@@ -162,13 +161,13 @@ export const GetPostById = async (id: string) => {
       isActive: true,
     },
     include: {
-      PostCourseP: true,
-      PostMajor: true,
-      PostEducationLevel: true,
-      PostEducationInstitution: true,
-      PostJobPositionDetail: {
+      postCourse: true,
+      postMajor: true,
+      postEducationLevel: true,
+      postEducationInstitution: true,
+      postJobPositionDetail: {
         include: {
-          PostJobPositionDetailSkill: true,
+          postJobPositionDetailSkill: true,
         },
       },
     },

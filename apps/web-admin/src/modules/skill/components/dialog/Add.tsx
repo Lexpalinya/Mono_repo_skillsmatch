@@ -18,7 +18,7 @@ export default function Add({ open }: ISkillProps) {
   const form = useForm<ISkillCreateDtoType>({
     defaultValues: {
       name: "", // Ensure name is always a string
-      visible: false,
+      visible: true,
     },
     resolver: zodResolver(SkillCreateDto),
   });

@@ -23,7 +23,7 @@ import {
 import trpcClient from "@/libs/trpc-client";
 import { extractChangedFields } from "@/utils/extractChangedFields";
 
-import { businessModelComboboxService } from "@/modules/service/combobox/business-model";
+import { businessModelComboboxService } from "@/service/combobox/business-model";
 import { usePost } from "@/modules/post/context/usePost";
 
 interface PostFormProps {

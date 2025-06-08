@@ -22,7 +22,7 @@ export default function Add({ open }: IEducationalInstitutionProps) {
   const form = useForm<IEducationalInstitutionCreateDtoType>({
     defaultValues: {
       name: "",
-      visible: false,
+      visible: true,
     },
     resolver: zodResolver(EducationalInstitutionCreateDto),
   });

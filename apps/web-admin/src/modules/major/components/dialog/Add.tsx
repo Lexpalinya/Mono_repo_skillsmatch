@@ -19,7 +19,7 @@ export default function Add({ open }: IMajorProps) {
   const form = useForm<IMajorCreateDtoType>({
     defaultValues: {
       name: "",
-      visible: false,
+      visible: true,
     },
     resolver: zodResolver(MajorCreateDto),
   });

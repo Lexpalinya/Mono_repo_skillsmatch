@@ -19,15 +19,13 @@ export default function Add({ open }: ICourseProps) {
   const form = useForm<ICourseCreateDtoType>({
     defaultValues: {
       name: "",
-      visible: false,
+      visible: true,
     },
     resolver: zodResolver(CourseCreateDto),
   });
 
   const onSubmit = async (values: ICourseCreateDtoType) => {
     try {
-      // TODO: upload image to s3
-
       await trpcClient.course.create.mutate({
         ...values,
       });

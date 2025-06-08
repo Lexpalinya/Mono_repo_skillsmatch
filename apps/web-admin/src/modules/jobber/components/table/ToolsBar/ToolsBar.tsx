@@ -1,4 +1,4 @@
-import { jobberStatusComboboxService } from "@/modules/service/combobox/jobber-status";
+import { jobberStatusComboboxService } from "@/service/combobox/jobber-status";
 import { DataTableToolbar, InfiniteCombobox } from "@skillsmatch/ui";
 import type { Table } from "@tanstack/react-table";
 

@@ -22,7 +22,7 @@ export default function Add({ open }: IJobberStatusProps) {
   const form = useForm<IJobberStatusCreateDtoType>({
     defaultValues: {
       name: "",
-      visible: false,
+      visible: true,
     },
     resolver: zodResolver(JobberStatusCreateDto),
   });
