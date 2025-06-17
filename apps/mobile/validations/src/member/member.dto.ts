@@ -1,55 +1,26 @@
-import { EUserRole } from "@prisma/client";
 import { z } from "zod";
+import { fileSchema } from "../file.dto";
 import { idDto } from "../id/id.dto";
 import {
   OffsetPaginateRequestDto,
   QueryDto,
   SearchDto,
 } from "../query/query.dto";
-import { fileSchema } from "../file.dto";
-
+const EUserRole = ["jobber", "admin", "company"] as const;
 
 export const MemberCreateDto = z.object({
   isActive: z.boolean().optional(),
   visible: z.boolean().optional(),
-
-  username: z.string({
-    required_error: "ກະລຸນາປ້ອນຊື່ຜູ້ໃຊ້",
-  }).min(1, { message: "ກະລຸນາປ້ອນຊື່ຜູ້ໃຊ້" }),
-
-  email: z.string({
-    required_error: "ກະລຸນາປ້ອນອີເມວ",
-  }).email({ message: "ອີເມວບໍ່ຖືກຕ້ອງ" }),
-
-  phoneNumber: z.string({
-    required_error: "ກະລຸນາປ້ອນເບີໂທ",
-  }).min(1, { message: "ກະລຸນາປ້ອນເບີໂທ" }),
-
-  password: z.string({
-    required_error: "ກະລຸນາປ້ອນລະຫັດຜ່ານ",
-  }).min(6, { message: "ລະຫັດຜ່ານຕ້ອງຢ່າງນ້ອຍ 6 ຕົວອັກສອນ" }),
-
-  profile: z
-    .string({ invalid_type_error: "URL ບໍ່ຖືກຕ້ອງ" })
-    .url({ message: "URL ບໍ່ຖືກຕ້ອງ" })
-    .optional()
-    .nullable(),
-
-  background: z
-    .string({ invalid_type_error: "URL ບໍ່ຖືກຕ້ອງ" })
-    .url({ message: "URL ບໍ່ຖືກຕ້ອງ" })
-    .optional()
-    .nullable(),
-
-  role: z.nativeEnum(EUserRole, {
-    errorMap: () => ({ message: "ກະລຸນາເລືອກບົດບາດ" }),
-  }),
-
+  username: z.string().min(1, "Username is required"),
+  email: z.string().email("Invalid email"),
+  phoneNumber: z.string().min(1, "Phone number is required"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  profile: z.string().url("Invalid URL").optional().nullable(),
+  background: z.string().url("Invalid URL").optional().nullable(),
+  role: z.enum(EUserRole),
   block: z.boolean().optional(),
   loginVersion: z.number().optional(),
 });
-
-
 
 export const MemberCreateFileDto = MemberCreateDto.omit({
   profile: true,
@@ -67,7 +38,7 @@ export const MemberUpdateDto = z.object({
   phoneNumber: z.string().optional(),
   profile: z.string().url("Invalid URL").optional().nullable(),
   background: z.string().url("Invalid URL").optional().nullable(),
-  role: z.nativeEnum(EUserRole).optional(),
+  role: z.enum(EUserRole).optional(),
   block: z.boolean().optional(),
 });
 export const MemberUpdateFileDto = MemberUpdateDto.omit({
@@ -79,8 +50,11 @@ export const MemberUpdateFileDto = MemberUpdateDto.omit({
 });
 
 export const MemberLoginDtoType = z.object({
-  phoneNumber: z.string(),
-  password: z.string().min(6),
+  phoneNumber: z
+    .string({ required_error: "ກະລຸນາປ້ອນເບີໂທ" }).min(1),
+  password: z
+    .string({ required_error: "ກະລຸນາປ້ອນລະຫັດຜ່ານ" })
+    .min(6, { message: "ລະຫັດຕ້ອງຢ່າງນ້ອຍ 6 ຕົວອັກສອນ" }),
 });
 export const MemberChangePasswordDtoType = z
   .object({
@@ -97,7 +71,7 @@ export const MemberAdminDto = z.object({
   email: z.string().email(),
   phoneNumber: z.string(),
   profile: z.string().url().optional().nullable(),
-  role: z.nativeEnum(EUserRole),
+  role: z.enum(EUserRole),
   block: z.boolean(),
   password: z.string().optional(),
   background: z.string().url().optional().nullable(),
@@ -113,7 +87,7 @@ export const MemberAdminViewDto = z.object({
   email: z.string().email(),
   phoneNumber: z.string(),
   profile: z.string().url().optional().nullable(),
-  role: z.nativeEnum(EUserRole),
+  role: z.enum(EUserRole),
   block: z.boolean(),
   password: z.string().optional(),
   background: z.string().url().optional().nullable(),
@@ -128,7 +102,7 @@ export const MemberAdminViewDto = z.object({
   updatedAt: z.date(),
 });
 export const MemberPaginationDto = QueryDto.extend({
-  role: z.nativeEnum(EUserRole).optional(),
+  role: z.enum(EUserRole).optional(),
 });
 
 export const MemberStatsDto = z.object({
@@ -141,7 +115,7 @@ export const MemberStatsDto = z.object({
 export const MemberComboboxDto = OffsetPaginateRequestDto.extend(
   SearchDto.shape
 ).extend({
-  role: z.nativeEnum(EUserRole).optional(),
+  role: z.enum(EUserRole).optional(),
 });
 
 // ✅ Export TypeScript types

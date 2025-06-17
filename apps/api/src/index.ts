@@ -3,10 +3,11 @@ import { cors } from "hono/cors";
 import appRouter from "./router";
 import { checkConnectionDATABASE } from "./lib/prisma-client";
 import { trpcServer } from "@hono/trpc-server";
+import { logger } from 'hono/logger'
 import memberRoute from "./modules/member/honoRouter";
 const app = new Hono();
 
-// app.use(logger());
+app.use('*', logger());
 // CORS middleware
 app.use(
   "*",
