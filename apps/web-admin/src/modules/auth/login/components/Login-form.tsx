@@ -36,7 +36,6 @@ export default function LoginForm({
     if (!res.ok) {
       throw new Error(data.message ?? "Login failed");
     }
-
     return data;
   };
   const onSubmit = async () => {

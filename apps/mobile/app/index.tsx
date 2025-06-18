@@ -7,5 +7,5 @@ export default function IndexPage() {
 
   if (user === undefined) return null;
 
-  return <Redirect href={user ? "/(app)/search" : "/auth/login"} />;
+  return <Redirect href={!user ? "/(app)/home" : "/auth/login"} />;
 }

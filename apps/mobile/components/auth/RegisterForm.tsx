@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import BaseButton from "../button";
 import { BaseTextInput } from "../input";
-import trpcClient from "@/libs/trpc-client";
+import { useAuthStore } from "@/store/authStore";
 const laErrorMessageMap: Record<string, string> = {
   "Username is required": "ກະລຸນາປ້ອນຊື່ຜູ້ໃຊ້",
   "Invalid email": "ອີເມວບໍ່ຖືກຕ້ອງ",
@@ -18,6 +18,7 @@ const translateError = (message: string): string => {
   return laErrorMessageMap[message] ?? message;
 };
 export default function RegisterForm() {
+  const { setUser } = useAuthStore();
   const [role, setRole] = useState<"jobber" | "company">("jobber");
 
   const { setValue, control, formState, handleSubmit, setError } =
@@ -30,9 +31,22 @@ export default function RegisterForm() {
 
   const register = async (dataInput: IMemberCreateDtoType) => {
     try {
-      await trpcClient.auth.register.mutate(dataInput);
+      const res = await fetch("http://192.168.100.25:3000/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(dataInput),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message ?? "Login failed");
+      }
+      setUser(data.data);
     } catch (error: any) {
-      console.log("error :>> ", error);
       const message = error?.data?.stack as string;
 
       if (message?.includes("member record already exists where email =")) {
@@ -57,6 +71,7 @@ export default function RegisterForm() {
       }
       if (error.data?.zodError?.fieldErrors) {
         const fieldErrors = error.data.zodError.fieldErrors;
+        console.log("fieldErrors :>> ", fieldErrors);
         for (const key in fieldErrors) {
           const messages = fieldErrors[key];
           if (messages && messages.length > 0) {

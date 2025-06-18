@@ -1,30 +1,40 @@
 // stores/useAuthStore.ts
 import { create } from "zustand";
-
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 type Role = "admin" | "jobber" | "company";
 
-type User = {
+export type User = {
   id: string;
-  name: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  profile: string | null;
+  background: string | null;
   role: Role;
+  isActive: boolean;
+  visible: boolean;
+  block: boolean;
+  loginVersion: number;
+  createdAt: string;
+  updatedAt: string;
 };
 
 type AuthStore = {
   user: User | null;
-  isLoading: boolean;
-  error: string | null;
-  login: (user: User) => void;
+  setUser: (user: User) => void;
   logout: () => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
 };
-
-export const useAuthStore = create<AuthStore>((set) => ({
-  user: null,
-  isLoading: false,
-  error: null,
-  login: (user) => set({ user, isLoading: false, error: null }),
-  logout: () => set({ user: null }),
-  setLoading: (loading) => set({ isLoading: loading }),
-  setError: (error) => set({ error }),
-}));
+export const useAuthStore = create<AuthStore>()(
+  persist(
+    (set) => ({
+      user: null,
+      setUser: (user) => set({ user }),
+      logout: () => set({ user: null }),
+    }),
+    {
+      name: 'auth-storage',
+      storage: createJSONStorage(() => AsyncStorage),
+    }
+  )
+);

@@ -1,6 +1,7 @@
 import BaseButton from "@/components/button";
 import { BaseTextInput } from "@/components/input";
 import trpcClient from "@/libs/trpc-client";
+import { useAuthStore } from "@/store/authStore";
 import { IMemberLoginDtoType } from "@/validations/src";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
@@ -16,8 +17,11 @@ import {
 
 export default function Login() {
   const router = useRouter();
+  const { setUser } = useAuthStore();
   const { control, formState, handleSubmit, setError } =
-    useForm<IMemberLoginDtoType>();
+    useForm<IMemberLoginDtoType>({
+      defaultValues: { phoneNumber: "02028490166", password: "123456" },
+    });
   const login = async (dataInput: IMemberLoginDtoType) => {
     try {
       const res = await fetch("http://192.168.100.25:3000/api/login", {
@@ -34,10 +38,10 @@ export default function Login() {
       if (!res.ok) {
         throw new Error(data.message ?? "Login failed");
       }
+      setUser(data.data);
 
       return data;
     } catch (error: any) {
-      console.log("error :>> ", error);
       const message = error.message ?? "";
 
       const errorMap: Record<string, () => void> = {
@@ -57,7 +61,6 @@ export default function Login() {
           alert("ບັນຊີຂອງທ່ານຖືກລະງັບການໃຊ້ງານ"),
       };
 
-      // ✅ วน loop เช็กข้อความ error และเรียก action ที่เกี่ยวข้อง
       for (const key in errorMap) {
         if (message.includes(key)) {
           errorMap[key]();
@@ -68,50 +71,55 @@ export default function Login() {
   };
 
   return (
-    <View className="flex-1 items-center justify-center ">
-      <Image
-        source={{
-          uri: "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        }}
-        style={{ width: 150, height: 150, marginBottom: 10 }}
-        contentFit="cover"
-        transition={300}
-      />
-      <View className="w-full items-center " style={{ width: "85%" }}>
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: 600,
-            color: "#557FFA",
-            marginBottom: 10,
+    <ScrollView>
+      <View
+        className="flex-1 items-center justify-center h-full "
+        style={{ paddingVertical: "30%" }}
+      >
+        <Image
+          source={{
+            uri: "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
           }}
-        >
-          ເຂົ້າສູ່ລະບົບ
-        </Text>
-        <Text className="font-medium ">
-          ກະລຸນາເຂົ້າສູ່ບັນຊີຂອງທ່ານເພື່ອນຳໃຊ້ແອັບ
-        </Text>
-        <BaseTextInput control={control} name="phoneNumber" label="ເບີໂທ" />
-        <BaseTextInput
-          control={control}
-          name="password"
-          label="ລະຫັດຜ່ານ"
-          secureTextEntry={true}
+          style={{ width: 150, height: 150, marginBottom: 50 }}
+          contentFit="cover"
+          transition={300}
         />
-        <BaseButton
-          className=""
-          title="ເຂົ້າສຸ່ລະບົບ"
-          onPress={handleSubmit(login)}
-          isLoading={formState.isSubmitting}
-        />
-        <View style={styles.container}>
-          <Text style={styles.text}>ທ່ານຍັງບໍ່ມີ ບັນຊີແມ່ນບໍ?</Text>
-          <TouchableOpacity onPress={() => router.push("/auth/register")}>
-            <Text style={styles.buttomText}>ລົງທະບຽນ</Text>
-          </TouchableOpacity>
+        <View className="w-full items-center " style={{ width: "85%" }}>
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: 600,
+              color: "#557FFA",
+              marginBottom: 20,
+            }}
+          >
+            ເຂົ້າສູ່ລະບົບ
+          </Text>
+          <Text className="font-medium ">
+            ກະລຸນາເຂົ້າສູ່ບັນຊີຂອງທ່ານເພື່ອນຳໃຊ້ແອັບ
+          </Text>
+          <BaseTextInput control={control} name="phoneNumber" label="ເບີໂທ" />
+          <BaseTextInput
+            control={control}
+            name="password"
+            label="ລະຫັດຜ່ານ"
+            secureTextEntry={true}
+          />
+          <BaseButton
+            className=""
+            title="ເຂົ້າສຸ່ລະບົບ"
+            onPress={handleSubmit(login)}
+            isLoading={formState.isSubmitting}
+          />
+          <View style={styles.container}>
+            <Text style={styles.text}>ທ່ານຍັງບໍ່ມີ ບັນຊີແມ່ນບໍ?</Text>
+            <TouchableOpacity onPress={() => router.push("/auth/register")}>
+              <Text style={styles.buttomText}>ລົງທະບຽນ</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
