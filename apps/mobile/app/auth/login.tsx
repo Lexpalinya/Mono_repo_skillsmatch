@@ -39,8 +39,7 @@ export default function Login() {
         throw new Error(data.message ?? "Login failed");
       }
       setUser(data.data);
-
-      return data;
+      router.replace("/(app)/home");
     } catch (error: any) {
       const message = error.message ?? "";
 

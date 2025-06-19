@@ -4,21 +4,14 @@ import { useForm } from "react-hook-form";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import BaseButton from "../button";
 import { BaseTextInput } from "../input";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthStore } from "@/store/authStore";
-const laErrorMessageMap: Record<string, string> = {
-  "Username is required": "ກະລຸນາປ້ອນຊື່ຜູ້ໃຊ້",
-  "Invalid email": "ອີເມວບໍ່ຖືກຕ້ອງ",
-  Required: "ກະລຸນາປ້ອນຂໍ້ມູນ",
-  "Password must be at least 6 characters": "ລະຫັດຜ່ານຕ້ອງຢ່າງນ້ອຍ 6 ຕົວອັກສອນ",
-  "Phone number is required": "ກະລຸນາປ້ອນເບີໂທ",
-  "Invalid URL": "URL ບໍ່ຖືກຕ້ອງ",
-  "Expected string, received undefined": "ກະລຸນາປ້ອນຂໍ້ມູນ (string)",
-};
-const translateError = (message: string): string => {
-  return laErrorMessageMap[message] ?? message;
-};
+import { MemberCreateDto } from "@skillsmatch/dto";
+import { router } from "expo-router";
+
 export default function RegisterForm() {
   const { setUser } = useAuthStore();
+
   const [role, setRole] = useState<"jobber" | "company">("jobber");
 
   const { setValue, control, formState, handleSubmit, setError } =
@@ -27,10 +20,12 @@ export default function RegisterForm() {
         username: "",
         role: "jobber",
       },
+      resolver: zodResolver(MemberCreateDto),
     });
 
   const register = async (dataInput: IMemberCreateDtoType) => {
     try {
+      router.replace("/(app)/home");
       const res = await fetch("http://192.168.100.25:3000/api/register", {
         method: "POST",
         headers: {
@@ -46,41 +41,33 @@ export default function RegisterForm() {
         throw new Error(data.message ?? "Login failed");
       }
       setUser(data.data);
+      router.replace("/(app)/home");
     } catch (error: any) {
-      const message = error?.data?.stack as string;
-
-      if (message?.includes("member record already exists where email =")) {
-        setError("email", {
-          type: "server",
-          message: "ອີເມວນີ້ໄດ້ຖືກນໍາໃຊ້ແລ້ວ",
-        });
-      }
-      if (
-        message?.includes("member record already exists where phoneNumber =")
-      ) {
-        setError("phoneNumber", {
-          type: "server",
-          message: "ເບີໂທນີ້ໄດ້ຖືກນໍາໃຊ້ແລ້ວ",
-        });
-      }
-      if (message?.includes("member record already exists where username =")) {
-        setError("username", {
-          type: "server",
-          message: "ຊື່ນີ້ໄດ້ຖືກນຳໃໍຊ້ແລ້ວ",
-        });
-      }
-      if (error.data?.zodError?.fieldErrors) {
-        const fieldErrors = error.data.zodError.fieldErrors;
-        console.log("fieldErrors :>> ", fieldErrors);
-        for (const key in fieldErrors) {
-          const messages = fieldErrors[key];
-          if (messages && messages.length > 0) {
-            const translatedMessage = translateError(messages[0]);
-            setError(key as keyof IMemberCreateDtoType, {
-              type: "server",
-              message: translatedMessage,
-            });
-          }
+      const message = error?.message as string;
+      const errorMap: Record<string, () => void> = {
+        "member record already exists where email =": () => {
+          setError("email", {
+            type: "server",
+            message: "ອີເມວນີ້ໄດ້ຖືກນໍາໃຊ້ແລ້ວ",
+          });
+        },
+        "member record already exists where phoneNumber =": () => {
+          setError("phoneNumber", {
+            type: "server",
+            message: "ເບີໂທນີ້ໄດ້ຖືກນໍາໃຊ້ແລ້ວ",
+          });
+        },
+        "member record already exists where username =": () => {
+          setError("username", {
+            type: "server",
+            message: "ຊື່ນີ້ໄດ້ຖືກນຳໃໍຊ້ແລ້ວ",
+          });
+        },
+      };
+      for (const key in errorMap) {
+        if (message.includes(key)) {
+          errorMap[key]();
+          break;
         }
       }
     }
