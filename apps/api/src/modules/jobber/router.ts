@@ -2,6 +2,7 @@ import {
   CreateJobber,
   DeleteJobber,
   GetJobber,
+  GetJobberByMemberId,
   GetJobbers,
   GetStatsJobber,
   UpdateJobber,
@@ -25,6 +26,11 @@ export const jobberRouter = t.router({
     .input(idDto)
     .query(async ({ input }: { input: IIdDtoType }) => {
       return GetJobber(input.id);
+    }),
+  getByMemberId: t.procedure
+    .input(idDto)
+    .query(async ({ input }: { input: IIdDtoType }) => {
+      return GetJobberByMemberId(input.id);
     }),
 
   create: t.procedure

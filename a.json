@@ -1,0 +1,23 @@
+{
+  "bmId": "c26ec274-ec51-4a13-998f-17ca24ecc351",
+  "createdAt": "2025-06-21T17:32:29.221Z",
+  "district": "343434",
+  "dob": "2025-06-10T00:00:00.000Z",
+  "docImage": [
+    "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252Fmobile-cbffc890-4ce6-42c0-9c02-0e5a02ec5fb1/ImagePicker/2872a1d7-987b-40e3-9dd4-9bc9a105c5b8.jpeg",
+    "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252Fmobile-cbffc890-4ce6-42c0-9c02-0e5a02ec5fb1/ImagePicker/2a742abc-34ed-4224-9848-9a5b87e6e0dc.jpeg",
+    "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252Fmobile-cbffc890-4ce6-42c0-9c02-0e5a02ec5fb1/ImagePicker/e6b40b93-3383-46f8-9b25-8c3bcd2cbc7d.jpeg"
+  ],
+  "id": "ae01de9c-de6c-4a5d-9315-cfa53dc32331",
+  "isActive": true,
+  "isVerify": false,
+  "memberId": "f9f6c46c-287b-4b2f-b521-33fae05550e1",
+  "name": "adf",
+  "owner_firstname": "dfdfdf",
+  "owner_lastname": "dfsdfsdf",
+  "province": "43434",
+  "reason": null,
+  "taxPayId": "23232323",
+  "updatedAt": "2025-06-21T17:32:29.221Z",
+  "village": "33343434"
+}

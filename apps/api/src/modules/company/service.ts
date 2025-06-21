@@ -228,6 +228,20 @@ export const GetCompanyById = async (id: string) => {
   return { ...company, postCount: companyPost };
 };
 
+export const GetCompanyByMemberId = async (id: string) => {
+  try {
+    const company = await prisma.company.findFirst({
+      where: {
+        memberId: id,
+        isActive: true,
+      },
+
+    });
+    return company
+  } catch (error) {
+    console.log('error', error)
+  }
+};
 export const GetStatsCompany = async (): Promise<ICompanyStatusDtoType> => {
   try {
     const [total, active, verified, status] = await Promise.all([

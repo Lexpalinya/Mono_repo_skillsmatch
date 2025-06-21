@@ -8,23 +8,51 @@ import { ensureRecordExists, ensureUniqueRecord } from "@utils/ensure";
 import prisma from "@lib/prisma-client";
 import { queryTable } from "@utils/pagination";
 import { Prisma } from "@prisma/client";
+import { t } from "@lib/trpc";
+import { TRPCError } from "@trpc/server";
 
 export const CreateJobber = async (data: IJobberCreateDtoType) => {
-  await ensureUniqueRecord({
-    table: "company",
-    column: "memberId",
-    value: data.memberId,
-  });
-  await ensureUniqueRecord({
-    table: "jobber",
-    column: "memberId",
-    value: data.memberId,
-  });
-  const jobber = await prisma.jobber.create({
-    data,
-  });
+  try {
 
-  return jobber;
+    await ensureUniqueRecord({
+      table: "company",
+      column: "memberId",
+      value: data.memberId,
+    });
+    await ensureUniqueRecord({
+      table: "jobber",
+      column: "memberId",
+      value: data.memberId,
+    });
+    const jobber = await prisma.jobber.create({
+      data,
+    });
+
+    return jobber;
+  } catch (error) {
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "memberId already exists in jobber or company",
+
+        });
+      }
+      if (error.code === "P2003") {
+
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "memberId not found in the system",
+
+        });
+      }
+
+    }
+    throw error;
+
+  }
 };
 
 export const UpdateJobber = async (id: string, data: IJobberUpdateDtoType) => {
@@ -85,6 +113,21 @@ export const GetJobber = async (id: string) => {
 
     return jobber;
   } catch (error) {
+    console.error("Error fetching jobber:", error);
+    throw error;
+  }
+};
+export const GetJobberByMemberId = async (id: string) => {
+  try {
+    const jobber = await prisma.jobber.findFirst({
+      where: {
+        memberId: id,
+        isActive: true,
+      },
+    });
+    return jobber;
+  } catch (error) {
+    console.error("Error fetching jobber:", error);
     throw error;
   }
 };

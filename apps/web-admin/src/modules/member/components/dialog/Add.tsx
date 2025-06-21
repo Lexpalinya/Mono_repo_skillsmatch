@@ -24,7 +24,7 @@ export default function Add({ open }: IMemberProps) {
   const form = useForm<IMemberFileCreateDtoType>({
     resolver: zodResolver(MemberCreateFileDto),
   });
-
+  console.log(form.watch());
   const onSubmit = async (values: IMemberFileCreateDtoType) => {
     try {
       if (values.profile instanceof File) {
@@ -34,6 +34,7 @@ export default function Add({ open }: IMemberProps) {
       if (values.background instanceof File) {
         values.background = await uploadImageToCloudinary(values.background);
       }
+
       form.setValue("profile", values.profile);
       form.setValue("background", values.background);
 

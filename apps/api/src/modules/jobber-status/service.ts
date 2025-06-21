@@ -137,6 +137,7 @@ export const GetJobberStatusCombobox = async (
         name: "asc",
       },
     });
+
     return items.data.map((item: { id: string; name: string }) => ({
       label: item.name,
       value: item.id,

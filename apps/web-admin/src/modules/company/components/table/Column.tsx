@@ -44,6 +44,7 @@ export const companyColumns: ColumnDef<ICompanyAdminDataType>[] = [
     ),
     cell: ({ row }) => {
       const data = row.original;
+      console.log("data :>> ", data.member);
       return (
         <div className="flex items-center gap-2">
           <FullImageViewer

@@ -12,6 +12,7 @@ import {
   DeleteCompany,
   GetCompany,
   GetCompanyById,
+  GetCompanyByMemberId,
   GetCompanyCombobox,
   GetStatsCompany,
   UpdateCompany,
@@ -27,7 +28,12 @@ export const companyRouter = t.router({
     .query(async ({ input }: { input: IIdDtoType }) => {
       return GetCompanyById(input.id);
     }),
-
+  getByMemberId:
+    t.procedure
+      .input(idDto)
+      .query(async ({ input }: { input: IIdDtoType }) => {
+        return GetCompanyByMemberId(input.id);
+      }),
   create: t.procedure.input(CompanyCreateDto).mutation(async ({ input }) => {
     return CreateCompany(input);
   }),
