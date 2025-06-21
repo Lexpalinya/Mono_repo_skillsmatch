@@ -1,7 +1,8 @@
 import HomeAppBar from "@/components/components/HomeAppBar";
 import HomeBody from "@/components/components/HomeBody";
 import HomeImageSlider from "@/components/components/HomeImageSlider";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const images = [
   "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
@@ -10,16 +11,16 @@ const images = [
   "https://gratisography.com/wp-content/uploads/2024/10/gratisography-halloween-cat-800x525.jpg",
 ];
 export default function HomeScreen() {
-  // เรียกใช้เมื่อ Component โหลด
-
   return (
-    <View style={styles.stlyesView}>
-      <HomeAppBar />
-      <ScrollView style={styles.scroll}>
-        <HomeImageSlider images={images} />
-        <HomeBody />
-      </ScrollView>
-    </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <View style={styles.stlyesView}>
+        <HomeAppBar />
+        <ScrollView style={styles.scroll}>
+          <HomeImageSlider images={images} />
+          <HomeBody />
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
 

@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
 
-export default function profileLayout() {
+export default function jobberRegisterLayout() {
   return <Stack screenOptions={{ headerShown: false }} />;
 }

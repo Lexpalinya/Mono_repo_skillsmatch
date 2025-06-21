@@ -8,6 +8,9 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { useForm } from "react-hook-form";
 import {
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -70,55 +73,78 @@ export default function Login() {
   };
 
   return (
-    <ScrollView>
-      <View
-        className="flex-1 items-center justify-center h-full "
-        style={{ paddingVertical: "30%" }}
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
-        <Image
-          source={{
-            uri: "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          }}
-          style={{ width: 150, height: 150, marginBottom: 50 }}
-          contentFit="cover"
-          transition={300}
-        />
-        <View className="w-full items-center " style={{ width: "85%" }}>
-          <Text
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View
+            // className="flex-1 items-center justify-center h-full "
             style={{
-              fontSize: 24,
-              fontWeight: 600,
-              color: "#557FFA",
-              marginBottom: 20,
+              paddingVertical: "30%",
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            ເຂົ້າສູ່ລະບົບ
-          </Text>
-          <Text className="font-medium ">
-            ກະລຸນາເຂົ້າສູ່ບັນຊີຂອງທ່ານເພື່ອນຳໃຊ້ແອັບ
-          </Text>
-          <BaseTextInput control={control} name="phoneNumber" label="ເບີໂທ" />
-          <BaseTextInput
-            control={control}
-            name="password"
-            label="ລະຫັດຜ່ານ"
-            secureTextEntry={true}
-          />
-          <BaseButton
-            className=""
-            title="ເຂົ້າສຸ່ລະບົບ"
-            onPress={handleSubmit(login)}
-            isLoading={formState.isSubmitting}
-          />
-          <View style={styles.container}>
-            <Text style={styles.text}>ທ່ານຍັງບໍ່ມີ ບັນຊີແມ່ນບໍ?</Text>
-            <TouchableOpacity onPress={() => router.push("/auth/register")}>
-              <Text style={styles.buttomText}>ລົງທະບຽນ</Text>
-            </TouchableOpacity>
+            <Image
+              source={{
+                uri: "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              }}
+              style={{ width: 150, height: 150, marginBottom: 50 }}
+              contentFit="cover"
+              transition={300}
+            />
+            <View className="w-full items-center " style={{ width: "85%" }}>
+              <Text
+                style={{
+                  fontSize: 24,
+                  fontWeight: 600,
+                  color: "#557FFA",
+                  marginBottom: 20,
+                }}
+              >
+                ເຂົ້າສູ່ລະບົບ
+              </Text>
+              <Text className="font-medium ">
+                ກະລຸນາເຂົ້າສູ່ບັນຊີຂອງທ່ານເພື່ອນຳໃຊ້ແອັບ
+              </Text>
+              <BaseTextInput
+                control={control}
+                name="phoneNumber"
+                label="ເບີໂທ"
+              />
+              <BaseTextInput
+                control={control}
+                name="password"
+                label="ລະຫັດຜ່ານ"
+                secureTextEntry={true}
+              />
+              <BaseButton
+                className=""
+                title="ເຂົ້າສຸ່ລະບົບ"
+                onPress={handleSubmit(login)}
+                isLoading={formState.isSubmitting}
+              />
+              <View style={styles.container}>
+                <Text style={styles.text}>ທ່ານຍັງບໍ່ມີ ບັນຊີແມ່ນບໍ?</Text>
+                <TouchableOpacity
+                  onPress={() => router.push("/jobber-register")}
+                >
+                  <Text style={styles.buttomText}>ລົງທະບຽນ</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-        </View>
-      </View>
-    </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 

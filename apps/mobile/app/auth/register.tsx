@@ -2,17 +2,36 @@ import RegisterBottom from "@/components/auth/RegisterBottom";
 import RegisterForm from "@/components/auth/RegisterForm";
 import RegisterTittle from "@/components/auth/RegisterTittle";
 import React from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 
 export default function register() {
   return (
-    <ScrollView style={{ height: "100%" }}>
-      <View style={styles.stlyesView}>
-        <RegisterTittle />
-        <RegisterForm />
-        <RegisterBottom />
-      </View>
-    </ScrollView>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.stlyesView}>
+            <RegisterTittle />
+            <RegisterForm />
+            <RegisterBottom />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
