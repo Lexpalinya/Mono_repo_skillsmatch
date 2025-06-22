@@ -12,6 +12,7 @@ import { skillRouter } from "./modules/skill/router";
 import { companyRouter } from "./modules/company/router";
 import { postRouter } from "./modules/post/router";
 import { reviewRouter } from "./modules/review-application/router";
+import { jobberProfileRoute } from "./modules/jobber-profile/route";
 export const appRouter = router({
   businessModel: businessModelRouter,
   course: courseRouter,
@@ -27,6 +28,7 @@ export const appRouter = router({
   company: companyRouter,
   post: postRouter,
   review: reviewRouter,
+  jobberProfile: jobberProfileRoute,
 });
 
 export default appRouter;

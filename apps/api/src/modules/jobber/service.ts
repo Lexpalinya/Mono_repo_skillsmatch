@@ -10,6 +10,7 @@ import { queryTable } from "@utils/pagination";
 import { Prisma } from "@prisma/client";
 import { t } from "@lib/trpc";
 import { TRPCError } from "@trpc/server";
+import { updateUsageCount } from "./utils/updateUsageCount";
 
 export const CreateJobber = async (data: IJobberCreateDtoType) => {
   try {
@@ -24,9 +25,21 @@ export const CreateJobber = async (data: IJobberCreateDtoType) => {
       column: "memberId",
       value: data.memberId,
     });
-    const jobber = await prisma.jobber.create({
-      data,
-    });
+
+    const jobber = await
+      prisma.$transaction(async (tx) => {
+        const jobberData = await tx.jobber.create({
+          data,
+        })
+
+
+        await updateUsageCount({
+          tx, model: "jobberStatus",
+          countField: "jobberUsageCount", foreignKeyId: jobberData.statusId, jobberField: "statusId"
+        })
+        return jobberData
+
+      })
 
     return jobber;
   } catch (error) {
@@ -64,12 +77,27 @@ export const UpdateJobber = async (id: string, data: IJobberUpdateDtoType) => {
     });
   }
 
-  await ensureRecordExists({ table: "jobber", column: "id", value: id });
+  const oldJobber = await ensureRecordExists({ table: "jobber", column: "id", value: id });
 
-  const jobber = await prisma.jobber.update({
-    where: { id },
-    data,
-  });
+  const jobber = await prisma.$transaction(async (tx) => {
+
+    const jobberData = await tx.jobber.update({
+      where: { id },
+      data,
+    });
+    await updateUsageCount({
+      tx, model: "jobberStatus",
+      countField: "jobberUsageCount", foreignKeyId: jobberData.statusId, jobberField: "statusId"
+    })
+
+    await updateUsageCount({
+      tx, model: "jobberStatus",
+      countField: "jobberUsageCount", foreignKeyId: oldJobber.statusId, jobberField: "statusId"
+    })
+
+
+    return jobberData
+  })
 
   return jobber;
 };

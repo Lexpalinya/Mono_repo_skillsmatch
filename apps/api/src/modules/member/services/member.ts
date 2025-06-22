@@ -55,8 +55,10 @@ export const UpdateMember = async (
   data: IMemberUpdateDtoType & { id: string }
 ) => {
   try {
+
     if (data.password) {
       data.password = await HashedPassword(data.password);
+      console.log('first----------------------------------------------------------',)
     }
     const member = await prisma.member.update({
       where: { id: data.id },

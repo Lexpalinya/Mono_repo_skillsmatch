@@ -49,9 +49,11 @@ export default function Edit({ open, currentRow }: IMemberCurrentRowProps) {
       form.setValue("profile", values.profile);
       form.setValue("background", values.background);
 
+      if (changedFields.password?.includes("$2b$10$"))
+        delete changedFields.password;
       await trpcClient.member.update.mutate({
         id: currentRow.id,
-        ...values,
+        ...changedFields,
         profile: typeof values.profile === "string" ? values.profile : null,
         background:
           typeof values.background === "string" ? values.background : null,

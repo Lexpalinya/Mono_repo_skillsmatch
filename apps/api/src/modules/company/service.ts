@@ -9,6 +9,7 @@ import {
   ICompanyStatusDtoType,
   ICompanyUpdateDtoType,
 } from "@skillsmatch/dto";
+import { updateUsageCount } from "./utils/updateUsageCount";
 
 export const CreateCompany = async (data: ICompanyCreateDtoType) => {
   await ensureUniqueRecord({
@@ -21,8 +22,21 @@ export const CreateCompany = async (data: ICompanyCreateDtoType) => {
     column: "taxPayId",
     value: data.taxPayId,
   });
+  const company = await
+    prisma.$transaction(async (tx) => {
+      const companyData = await tx.company.create({
+        data,
+      })
 
-  const company = await prisma.company.create({ data });
+
+      await updateUsageCount({
+        tx, model: "businessModel",
+        countField: "companyUsageCount", foreignKeyId: companyData.bmId, companyField: "bmId"
+      })
+      return companyData
+
+    })
+
   return company;
 };
 
@@ -45,12 +59,25 @@ export const UpdateCompany = async (
     });
   }
 
-  await ensureRecordExists({ table: "company", column: "id", value: id });
+  const oldCompany = await ensureRecordExists({ table: "company", column: "id", value: id });
 
-  const company = await prisma.company.update({
-    where: { id },
-    data,
-  });
+  const company = await prisma.$transaction(async (tx) => {
+
+    const companyData = await tx.company.update({
+      where: { id },
+      data,
+    });
+
+    await updateUsageCount({
+      tx, model: "businessModel",
+      countField: "companyUsageCount", foreignKeyId: companyData.bmId, companyField: "bmId"
+    })
+    await updateUsageCount({
+      tx, model: "businessModel",
+      countField: "companyUsageCount", foreignKeyId: oldCompany.bmId, companyField: "bmId"
+    })
+    return companyData
+  })
   return company;
 };
 

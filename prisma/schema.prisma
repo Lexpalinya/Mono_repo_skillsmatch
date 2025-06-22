@@ -55,27 +55,29 @@ model Member {
 }
 
 model Course {
-  id               String       @id @default(uuid()) @db.VarChar(36)
-  isActive         Boolean      @default(true)
-  visible          Boolean      @default(false)
+  id               String          @id @default(uuid()) @db.VarChar(36)
+  isActive         Boolean         @default(true)
+  visible          Boolean         @default(false)
   name             String
-  postUsageCount   Int          @default(0)
-  jobberUsageCount Int          @default(0)
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  postUsageCount   Int             @default(0)
+  jobberUsageCount Int             @default(0)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
   PostCourse       PostCourse[]
+  JobberProfile    JobberProfile[]
 }
 
 model Major {
-  id               String      @id @default(uuid()) @db.VarChar(36)
-  isActive         Boolean     @default(true)
-  visible          Boolean     @default(false)
+  id               String          @id @default(uuid()) @db.VarChar(36)
+  isActive         Boolean         @default(true)
+  visible          Boolean         @default(false)
   name             String
-  postUsageCount   Int         @default(0)
-  jobberUsageCount Int         @default(0)
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
+  postUsageCount   Int             @default(0)
+  jobberUsageCount Int             @default(0)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
   PostMajor        PostMajor[]
+  JobberProfile    JobberProfile[]
 }
 
 model EducationalInstitution {
@@ -88,6 +90,7 @@ model EducationalInstitution {
   createdAt                DateTime                   @default(now())
   updatedAt                DateTime                   @updatedAt
   PostEducationInstitution PostEducationInstitution[]
+  JobberProfile            JobberProfile[]
 }
 
 model EducationLevel {
@@ -100,6 +103,7 @@ model EducationLevel {
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
   PostEducationLevel PostEducationLevel[]
+  JobberProfile      JobberProfile[]
 }
 
 model Skill {
@@ -112,6 +116,7 @@ model Skill {
   createdAt                  DateTime                     @default(now())
   updatedAt                  DateTime                     @updatedAt
   PostJobPositionDetailSkill PostJobPositionDetailSkill[]
+  JobberSkill                JobberSkill[]
 }
 
 model JobPosition {
@@ -149,31 +154,66 @@ model JobberStatus {
 }
 
 model Jobber {
-  id          String        @id @default(uuid()) @db.VarChar(36)
-  isVerify    Boolean       @default(false)
-  isActive    Boolean       @default(true)
-  statusId    String
-  status      JobberStatus  @relation(fields: [statusId], references: [id])
-  memberId    String
-  member      Member        @relation(fields: [memberId], references: [id])
-  gender      EGender
-  firstName   String
-  lastName    String
-  birthday    DateTime      @db.Date
-  nationality String
-  ethnicity   String
-  religion    String
-  bProvince   String
-  bDistrict   String
-  bVillage    String
-  cProvince   String
-  cDistrict   String
-  cVillage    String
-  docImage    String[]
-  reason      String?       @db.Text
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  ApplyForJob ApplyForJob[]
+  id            String         @id @default(uuid()) @db.VarChar(36)
+  isVerify      Boolean        @default(false)
+  isActive      Boolean        @default(true)
+  statusId      String
+  status        JobberStatus   @relation(fields: [statusId], references: [id])
+  memberId      String
+  member        Member         @relation(fields: [memberId], references: [id])
+  gender        EGender
+  firstName     String
+  lastName      String
+  birthday      DateTime       @db.Date
+  nationality   String
+  ethnicity     String
+  religion      String
+  bProvince     String
+  bDistrict     String
+  bVillage      String
+  cProvince     String
+  cDistrict     String
+  cVillage      String
+  docImage      String[]
+  reason        String?        @db.Text
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  ApplyForJob   ApplyForJob[]
+  JobberProfile JobberProfile?
+  JobberSkill   JobberSkill[]
+}
+
+model JobberProfile {
+  id                      String                 @id @default(uuid()) @db.VarChar(36)
+  jId                     String                 @unique
+  elId                    String
+  eiId                    String
+  mId                     String
+  cId                     String
+  gpa                     Float
+  drivingCardType         String?
+  more                    String                 @db.Text
+  startSalary             Float?
+  currency                ECurrency              @default(KIP)
+  workDay                 String[]
+  checkInTime             DateTime?              @db.Time()
+  checkOutTime            DateTime?              @db.Time()
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
+  educationLevels         EducationLevel         @relation(fields: [elId], references: [id])
+  eductaionalInstitutions EducationalInstitution @relation(fields: [eiId], references: [id])
+  major                   Major                  @relation(fields: [mId], references: [id])
+  course                  Course                 @relation(fields: [cId], references: [id])
+  jobber                  Jobber                 @relation(fields: [jId], references: [id])
+}
+
+model JobberSkill {
+  jId    String
+  sId    String
+  jobber Jobber @relation(fields: [jId], references: [id])
+  skill  Skill  @relation(fields: [sId], references: [id])
+
+  @@id([jId, sId])
 }
 
 model Company {
