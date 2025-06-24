@@ -11,7 +11,7 @@ export default function BusinessModelPage() {
   return (
     <BusinessModelProvider>
       <BusinessModelContent />
-      <BusinessModelDialog/>
+      <BusinessModelDialog />
     </BusinessModelProvider>
   );
 }
@@ -21,9 +21,9 @@ const BusinessModelContent = () => {
     <Main>
       <div className="flex items-center justify-between ">
         <div>
-          <h1 className="text-2xl font-semibold">Skills Management</h1>
+          <h1 className="text-2xl font-semibold">Business Model Management</h1>
           <p className="text-sm text-muted-foreground">
-            Create and manage skills for job positions
+            Create and manage Business Models for company
           </p>
         </div>
         <AddButton />

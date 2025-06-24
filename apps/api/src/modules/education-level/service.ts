@@ -172,6 +172,7 @@ export const GetEducationLevelCombobox = async (
         name: "asc",
       },
     });
+    console.log('items', items)
     return items.data.map((item: { id: string; name: string }) => ({
       label: item.name,
       value: item.id,

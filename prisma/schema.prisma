@@ -201,7 +201,7 @@ model JobberProfile {
   createdAt               DateTime               @default(now())
   updatedAt               DateTime               @updatedAt
   educationLevels         EducationLevel         @relation(fields: [elId], references: [id])
-  eductaionalInstitutions EducationalInstitution @relation(fields: [eiId], references: [id])
+  educationalInstitutions EducationalInstitution @relation(fields: [eiId], references: [id])
   major                   Major                  @relation(fields: [mId], references: [id])
   course                  Course                 @relation(fields: [cId], references: [id])
   jobber                  Jobber                 @relation(fields: [jId], references: [id])

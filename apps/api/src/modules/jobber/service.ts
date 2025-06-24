@@ -8,7 +8,7 @@ import { ensureRecordExists, ensureUniqueRecord } from "@utils/ensure";
 import prisma from "@lib/prisma-client";
 import { queryTable } from "@utils/pagination";
 import { Prisma } from "@prisma/client";
-import { t } from "@lib/trpc";
+
 import { TRPCError } from "@trpc/server";
 import { updateUsageCount } from "./utils/updateUsageCount";
 
@@ -147,6 +147,7 @@ export const GetJobber = async (id: string) => {
 };
 export const GetJobberByMemberId = async (id: string) => {
   try {
+    console.log('first', id)
     const jobber = await prisma.jobber.findFirst({
       where: {
         memberId: id,
