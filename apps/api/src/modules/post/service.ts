@@ -7,23 +7,62 @@ import { ensureRecordExists } from "@utils/ensure";
 import prisma from "@lib/prisma-client";
 import { queryTable } from "@utils/pagination";
 import { Prisma } from "@prisma/client";
-
+import { pickMatchingFields } from "@utils/pickMatchingFields";
 export const CreatePost = async (data: IPostCreateDtoType) => {
   try {
-    const post = await prisma.post.create({
-      data,
-      include: {
-        postCourse: true,
-        postMajor: true,
-        postEducationLevel: true,
-        postEducationInstitution: true,
-        postJobPositionDetail: {
-          include: {
-            postJobPositionDetailSkill: true,
-          },
-        },
-      },
+
+    const post = await prisma.$transaction(async (tx) => {
+      const post = await tx.post.create({
+        data: {
+          title: data.title,
+          checkInTime: data.checkInTime,
+          checkOutTime: data.checkInTime,
+          currency: data.currency,
+          endDate: data.endDate,
+          gpa: data.gpa,
+          maxSalary: data.maxSalary,
+          minSalary: data.minSalary,
+          more: data.more,
+          welfare: data.welfare,
+          cId: data.cId,
+          image: data.image,
+        }
+      });
+      const postCourseData = data.courseIds?.map((item) => ({ pId: post.id, crId: item })) ?? [];
+      await tx.postCourse.createMany({
+        data: postCourseData
+      })
+      const postEducationInstitutionData = data.educationInstitutionIds?.map((item) => ({ pId: post.id, eiId: item })) ?? []
+      await tx.postEducationInstitution.createMany({ data: postEducationInstitutionData })
+      const postEducationLevelData = data.educationLevelIds?.map((item) => ({ pId: post.id, elId: item })) ?? []
+      await tx.postEducationLevel.createMany({ data: postEducationLevelData });
+      await Promise.all(
+        (data.jobPositions ?? []).map(async (element) => {
+          const pjpd = await tx.postJobPositionDetail.create({
+            data: {
+              description: element.description ?? "",
+              jpId: element.jpId,
+              pId: post.id,
+              amount: element.amount ?? 1,
+            },
+          });
+          console.log('pjpd :>> ', pjpd);
+
+          const pjpdData = await element.skillIds?.map((item) => ({
+            pjpId: pjpd.id,
+            skId: item,
+          })) ?? [];
+          console.log('pjpdData :>> ', pjpdData);
+
+          const a = await tx.postJobPositionDetailSkill.createMany({ data: pjpdData });
+          console.log('a :>> ', a);
+        })
+      );
+
+
+      return post;
     });
+
     return post;
   } catch (error) {
     console.log("error :>> ", error);

@@ -247,8 +247,8 @@ model Post {
   image                    String[]
   minSalary                Decimal
   maxSalary                Decimal
-  checkInTime              DateTime
-  checkOutTime             DateTime
+  checkInTime              String
+  checkOutTime             String
   gpa                      Float
   currency                 ECurrency
   workday                  String[]

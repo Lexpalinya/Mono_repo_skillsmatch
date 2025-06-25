@@ -262,8 +262,18 @@ export const GetCompanyByMemberId = async (id: string) => {
         memberId: id,
         isActive: true,
       },
+      include: {
+        bm: {
+          select:
+          {
+            id: true,
+            name: true
+          }
+        }
+      }
 
     });
+
     return company
   } catch (error) {
     console.log('error', error)

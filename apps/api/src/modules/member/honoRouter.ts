@@ -18,7 +18,7 @@ memberRoute.post("/register", async (c) => {
     maxAge: 60 * 60 * 24 * 7,
   });
 
-  return c.json({ message: "Registration successful", token: result.token, data: result });
+  return c.json({ message: "Registration successful", token: result.token, data: { ...result.member, password: undefined } });
 })
 memberRoute.post("/login", async (c) => {
   const body = await c.req.json();

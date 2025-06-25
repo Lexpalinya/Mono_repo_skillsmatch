@@ -1,15 +1,28 @@
 {
-  "cId": "d0e45cb1-32d3-4488-8c6b-eb823d1b7dd1",
-  "checkInTime": "2025-06-23T16:19:00.000Z",
-  "checkOutTime": "2025-06-23T14:19:00.000Z",
+  "cId": "84616e19-d5a2-4930-a4b3-f7ac2bcb6a0d",
+  "checkInTime": "2025-06-24T08:00:07.122Z",
+  "checkOutTime": "2025-06-24T17:30:07.122Z",
+  "courseIds": ["d0e45cb1-32d3-4488-8c6b-eb823d1b7dd1"],
   "currency": "KIP",
-  "drivingCardType": "me",
-  "eiId": "a659758a-5d68-4622-a527-fd966882e23b",
-  "elId": "cc338946-eede-4821-ab7b-e81872cc4a42",
+  "educationInstitutionIds": [],
+  "educationLevelIds": [],
   "gpa": 2,
-  "jId": "222ac2b2-4e40-4a64-bcce-5b149a6ab4d3",
-  "mId": "56feb2dd-eaae-4fcd-94d8-73fc91f15d4a",
-  "more": "test",
-  "startSalary": 1000000,
-  "workDay": ["MO", "TU", "WE", "TH", "FR"]
+  "image": [
+    "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252Fmobile-cbffc890-4ce6-42c0-9c02-0e5a02ec5fb1/ImagePicker/eb33d480-7819-4e34-a4bb-87f02d8ce2d3.jpeg"
+  ],
+  "jobPositions": [
+    {
+      "amount": 100,
+      "description": "",
+      "id": "2fa160fc-e9b3-4e00-acec-4dcf90c6e1ac",
+      "jpId": "20e8c672-2390-49e6-b88b-51c18dc9dd47",
+      "skillIds": []
+    }
+  ],
+  "majorIds": ["56feb2dd-eaae-4fcd-94d8-73fc91f15d4a"],
+  "maxSalary": 1000000,
+  "minSalary": 1000000,
+  "more": "กดหกดกหดกหด",
+  "welfare": "กดหกดหกดกด",
+  "workday": ["MO", "TU", "WE", "TH", "FR"]
 }

@@ -6,10 +6,7 @@ import { fileSchema } from "../file.dto";
 const CurrencyEnum = z.enum(["KIP", "USD", "THB", "CNY"]);
 
 // 🔸 Time Format
-const TimeString = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, {
-  message: "Time must be in HH:mm format (24-hour)",
-});
-
+const TimeString = z.string()
 // 🔸 Shared jobPosition schema
 const JobPositionSchema = z.object({
   jpId: z.string().uuid({ message: "Invalid JobPosition ID" }),
