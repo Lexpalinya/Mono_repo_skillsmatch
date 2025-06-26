@@ -58,6 +58,9 @@ export const GetSkill = async ({
   sortOrder = "asc",
   sortBy,
   visible,
+  statusVisibility,
+  startDate,
+  endDate
 }: ISkillPaginationDtoType) => {
   try {
     let where: any = { isActive: true };
@@ -67,6 +70,33 @@ export const GetSkill = async ({
         mode: "insensitive",
       };
     if (typeof visible === "boolean") where.visible = visible;
+
+    if (statusVisibility) {
+      if (statusVisibility == "1") {
+        where = {
+          ...where,
+          visible: true,
+        }
+      } else if (statusVisibility == "2") {
+        where = {
+          ...where,
+          visible: false,
+        }
+      }
+
+    }
+
+    if (startDate || endDate) {
+      where = {
+        ...where,
+        createdAt: {
+          ...(startDate && { gte: new Date(startDate) }),
+          ...(endDate && {
+            lt: new Date(new Date(endDate).setDate(new Date(endDate).getDate() + 1))
+          }),
+        },
+      };
+    }
 
     const members = await queryTable("skill", {
       page,

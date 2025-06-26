@@ -85,6 +85,9 @@ export const JobberAdminDto = z.object({
 export const JobberPaginationDto = QueryDto.extend({
   visible: z.boolean().optional(),
   status: z.string().optional(),
+    statusVerify: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 });
 
 export const JobberStatsDto = z.object({
@@ -92,6 +95,7 @@ export const JobberStatsDto = z.object({
   active: z.number(),
   verified: z.number(),
   status: z.number(),
+  notverified: z.number().optional(),
 });
 
 export const JobberAdminViewDto = z.object({

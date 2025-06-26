@@ -12,3 +12,11 @@ export function formatDate(date: Date | string): string {
 export function formatTime(date: Date | string): string {
   return format(date, "h:mm:ss a");
 }
+
+export function formatDateOnly(date?: Date): string | undefined {
+  if (!date) return undefined;
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, "0"); // เดือนเริ่มที่ 0
+  const dd = String(date.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+};

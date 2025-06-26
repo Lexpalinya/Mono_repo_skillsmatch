@@ -129,6 +129,8 @@ export const MemberAdminViewDto = z.object({
 });
 export const MemberPaginationDto = QueryDto.extend({
   role: z.nativeEnum(EUserRole).optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 });
 
 export const MemberStatsDto = z.object({

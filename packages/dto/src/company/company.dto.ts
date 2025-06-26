@@ -112,6 +112,8 @@ export const CompanyAdminDto = z.object({
       name: z.string(),
     })
     .nullable(),
+
+  Postamont : z.string()
 });
 
 export const CompanyStatsDto = z.object({
@@ -119,12 +121,16 @@ export const CompanyStatsDto = z.object({
   active: z.number(),
   verified: z.number(),
   status: z.number(),
+  notverified: z.number().optional(),
 });
 
 export const CompanyPaginationDto = QueryDto.extend({
   visible: z.boolean().optional(),
   bmIds: z.array(z.string()).optional(),
   verified: boolean().optional(),
+  status: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 });
 
 export const CompanyComboboxDto = OffsetPaginateRequestDto.extend(

@@ -139,6 +139,8 @@ export const GetMembers = async ({
   sortOrder = "asc",
   sortBy,
   role,
+  startDate,
+  endDate
 }: IMemberPaginationDtoType) => {
   try {
     let where: Prisma.MemberWhereInput = { isActive: true };
@@ -168,6 +170,18 @@ export const GetMembers = async ({
       };
     }
     if (role) where.role = role;
+
+    if (startDate || endDate) {
+      where = {
+        ...where,
+        createdAt: {
+          ...(startDate && { gte: new Date(startDate) }),
+          ...(endDate && {
+            lt: new Date(new Date(endDate).setDate(new Date(endDate).getDate() + 1))
+          }),
+        },
+      };
+    }
     const select: Prisma.MemberSelect = {
       id: true,
       visible: true,
@@ -204,9 +218,7 @@ export const GetMembers = async ({
 export const GetStatsMember = async () => {
   try {
     const [total, active, jobber, company] = await Promise.all([
-      prisma.member.count({
-        where: { isActive: true },
-      }),
+      prisma.member.count(),
       prisma.member.count({
         where: { isActive: true, visible: true },
       }),

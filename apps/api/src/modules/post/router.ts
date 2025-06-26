@@ -15,6 +15,7 @@ import {
   UpdatePost,
   DeletePost,
   GetStatsPost,
+  GetMostPostion,
   GetPostUpdate,
   GetPostByCompanyId,
   GetPosts,
@@ -23,6 +24,10 @@ import {
 export const postRouter = t.router({
   getAll: t.procedure.input(PostPaginationDto).query(async ({ input }) => {
     return GetPost(input);
+  }),
+
+  getMostPostion: t.procedure.input(PostPaginationDto).query(async ({ input }) => {
+    return GetMostPostion(input);
   }),
 
   getById: t.procedure

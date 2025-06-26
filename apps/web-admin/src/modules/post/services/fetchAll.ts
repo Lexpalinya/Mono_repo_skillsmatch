@@ -11,12 +11,16 @@ interface FetchAllPostParams {
   globalFilter: string;
   sorting: SortingState;
   cIds: string[] | undefined;
+  startDate?: string;
+  endDate?: string;
 }
 export const fetchAllPost = async ({
   pagination,
   globalFilter,
   sorting,
   cIds,
+  startDate,
+  endDate
 }: FetchAllPostParams) => {
   const queryParams: IPostPaginationDtoType = {
     search: globalFilter || "",
@@ -25,6 +29,8 @@ export const fetchAllPost = async ({
     sortBy: sorting[0]?.id,
     sortOrder: sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
     cIds: Array.isArray(cIds) && cIds.length === 0 ? undefined : cIds,
+    startDate: startDate || "",
+    endDate: endDate || "",
   };
   const result = await trpcClient.post.getAll.query(queryParams);
   return { data: result.data, total: result.total };

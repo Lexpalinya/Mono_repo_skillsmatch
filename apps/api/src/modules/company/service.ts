@@ -99,10 +99,12 @@ export const GetCompany = async ({
   sortBy,
   bmIds,
   verified,
+  status,
+  startDate,
+  endDate
 }: ICompanyPaginationDtoType) => {
   try {
     let where: Prisma.CompanyWhereInput = { isActive: true };
-
     if (search) {
       where = {
         OR: [
@@ -160,6 +162,33 @@ export const GetCompany = async ({
         isVerify: verified,
       };
     }
+    if (status) {
+      if (status == "1") {
+        where = {
+          ...where,
+          isVerify: true,
+        }
+      } else if (status == "2") {
+        where = {
+          ...where,
+          isVerify: false,
+        }
+      }
+
+    }
+
+    if (startDate || endDate) {
+      where = {
+        ...where,
+        createdAt: {
+          ...(startDate && { gte: new Date(startDate) }),
+          ...(endDate && {
+            lt: new Date(new Date(endDate).setDate(new Date(endDate).getDate() + 1))
+          }),
+        },
+      };
+    }
+
     const select: Prisma.CompanySelect = {
       id: true,
       isVerify: true,
@@ -186,6 +215,11 @@ export const GetCompany = async ({
           name: true,
         },
       },
+      _count: {
+        select: {
+          Post: true
+        }
+      }
     };
 
     const items = await queryTable("company", {
@@ -193,10 +227,22 @@ export const GetCompany = async ({
       limit,
       where,
       select,
-      orderBy: {
+      orderBy: sortBy === "Postamont" ? undefined : {
         [sortBy ?? "createdAt"]: sortOrder,
       },
     });
+
+    items.data = items.data.map((company: any) => ({
+      ...company,
+      Postamont: company._count.Post,
+    }));
+
+    if (sortBy === "Postamont") {
+      const multiplier = sortOrder === "desc" ? -1 : 1;
+      items.data.sort((a: any, b: any) => (a.Postamont - b.Postamont) * multiplier);
+    }
+
+
 
     return items;
   } catch (error) {
@@ -281,13 +327,16 @@ export const GetCompanyByMemberId = async (id: string) => {
 };
 export const GetStatsCompany = async (): Promise<ICompanyStatusDtoType> => {
   try {
-    const [total, active, verified, status] = await Promise.all([
-      prisma.company.count({
-        where: { isActive: true },
-      }),
+    const [total, active, verified, status, notverified] = await Promise.all([
+      prisma.company.count(),
       prisma.company.count({
         where: {
           isActive: true,
+        },
+      }),
+      prisma.company.count({
+        where: {
+          isVerify: true,
         },
       }),
       prisma.company.count({
@@ -297,12 +346,12 @@ export const GetStatsCompany = async (): Promise<ICompanyStatusDtoType> => {
       }),
       prisma.company.count({
         where: {
-          isActive: true,
+          isVerify: false,
         },
       }),
     ]);
 
-    return { total, active, verified, status };
+    return { total, active, verified, status, notverified };
   } catch (error) {
     throw error;
   }
