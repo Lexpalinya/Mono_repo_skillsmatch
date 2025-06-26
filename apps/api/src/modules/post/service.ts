@@ -7,10 +7,10 @@ import { ensureRecordExists } from "@utils/ensure";
 import prisma from "@lib/prisma-client";
 import { queryTable } from "@utils/pagination";
 import { Prisma } from "@prisma/client";
-import { pickMatchingFields } from "@utils/pickMatchingFields";
+import { updateUsageCount } from "./utils/updateUsageCount";
+
 export const CreatePost = async (data: IPostCreateDtoType) => {
   try {
-
     const post = await prisma.$transaction(async (tx) => {
       const post = await tx.post.create({
         data: {
@@ -46,26 +46,60 @@ export const CreatePost = async (data: IPostCreateDtoType) => {
               amount: element.amount ?? 1,
             },
           });
-          console.log('pjpd :>> ', pjpd);
-
           const pjpdData = await element.skillIds?.map((item) => ({
             pjpId: pjpd.id,
             skId: item,
           })) ?? [];
-          console.log('pjpdData :>> ', pjpdData);
-
           const a = await tx.postJobPositionDetailSkill.createMany({ data: pjpdData });
-          console.log('a :>> ', a);
         })
       );
-
-
+      await Promise.all([
+        updateUsageCount({
+          tx,
+          relationModel: "postCourse",
+          relationField: "crId",
+          targetModel: "course",
+          targetIdField: "id",
+          targetCountField: "postUsageCount",
+        }),
+        updateUsageCount({
+          tx,
+          relationModel: "postEducationInstitution",
+          relationField: "eiId",
+          targetModel: "educationalInstitution",
+          targetIdField: "id",
+          targetCountField: "postUsageCount",
+        }),
+        updateUsageCount({
+          tx,
+          relationModel: "postEducationLevel",
+          relationField: "elId",
+          targetModel: "educationLevel",
+          targetIdField: "id",
+          targetCountField: "postUsageCount",
+        }),
+        updateUsageCount({
+          tx,
+          relationModel: "postJobPositionDetail",
+          relationField: "jpId",
+          targetModel: "jobPosition",
+          targetIdField: "id",
+          targetCountField: "postUsageCount",
+        }),
+        updateUsageCount({
+          tx,
+          relationModel: "postJobPositionDetailSkill",
+          relationField: "skId",
+          targetModel: "skill",
+          targetIdField: "id",
+          targetCountField: "postUsageCount",
+        }),
+      ]);
       return post;
     });
 
     return post;
   } catch (error) {
-    console.log("error :>> ", error);
     throw error;
   }
 };
@@ -73,20 +107,138 @@ export const CreatePost = async (data: IPostCreateDtoType) => {
 export const UpdatePost = async (id: string, data: IPostUpdateDtoType) => {
   await ensureRecordExists({ table: "post", column: "id", value: id });
 
-  const post = await prisma.post.update({
-    where: { id },
-    data,
-    include: {
-      postCourse: true,
-      postMajor: true,
-      postEducationLevel: true,
-      postEducationInstitution: true,
-      postJobPositionDetail: {
-        include: {
-          postJobPositionDetailSkill: true,
-        },
+  const post = await prisma.$transaction(async (tx) => {
+
+    const updatedPost = await tx.post.update({
+      where: { id },
+      data: {
+        title: data.title,
+        checkInTime: data.checkInTime,
+        checkOutTime: data.checkOutTime,
+        currency: data.currency,
+        endDate: data.endDate,
+        gpa: data.gpa,
+        maxSalary: data.maxSalary,
+        minSalary: data.minSalary,
+        more: data.more,
+        welfare: data.welfare,
+        cId: data.cId,
+        image: data.image,
       },
-    },
+    });
+
+    await tx.postCourse.deleteMany({ where: { pId: id } });
+    await tx.postMajor.deleteMany({ where: { pId: id } });
+    await tx.postEducationLevel.deleteMany({ where: { pId: id } });
+    await tx.postEducationInstitution.deleteMany({ where: { pId: id } });
+
+    const oldJobDetails = await tx.postJobPositionDetail.findMany({
+      where: { pId: id },
+    });
+    const jobDetailIds = oldJobDetails.map((item) => item.id);
+
+    await tx.postJobPositionDetailSkill.deleteMany({
+      where: { pjpId: { in: jobDetailIds } },
+    });
+    await tx.postJobPositionDetail.deleteMany({ where: { pId: id } });
+
+    if (data.courseIds?.length) {
+      await tx.postCourse.createMany({
+        data: data.courseIds.map((crId) => ({ pId: id, crId })),
+      });
+    }
+
+    if (data.majorIds?.length) {
+      await tx.postMajor.createMany({
+        data: data.majorIds.map((mId) => ({ pId: id, mId })),
+      });
+    }
+
+    if (data.educationLevelIds?.length) {
+      await tx.postEducationLevel.createMany({
+        data: data.educationLevelIds.map((elId) => ({ pId: id, elId })),
+      });
+    }
+
+    if (data.educationInstitutionIds?.length) {
+      await tx.postEducationInstitution.createMany({
+        data: data.educationInstitutionIds.map((eiId) => ({ pId: id, eiId })),
+      });
+    }
+
+    for (const jp of data.jobPositions ?? []) {
+      if (!jp.jpId) {
+        continue;
+      }
+      const pjpd = await tx.postJobPositionDetail.create({
+        data: {
+          pId: id,
+          jpId: jp.jpId,
+          description: jp.description ?? "",
+          amount: jp.amount ?? 1,
+        },
+      });
+
+      if (jp.skillIds?.length) {
+        await tx.postJobPositionDetailSkill.createMany({
+          data: jp.skillIds.map((skId) => ({ pjpId: pjpd.id, skId })),
+        });
+      }
+    }
+
+    // 4. อัปเดต usage count ทั้งหมด
+    await Promise.all([
+      updateUsageCount({
+        tx,
+        relationModel: "postCourse",
+        relationField: "crId",
+        targetModel: "course",
+        targetIdField: "id",
+        targetCountField: "postUsageCount",
+      }),
+      updateUsageCount({
+        tx,
+        relationModel: "postMajor",
+        relationField: "mId",
+        targetModel: "major",
+        targetIdField: "id",
+        targetCountField: "postUsageCount",
+      }),
+      updateUsageCount({
+        tx,
+        relationModel: "postEducationLevel",
+        relationField: "elId",
+        targetModel: "educationLevel",
+        targetIdField: "id",
+        targetCountField: "postUsageCount",
+      }),
+      updateUsageCount({
+        tx,
+        relationModel: "postEducationInstitution",
+        relationField: "eiId",
+        targetModel: "educationalInstitution",
+        targetIdField: "id",
+        targetCountField: "postUsageCount",
+      }),
+      updateUsageCount({
+        tx,
+        relationModel: "postJobPositionDetail",
+        relationField: "jpId",
+        targetModel: "jobPosition",
+        targetIdField: "id",
+        targetCountField: "postUsageCount",
+      }),
+      updateUsageCount({
+        tx,
+        relationModel: "postJobPositionDetailSkill",
+        relationField: "skId",
+        targetModel: "skill",
+        targetIdField: "id",
+        targetCountField: "postUsageCount",
+      }),
+    ]);
+
+    return updatedPost;
   });
 
   return post;
@@ -94,12 +246,10 @@ export const UpdatePost = async (id: string, data: IPostUpdateDtoType) => {
 
 export const DeletePost = async (id: string) => {
   await ensureRecordExists({ table: "post", column: "id", value: id });
-
   const post = await prisma.post.update({
     where: { id },
     data: { isActive: false },
   });
-
   return post;
 };
 
@@ -269,3 +419,211 @@ export const GetStatsPost = async () => {
     throw error;
   }
 };
+
+
+
+export const GetPostUpdate = async (id: string) => {
+  const post = await prisma.post.findUnique({
+    where: { id },
+    include: {
+      postCourse: true,
+      postMajor: true,
+      postEducationLevel: true,
+      postEducationInstitution: true,
+      postJobPositionDetail: {
+        include: {
+          postJobPositionDetailSkill: true,
+        },
+      },
+    },
+  });
+
+  if (!post) throw new Error("Post not found");
+
+  return {
+    cId: post.cId,
+    title: post.title,
+    image: post.image,
+    minSalary: Number(post.minSalary),
+    maxSalary: Number(post.maxSalary),
+    checkInTime: post.checkInTime,
+    checkOutTime: post.checkOutTime,
+    gpa: post.gpa,
+    currency: post.currency,
+    workday: post.workday,
+    endDate: post.endDate,
+    welfare: post.welfare,
+    more: post.more,
+    courseIds: post.postCourse.map((pc) => pc.crId),
+    majorIds: post.postMajor.map((pm) => pm.mId),
+    educationLevelIds: post.postEducationLevel.map((pel) => pel.elId),
+    educationInstitutionIds: post.postEducationInstitution.map((pei) => pei.eiId),
+    jobPositions: post.postJobPositionDetail.map((jp) => ({
+      jpId: jp.jpId,
+      description: jp.description,
+      amount: jp.amount,
+      skillIds: jp.postJobPositionDetailSkill.map((sk) => sk.skId),
+    })),
+  };
+};
+
+
+export const GetPostByCompanyId = async (id: string) => {
+  try {
+    let where: Prisma.PostWhereInput = { isActive: true, cId: id };
+    const select: Prisma.PostSelect = {
+      id: true,
+      title: true,
+      minSalary: true,
+      maxSalary: true,
+      endDate: true,
+      company: {
+        select: {
+          name: true,
+          province: true,
+          district: true,
+          village: true,
+          bm: {
+            select: {
+              name: true
+            }
+          }
+        },
+      },
+      postJobPositionDetail: {
+        select: {
+          id: true,
+          amount: true,
+          jp: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          postJobPositionDetailSkill: {
+            select: {
+              sk: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+
+
+    };
+
+    const items = await queryTable("post", {
+      limit: 1000,
+      where,
+      select,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    console.log('items.data :>> ', items.data);
+
+    return items.data;
+  } catch (error) {
+    console.error("Error occurred while fetching post by company ID:", error);
+    throw error; // Rethrow the error after logging
+
+  }
+}
+
+export const GetPosts = async ({
+  page,
+  limit,
+  search,
+  sortOrder = "asc",
+  sortBy,
+}: IPostPaginationDtoType) => {
+  try {
+    let where: Prisma.PostWhereInput = { isActive: true };
+    if (search) {
+      where = {
+        ...where,
+        OR: [
+          {
+            title: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          {
+            company: {
+              name: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          },
+        ],
+      };
+    }
+
+    const select: Prisma.PostSelect = {
+      id: true,
+      title: true,
+      gpa: true,
+      workday: true,
+      currency: true,
+      minSalary: true,
+      maxSalary: true,
+      checkInTime: true,
+      checkOutTime: true,
+      endDate: true,
+      isActive: true,
+      company: {
+        select: {
+          name: true,
+          province: true,
+          district: true,
+          village: true,
+        },
+      },
+      postJobPositionDetail: {
+        select: {
+          jp: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          postJobPositionDetailSkill: {
+            select: {
+              sk: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const items = await queryTable("post", {
+      page,
+      limit,
+      where,
+      select,
+      orderBy: {
+        [sortBy]: sortOrder,
+      },
+    });
+    console.log('items :>> ', items);
+
+    return items;
+
+
+  } catch (error) {
+    console.error("Error occurred while fetching post statistics:", error);
+    throw error; // Rethrow the error after logging
+
+  }
+}

@@ -214,6 +214,54 @@ export const PostPaginationDto = QueryDto.extend({
   cIds: z.array(z.string().uuid()).optional(),
 });
 
+// Skill schema
+const SkillSchema = z.object({
+  sk: z.object({
+    id: z.string().uuid(),
+    name: z.string(),
+  }),
+});
+
+// Job Position Detail schema
+export const PostJobPositionDetailSchema = z.object({
+  id: z.string().uuid(),
+  amount: z.number().int().min(1),
+  jp: z.object({
+    id: z.string().uuid(),
+    name: z.string(),
+  }),
+  postJobPositionDetailSkill: z.array(SkillSchema),
+});
+
+// Company schema
+const CompanySchema = z.object({
+  name: z.string(),
+  province: z.string(),
+  district: z.string(),
+  village: z.string(),
+  bm: z.object({
+    name: z.string()
+  })
+});
+
+// Main PostJob schema
+export const PostJobSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  minSalary: z.number().min(0),
+  maxSalary: z.number().min(0),
+  endDate: z.coerce.date(), // รับ ISO string ได้ด้วย
+  company: CompanySchema,
+  postJobPositionDetail: z.array(PostJobPositionDetailSchema),
+});
+
+// Array schema สำหรับหลายรายการ
+export const PostJobListSchema = z.array(PostJobSchema);
+
+// Type
+export type IPostJob = z.infer<typeof PostJobSchema>;
+export type IPostJobList = z.infer<typeof PostJobListSchema>;
+
 // 🔸 Type exports
 export type IPostCreateDtoType = z.infer<typeof PostCreateDto>;
 export type IPostFileCreateDtoType = z.infer<typeof PostFileCreateDto>;
@@ -223,3 +271,4 @@ export type IPostStatsDtoType = z.infer<typeof PostStatsDto>;
 export type IPostAdminDtoType = z.infer<typeof PostAdminDto>;
 export type IPostPaginationDtoType = z.infer<typeof PostPaginationDto>;
 export type IPostAdminViewDtoType = z.infer<typeof PostAdminViewDto>;
+export type IPostJobPositionDetailSchema = z.infer<typeof PostJobPositionDetailSchema>

@@ -15,6 +15,9 @@ import {
   UpdatePost,
   DeletePost,
   GetStatsPost,
+  GetPostUpdate,
+  GetPostByCompanyId,
+  GetPosts,
 } from "./service";
 
 export const postRouter = t.router({
@@ -26,6 +29,10 @@ export const postRouter = t.router({
     .input(idDto)
     .query(async ({ input }: { input: IIdDtoType }) => {
       return GetPostById(input.id);
+    }),
+  getPostUpdate: t.procedure.input(idDto)
+    .query(async ({ input }: { input: IIdDtoType }) => {
+      return GetPostUpdate(input.id);
     }),
 
   create: t.procedure
@@ -50,4 +57,12 @@ export const postRouter = t.router({
   fetchStats: t.procedure.query(async () => {
     return GetStatsPost();
   }),
+
+  getPostByCompanyId: t.procedure.input(idDto).query(async ({ input }) => {
+    return GetPostByCompanyId(input.id);
+  }),
+  getPosts: t.procedure.input(PostPaginationDto).query(async ({ input }) => {
+    return GetPosts(input);
+  }
+  )
 });
