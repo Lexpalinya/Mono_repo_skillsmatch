@@ -65,6 +65,8 @@ const PostProvider = ({ children }: PropsWithChildren) => {
     placeholderData: keepPreviousData,
   });
 
+
+
   const statsQuery = useQuery({
     queryKey: ["statsPost"],
     queryFn: () => fetchStatsPost(),

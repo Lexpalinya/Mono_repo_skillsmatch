@@ -172,7 +172,7 @@ export function DatePicker({
           <Button
             variant="outline"
             className={cn(
-              "w-full justify-between text-left font-normal h-11 px-4 py-2",
+              "w-full justify-between text-left font-normal h-full px-4 py-2",
               "border-2 hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20",
               "transition-all duration-200 group",
               !dateValue && "text-muted-foreground",

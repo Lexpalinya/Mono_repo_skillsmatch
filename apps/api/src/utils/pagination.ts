@@ -32,10 +32,12 @@ export const queryTable = async <TModel extends keyof PrismaClient>(
     throw new Error(`Invalid model name: ${String(modelName)}`);
   }
 
+  const prismaOrderBy = orderBy && Object.keys(orderBy)[0] !== "Postamont" ? orderBy : undefined;
+
   const [data, total] = await Promise.all([
     model.findMany({
       where,
-      orderBy,
+      orderBy: prismaOrderBy,
       ...(include ? { include } : {}),
       ...(select ? { select } : {}),
       skip,
@@ -52,3 +54,5 @@ export const queryTable = async <TModel extends keyof PrismaClient>(
     totalPages: Math.ceil(total / limit),
   };
 };
+
+

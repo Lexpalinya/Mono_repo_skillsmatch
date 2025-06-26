@@ -171,7 +171,13 @@ export const companyColumns: ColumnDef<IPostAdminDtoType>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => format(row.getValue("createdAt"), "MMM d, yyyy"),
+    cell: ({ row }) => {
+      const rawDate = row.getValue("createdAt") as string | number | Date;
+      const date = new Date(rawDate);
+      return isNaN(date.getTime())
+        ? "Invalid date"
+        : format(date, "MMM d, yyyy");
+    },
   },
   {
     id: "actions",

@@ -24,6 +24,9 @@ export const SkillAdminDto = z.object({
 });
 export const SkillPaginationDto = QueryDto.extend({
   visible: z.boolean().optional(),
+  statusVisibility: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 });
 export const SkillStatsDto = z.object({
   id: z.string(),

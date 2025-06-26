@@ -5,6 +5,8 @@
   "scripts": {
     "api": "cd apps/api; bun dev",
     "web": "cd apps/web-admin; bun dev",
+    "Wapi": "cd apps\\api && bun dev",
+    "Wweb": "cd apps\\web-admin && bun dev",
     "mobile": "cd mobile; bun start",
     "db:studio": "bunx prisma studio",
     "db:push": "bunx prisma db push",

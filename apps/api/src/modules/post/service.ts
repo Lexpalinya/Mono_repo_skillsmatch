@@ -109,6 +109,8 @@ export const GetPost = async ({
   search,
   sortOrder = "asc",
   sortBy,
+  startDate,
+  endDate
 }: IPostPaginationDtoType) => {
   try {
     let where: Prisma.PostWhereInput = { isActive: true };
@@ -133,6 +135,19 @@ export const GetPost = async ({
         ],
       };
     }
+
+    if (startDate || endDate) {
+      where = {
+        ...where,
+        createdAt: {
+          ...(startDate && { gte: new Date(startDate) }),
+          ...(endDate && {
+            lt: new Date(new Date(endDate).setDate(new Date(endDate).getDate() + 1))
+          }),
+        },
+      };
+    }
+
     const select: Prisma.PostSelect = {
       id: true,
       title: true,
@@ -144,6 +159,7 @@ export const GetPost = async ({
       checkInTime: true,
       checkOutTime: true,
       endDate: true,
+      createdAt: true,
       isActive: true,
       company: {
         select: {
@@ -192,6 +208,97 @@ export const GetPost = async ({
     throw error; // Rethrow the error after logging
   }
 };
+export const GetMostPostion = async ({
+  page = 1,
+  limit = 10,
+  search,
+  sortOrder = "asc",
+  sortBy,
+  startDate,
+  endDate
+}: IPostPaginationDtoType) => {
+  try {
+    let where: Prisma.PostWhereInput = { isActive: true };
+
+    if (search) {
+      where = {
+        ...where,
+        OR: [
+          {
+            title: { contains: search, mode: "insensitive" },
+          },
+          {
+            company: {
+              name: { contains: search, mode: "insensitive" },
+            },
+          },
+        ],
+      };
+    }
+
+    if (startDate || endDate) {
+      where.createdAt = {
+        ...(startDate && { gte: new Date(startDate) }),
+        ...(endDate && {
+          lt: new Date(new Date(endDate).setDate(new Date(endDate).getDate() + 1))
+        }),
+      };
+    }
+
+    const posts = await prisma.post.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      select: {
+        postJobPositionDetail: {
+          select: {
+            amount: true,
+            jp: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+
+    const positionCountMap = new Map<string, { name: string; totalAmount: number }>();
+
+    for (const post of posts) {
+      for (const detail of post.postJobPositionDetail) {
+        const { id, name } = detail.jp;
+        const current = positionCountMap.get(id);
+
+        positionCountMap.set(id, {
+          name,
+          totalAmount: (current?.totalAmount || 0) + detail.amount,
+        });
+      }
+    }
+
+    const topPositions = Array.from(positionCountMap.entries())
+      .map(([jpId, { name, totalAmount }]) => ({ jpId, name, totalAmount }))
+      .sort((a, b) =>
+        sortBy === "totalAmount"
+          ? sortOrder === "asc"
+            ? a.totalAmount - b.totalAmount
+            : b.totalAmount - a.totalAmount
+          : 0
+      );
+
+    return topPositions;
+
+
+    return topPositions;
+  } catch (error) {
+    console.error("Error occurred while calculating top positions:", error);
+    throw error;
+  }
+};
+
 
 export const GetPostById = async (id: string) => {
   const post = await prisma.post.findUniqueOrThrow({

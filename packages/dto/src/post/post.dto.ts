@@ -166,7 +166,7 @@ export const PostAdminDto = z.object({
   welfare: z.string(),
   more: z.string(),
   postJobPositionDetail: z.array(PostJobPositionDetailDto),
-
+  createdAt: z.string(),
   currency: z.string(),
   minSalary: z.number(),
   maxSalary: z.number(),
@@ -207,12 +207,23 @@ export const PostAdminViewDto = z.object({
   ),
   postJobPositionDetail: z.array(PostJobPositionDetailDto),
 });
+
+
+export const MostPostionAdminDto = z.object({
+  jpId: z.string(),
+  name: z.string(),
+  totalAmount: z.number(),
+});
 // 🔸 Pagination Dto
 export const PostPaginationDto = QueryDto.extend({
   visible: z.boolean().optional(),
   status: z.string().optional(),
   cIds: z.array(z.string().uuid()).optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 });
+
+
 
 // 🔸 Type exports
 export type IPostCreateDtoType = z.infer<typeof PostCreateDto>;
@@ -221,5 +232,6 @@ export type IPostUpdateDtoType = z.infer<typeof PostUpdateDto>;
 export type IPostFileUpdateDtoType = z.infer<typeof PostFileUpdateDto>;
 export type IPostStatsDtoType = z.infer<typeof PostStatsDto>;
 export type IPostAdminDtoType = z.infer<typeof PostAdminDto>;
+export type IMostPostionDtoType = z.infer<typeof MostPostionAdminDto>;
 export type IPostPaginationDtoType = z.infer<typeof PostPaginationDto>;
 export type IPostAdminViewDtoType = z.infer<typeof PostAdminViewDto>;

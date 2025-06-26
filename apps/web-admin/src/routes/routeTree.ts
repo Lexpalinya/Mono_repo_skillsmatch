@@ -15,6 +15,11 @@ import skillRoute from "@/modules/skill/router";
 
 import jobberStatusRoute from "@/modules/jobber-status/router";
 import reviewApplicationRoute from "@/modules/review-application/router";
+import reportCompanyRoute from "@/modules/report-company/router";
+import reportjobberRoute from "@/modules/report-jobber/router";
+import reportmemberRoute from "@/modules/report-member/router";
+import reportskillRoute from "@/modules/report-skills/router";
+import reportpostRoute from "@/modules/report-post/router";
 const routeTree = rootRoute.addChildren([
   ...loginRoute,
   appLayoutRoute.addChildren([
@@ -31,6 +36,11 @@ const routeTree = rootRoute.addChildren([
     ...skillRoute,
     ...jobberStatusRoute,
     ...reviewApplicationRoute,
+    ...reportCompanyRoute,
+    ...reportjobberRoute,
+    ...reportmemberRoute,
+    ...reportpostRoute,
+    ...reportskillRoute,
   ]),
 ]);
 

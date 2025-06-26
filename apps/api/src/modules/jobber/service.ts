@@ -8,7 +8,7 @@ import { ensureRecordExists, ensureUniqueRecord } from "@utils/ensure";
 import prisma from "@lib/prisma-client";
 import { queryTable } from "@utils/pagination";
 import { Prisma } from "@prisma/client";
-
+import { t } from "@lib/trpc";
 import { TRPCError } from "@trpc/server";
 import { updateUsageCount } from "./utils/updateUsageCount";
 
@@ -147,7 +147,6 @@ export const GetJobber = async (id: string) => {
 };
 export const GetJobberByMemberId = async (id: string) => {
   try {
-    console.log('first', id)
     const jobber = await prisma.jobber.findFirst({
       where: {
         memberId: id,
@@ -168,6 +167,9 @@ export const GetJobbers = async ({
   sortOrder = "asc",
   sortBy,
   status,
+  statusVerify,
+  startDate,
+  endDate
 }: IJobberPaginationDtoType) => {
   try {
     let where: Prisma.JobberWhereInput = { isActive: true };
@@ -186,6 +188,33 @@ export const GetJobbers = async ({
       where = {
         ...where,
         statusId: status,
+      };
+    }
+
+    if (statusVerify) {
+      if (statusVerify == "1") {
+        where = {
+          ...where,
+          isVerify: true,
+        }
+      } else if (statusVerify == "2") {
+        where = {
+          ...where,
+          isVerify: false,
+        }
+      }
+
+    }
+
+    if (startDate || endDate) {
+      where = {
+        ...where,
+        createdAt: {
+          ...(startDate && { gte: new Date(startDate) }),
+          ...(endDate && {
+            lt: new Date(new Date(endDate).setDate(new Date(endDate).getDate() + 1))
+          }),
+        },
       };
     }
 
@@ -234,13 +263,17 @@ export const GetJobbers = async ({
 
 export const GetStatsJobber = async (): Promise<IJobberStatsDtoType> => {
   try {
-    const [total, active, verified, status] = await Promise.all([
-      prisma.jobber.count({
-        where: { isActive: true },
-      }),
+    const [total, active, verified, status, notverified] = await Promise.all([
+      prisma.jobber.count(
+      ),
       prisma.jobber.count({
         where: {
           isActive: true,
+        },
+      }),
+      prisma.jobber.count({
+        where: {
+          isVerify: true,
         },
       }),
       prisma.jobber.count({
@@ -250,12 +283,12 @@ export const GetStatsJobber = async (): Promise<IJobberStatsDtoType> => {
       }),
       prisma.jobber.count({
         where: {
-          isActive: true,
+          isVerify: false,
         },
       }),
     ]);
 
-    return { total, active, verified, status };
+    return { total, active, verified, status, notverified };
   } catch (error) {
     throw error;
   }
