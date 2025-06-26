@@ -35,10 +35,6 @@ export const postRouter = t.router({
     .query(async ({ input }: { input: IIdDtoType }) => {
       return GetPostById(input.id);
     }),
-  getPostUpdate: t.procedure.input(idDto)
-    .query(async ({ input }: { input: IIdDtoType }) => {
-      return GetPostUpdate(input.id);
-    }),
 
   create: t.procedure
     .input(PostCreateDto)
@@ -51,6 +47,10 @@ export const postRouter = t.router({
     .mutation(async ({ input }) => {
       const { id, ...data } = input;
       return UpdatePost(id, data);
+    }),
+  getPostUpdate: t.procedure.input(idDto)
+    .query(async ({ input }: { input: IIdDtoType }) => {
+      return GetPostUpdate(input.id);
     }),
 
   delete: t.procedure

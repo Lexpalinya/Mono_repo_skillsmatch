@@ -115,6 +115,7 @@ export const UpdatePost = async (id: string, data: IPostUpdateDtoType) => {
         title: data.title,
         checkInTime: data.checkInTime,
         checkOutTime: data.checkOutTime,
+        workday: data.workday,
         currency: data.currency,
         endDate: data.endDate,
         gpa: data.gpa,
@@ -186,7 +187,6 @@ export const UpdatePost = async (id: string, data: IPostUpdateDtoType) => {
       }
     }
 
-    // 4. อัปเดต usage count ทั้งหมด
     await Promise.all([
       updateUsageCount({
         tx,
@@ -527,9 +527,8 @@ export const GetStatsPost = async () => {
   }
 };
 
-
-
 export const GetPostUpdate = async (id: string) => {
+  console.log('id :>> ', id);
   const post = await prisma.post.findUnique({
     where: { id },
     include: {
