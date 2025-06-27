@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as RouteTreeImport } from './routes/routeTree'
+import { Route as NotFoundRouteImport } from './routes/notFoundRoute'
 
 // Create/Update Routes
 
@@ -21,10 +22,23 @@ const RouteTreeRoute = RouteTreeImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const NotFoundRouteRoute = NotFoundRouteImport.update({
+  id: '/notFoundRoute',
+  path: '/notFoundRoute',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/notFoundRoute': {
+      id: '/notFoundRoute'
+      path: '/notFoundRoute'
+      fullPath: '/notFoundRoute'
+      preLoaderRoute: typeof NotFoundRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/routeTree': {
       id: '/routeTree'
       path: '/routeTree'
@@ -38,32 +52,37 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
+  '/notFoundRoute': typeof NotFoundRouteRoute
   '/routeTree': typeof RouteTreeRoute
 }
 
 export interface FileRoutesByTo {
+  '/notFoundRoute': typeof NotFoundRouteRoute
   '/routeTree': typeof RouteTreeRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
+  '/notFoundRoute': typeof NotFoundRouteRoute
   '/routeTree': typeof RouteTreeRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/routeTree'
+  fullPaths: '/notFoundRoute' | '/routeTree'
   fileRoutesByTo: FileRoutesByTo
-  to: '/routeTree'
-  id: '__root__' | '/routeTree'
+  to: '/notFoundRoute' | '/routeTree'
+  id: '__root__' | '/notFoundRoute' | '/routeTree'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
+  NotFoundRouteRoute: typeof NotFoundRouteRoute
   RouteTreeRoute: typeof RouteTreeRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  NotFoundRouteRoute: NotFoundRouteRoute,
   RouteTreeRoute: RouteTreeRoute,
 }
 
@@ -77,8 +96,12 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
+        "/notFoundRoute",
         "/routeTree"
       ]
+    },
+    "/notFoundRoute": {
+      "filePath": "notFoundRoute.tsx"
     },
     "/routeTree": {
       "filePath": "routeTree.ts"

@@ -20,6 +20,7 @@ import reportjobberRoute from "@/modules/report-jobber/router";
 import reportmemberRoute from "@/modules/report-member/router";
 import reportskillRoute from "@/modules/report-skills/router";
 import reportpostRoute from "@/modules/report-post/router";
+import { notFoundRoute } from "./notFoundRoute";
 const routeTree = rootRoute.addChildren([
   ...loginRoute,
   appLayoutRoute.addChildren([
@@ -42,6 +43,7 @@ const routeTree = rootRoute.addChildren([
     ...reportpostRoute,
     ...reportskillRoute,
   ]),
+  notFoundRoute
 ]);
 
 export default routeTree;

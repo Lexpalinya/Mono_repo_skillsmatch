@@ -25,6 +25,7 @@ export const CreatePost = async (data: IPostCreateDtoType) => {
           more: data.more,
           welfare: data.welfare,
           cId: data.cId,
+          workday: data.workday,
           image: data.image,
         }
       });
