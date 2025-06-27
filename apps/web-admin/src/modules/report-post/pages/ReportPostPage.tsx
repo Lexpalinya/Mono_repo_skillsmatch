@@ -46,9 +46,6 @@ export const ReportPostContent = () => {
           </p>
         </div>
       </div>
-      <div className="-mx-4 overflow-y px-4 py-1 lg:flex-row lg:space-y-0 lg:space-x-12 h-full">
-        {" "}
-      </div>{" "}
       <ReportPostStatsCards />
       <Tabs
         defaultValue="Normal"
