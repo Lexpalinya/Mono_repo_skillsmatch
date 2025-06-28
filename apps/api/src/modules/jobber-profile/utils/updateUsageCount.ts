@@ -29,3 +29,41 @@ export async function updateUsageCount({
         },
     });
 }
+
+
+
+type UpdateUsagesCountParams = {
+    tx: Prisma.TransactionClient;
+    relationModel: string;
+    relationField: string;
+    targetModel: string;
+    targetIdField: string;
+    targetCountField: string;
+    previousIds: string[];
+    currentIds: string[];
+};
+
+export async function updateUsagesCount({
+    tx,
+    relationModel,
+    relationField,
+    targetModel,
+    targetIdField,
+    targetCountField,
+    previousIds,
+    currentIds,
+}: UpdateUsagesCountParams) {
+
+    const allIds = Array.from(new Set([...previousIds, ...currentIds]));
+
+    for (const id of allIds) {
+        const count = await (tx[relationModel as keyof Prisma.TransactionClient] as any).count({
+            where: { [relationField]: id },
+        });
+
+        await (tx[targetModel as keyof Prisma.TransactionClient] as any).update({
+            where: { [targetIdField]: id },
+            data: { [targetCountField]: count },
+        });
+    }
+}

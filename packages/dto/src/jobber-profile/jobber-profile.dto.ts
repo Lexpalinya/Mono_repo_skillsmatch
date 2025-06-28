@@ -4,6 +4,10 @@ export const ECurrencyEnum = z.enum(["KIP", "THB", "USD"], {
     errorMap: () => ({ message: "ສະກຸນເງິນບໍ່ຖືກຕ້ອງ" }),
 });
 
+const TimeString = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, {
+    message: "ເວລາຕ້ອງເປັນຮູບແບບ HH:mm (24 ຊົ່ວໂມງ)",
+});
+
 export const JobberProfileCreateDto = z.object({
     jId: z.string({ message: "ລະຫັດຜູ້ໃຊ້ບໍ່ຖືກຕ້ອງ" }).uuid({ message: "ລະຫັດຜູ້ໃຊ້ຕ້ອງເປັນ UUID" }),
     elId: z.string({ message: "ລະຫັດລະດັບການສຶກສາບໍ່ຖືກຕ້ອງ" }).uuid(),
@@ -28,9 +32,13 @@ export const JobberProfileCreateDto = z.object({
         .array(z.string().min(1, { message: "ມື້ເຮັດວຽກຕ້ອງບໍ່ວ່າງ" }))
         .nonempty({ message: "ກະລຸນາເລືອກມື້ເຮັດວຽກ" }),
 
-    checkInTime: z.coerce.date({ message: "ເວລາເຂົ້າວຽກບໍ່ຖືກຕ້ອງ" }).optional().nullable(),
-
-    checkOutTime: z.coerce.date({ message: "ເວລາເລີກວຽກບໍ່ຖືກຕ້ອງ" }).optional().nullable(),
+    checkInTime: TimeString,
+    checkOutTime: TimeString
+    , skillIds: z
+        .array(z.string().uuid({ message: "ID ທັກສະຕ້ອງແມ່ນ UUID ທີ່ຖືກຕ້ອງ" }))
+        .optional(),
+    jobPositionIds: z.array(z.string().uuid({ message: "ID ຂອງຕຳແໜ່ງງານບໍ່ຖືກຕ້ອງ" }),)
+        .optional(),
 });
 
 

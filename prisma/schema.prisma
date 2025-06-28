@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -116,7 +110,7 @@ model Skill {
   createdAt                  DateTime                     @default(now())
   updatedAt                  DateTime                     @updatedAt
   PostJobPositionDetailSkill PostJobPositionDetailSkill[]
-  JobberSkill                JobberSkill[]
+  JobberProfileSkill         JobberProfileSkill[]
 }
 
 model JobPosition {
@@ -129,6 +123,7 @@ model JobPosition {
   createdAt             DateTime                @default(now())
   updatedAt             DateTime                @updatedAt
   PostJobPositionDetail PostJobPositionDetail[]
+  JobberProfilePosition JobberProfilePosition[]
 }
 
 model BusinessModel {
@@ -180,40 +175,49 @@ model Jobber {
   updatedAt     DateTime       @updatedAt
   ApplyForJob   ApplyForJob[]
   JobberProfile JobberProfile?
-  JobberSkill   JobberSkill[]
 }
 
 model JobberProfile {
-  id                      String                 @id @default(uuid()) @db.VarChar(36)
-  jId                     String                 @unique
+  id                      String                  @id @default(uuid()) @db.VarChar(36)
+  jId                     String                  @unique
   elId                    String
   eiId                    String
   mId                     String
   cId                     String
   gpa                     Float
-  drivingCardType         String?
-  more                    String                 @db.Text
+  more                    String                  @db.Text
   startSalary             Float?
-  currency                ECurrency              @default(KIP)
+  currency                ECurrency               @default(KIP)
   workDay                 String[]
-  checkInTime             DateTime?              @db.Time()
-  checkOutTime            DateTime?              @db.Time()
-  createdAt               DateTime               @default(now())
-  updatedAt               DateTime               @updatedAt
-  educationLevels         EducationLevel         @relation(fields: [elId], references: [id])
-  educationalInstitutions EducationalInstitution @relation(fields: [eiId], references: [id])
-  major                   Major                  @relation(fields: [mId], references: [id])
-  course                  Course                 @relation(fields: [cId], references: [id])
-  jobber                  Jobber                 @relation(fields: [jId], references: [id])
+  checkInTime             String
+  checkOutTime            String
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+  educationLevels         EducationLevel          @relation(fields: [elId], references: [id])
+  educationalInstitutions EducationalInstitution  @relation(fields: [eiId], references: [id])
+  major                   Major                   @relation(fields: [mId], references: [id])
+  course                  Course                  @relation(fields: [cId], references: [id])
+  jobber                  Jobber                  @relation(fields: [jId], references: [id])
+  JobberProfileSkill      JobberProfileSkill[]
+  JobberProfilePosition   JobberProfilePosition[]
 }
 
-model JobberSkill {
-  jId    String
-  sId    String
-  jobber Jobber @relation(fields: [jId], references: [id])
-  skill  Skill  @relation(fields: [sId], references: [id])
+model JobberProfileSkill {
+  jpId  String
+  sId   String
+  jp    JobberProfile @relation(fields: [jpId], references: [id])
+  skill Skill         @relation(fields: [sId], references: [id])
 
-  @@id([jId, sId])
+  @@id([jpId, sId])
+}
+
+model JobberProfilePosition {
+  jpId String
+  jPId String
+  jp   JobberProfile @relation(fields: [jpId], references: [id])
+  jP   JobPosition   @relation(fields: [jPId], references: [id])
+
+  @@id([jpId, jPId])
 }
 
 model Company {

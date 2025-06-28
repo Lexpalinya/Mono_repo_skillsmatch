@@ -1,6 +1,6 @@
 // utils/updateAllUsageCounts.ts
 import { Prisma } from "@prisma/client";
-import { updateUsageCount } from "./updateUsageCount";
+import { updateUsageCount, updateUsagesCount } from "./updateUsageCount";
 
 type Input = {
     tx: Prisma.TransactionClient;
@@ -8,6 +8,8 @@ type Input = {
     eiId: string;
     mId: string;
     cId: string;
+    skillIds: string[];
+    jobPositionIds: string[]
 };
 
 export async function updateAllUsageCountsForJobberProfile({
@@ -16,6 +18,8 @@ export async function updateAllUsageCountsForJobberProfile({
     eiId,
     mId,
     cId,
+    skillIds,
+    jobPositionIds
 }: Input) {
     await Promise.all([
         updateUsageCount({
@@ -46,5 +50,29 @@ export async function updateAllUsageCountsForJobberProfile({
             jobberProfileField: "cId",
             foreignKeyId: cId,
         }),
+        await updateUsagesCount({
+            tx,
+            relationModel: "jobberProfileSkill",
+            relationField: "sId",
+            targetModel: "skill",
+            targetIdField: "id",
+            targetCountField: "jobberUsageCount",
+            previousIds: [],
+            currentIds: skillIds ?? []
+        }),
+
+        await updateUsagesCount({
+            tx,
+            relationModel: "jobberProfilePosition",
+            relationField: "jPId",
+            targetModel: "jobPosition",
+            targetIdField: "id",
+            targetCountField: "jobberUsageCount",
+            previousIds: [],
+            currentIds: jobPositionIds ?? [],
+        })
+
+
     ]);
 }
+

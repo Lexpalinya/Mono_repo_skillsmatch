@@ -28,11 +28,11 @@ export async function syncAllUsageCountsForJobberProfile({
             const updates = new Set<string>();
 
             if (oldData[field] && oldData[field] !== newData[field]) {
-                updates.add(oldData[field]!); // ลบของเก่า
+                updates.add(oldData[field]!);
             }
 
             if (newData[field]) {
-                updates.add(newData[field]!); // เพิ่มของใหม่
+                updates.add(newData[field]!);
             }
 
             return Array.from(updates).map((id) =>

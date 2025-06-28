@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 
 export function formatDateTime(date: Date | string | undefined): string {
-    if (!date) return "";
+  if (!date) return "";
   return format(date, "M/d/yyyy, h:mm:ss a");
 }
 

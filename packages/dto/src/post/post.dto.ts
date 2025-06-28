@@ -6,7 +6,10 @@ import { fileSchema } from "../file.dto";
 const CurrencyEnum = z.enum(["KIP", "USD", "THB", "CNY"]);
 
 // 🔸 Time Format
-const TimeString = z.string()
+const TimeString = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, {
+  message: "ເວລາຕ້ອງເປັນຮູບແບບ HH:mm (24 ຊົ່ວໂມງ)",
+});
+
 // 🔸 Shared jobPosition schema
 const JobPositionSchema = z.object({
   jpId: z.string().uuid({ message: "Invalid JobPosition ID" }),
@@ -234,6 +237,7 @@ const SkillSchema = z.object({
 // Job Position Detail schema
 export const PostJobPositionDetailSchema = z.object({
   id: z.string().uuid(),
+  cId: z.string(),
   amount: z.number().int().min(1),
   jp: z.object({
     id: z.string().uuid(),
@@ -248,6 +252,11 @@ const CompanySchema = z.object({
   province: z.string(),
   district: z.string(),
   village: z.string(),
+  isVerify: z.boolean(),
+  member: z.object({
+    id: z.string(),
+    profile: z.string(),
+  }),
   bm: z.object({
     name: z.string()
   })
@@ -256,12 +265,14 @@ const CompanySchema = z.object({
 // Main PostJob schema
 export const PostJobSchema = z.object({
   id: z.string().uuid(),
+  cId: z.string(),
   title: z.string(),
   minSalary: z.number().min(0),
   maxSalary: z.number().min(0),
   endDate: z.coerce.date(), // รับ ISO string ได้ด้วย
   company: CompanySchema,
   postJobPositionDetail: z.array(PostJobPositionDetailSchema),
+
 });
 
 // Array schema สำหรับหลายรายการ

@@ -8,6 +8,7 @@ import prisma from "@lib/prisma-client";
 import { queryTable } from "@utils/pagination";
 import { Prisma } from "@prisma/client";
 import { updateUsageCount } from "./utils/updateUsageCount";
+import { formatNumberWithComma } from "@utils/format";
 
 export const CreatePost = async (data: IPostCreateDtoType) => {
   try {
@@ -16,7 +17,7 @@ export const CreatePost = async (data: IPostCreateDtoType) => {
         data: {
           title: data.title,
           checkInTime: data.checkInTime,
-          checkOutTime: data.checkInTime,
+          checkOutTime: data.checkOutTime,
           currency: data.currency,
           endDate: data.endDate,
           gpa: data.gpa,
@@ -247,10 +248,78 @@ export const UpdatePost = async (id: string, data: IPostUpdateDtoType) => {
 
 export const DeletePost = async (id: string) => {
   await ensureRecordExists({ table: "post", column: "id", value: id });
-  const post = await prisma.post.update({
-    where: { id },
-    data: { isActive: false },
-  });
+  const post = await prisma.$transaction(
+    async (tx) => {
+      await tx.post.update({
+        where: { id },
+        data: { isActive: false },
+      })
+      await tx.postCourse.deleteMany({ where: { pId: id } });
+      await tx.postMajor.deleteMany({ where: { pId: id } });
+      await tx.postEducationLevel.deleteMany({ where: { pId: id } });
+      await tx.postEducationInstitution.deleteMany({ where: { pId: id } });
+      const oldJobDetails = await tx.postJobPositionDetail.findMany({
+        where: { pId: id },
+      });
+      const jobDetailIds = oldJobDetails.map((item) => item.id);
+
+      await tx.postJobPositionDetailSkill.deleteMany({
+        where: { pjpId: { in: jobDetailIds } },
+      });
+      await tx.postJobPositionDetail.deleteMany({ where: { pId: id } });
+      await Promise.all([
+        updateUsageCount({
+          tx,
+          relationModel: "postCourse",
+          relationField: "crId",
+          targetModel: "course",
+          targetIdField: "id",
+          targetCountField: "postUsageCount",
+        }),
+        updateUsageCount({
+          tx,
+          relationModel: "postMajor",
+          relationField: "mId",
+          targetModel: "major",
+          targetIdField: "id",
+          targetCountField: "postUsageCount",
+        }),
+        updateUsageCount({
+          tx,
+          relationModel: "postEducationLevel",
+          relationField: "elId",
+          targetModel: "educationLevel",
+          targetIdField: "id",
+          targetCountField: "postUsageCount",
+        }),
+        updateUsageCount({
+          tx,
+          relationModel: "postEducationInstitution",
+          relationField: "eiId",
+          targetModel: "educationalInstitution",
+          targetIdField: "id",
+          targetCountField: "postUsageCount",
+        }),
+        updateUsageCount({
+          tx,
+          relationModel: "postJobPositionDetail",
+          relationField: "jpId",
+          targetModel: "jobPosition",
+          targetIdField: "id",
+          targetCountField: "postUsageCount",
+        }),
+        updateUsageCount({
+          tx,
+          relationModel: "postJobPositionDetailSkill",
+          relationField: "skId",
+          targetModel: "skill",
+          targetIdField: "id",
+          targetCountField: "postUsageCount",
+        }),
+      ]);
+    }
+
+  )
   return post;
 };
 
@@ -315,10 +384,18 @@ export const GetPost = async ({
       company: {
         select: {
           name: true,
+          isActive: true,
           province: true,
           district: true,
           village: true,
+          member: {
+            select: {
+              id: true,
+              profile: true
+            }
+          }
         },
+
       },
 
       postJobPositionDetail: {
@@ -353,6 +430,7 @@ export const GetPost = async ({
       },
     });
 
+    console.log('items :>> ', items);
     return items;
   } catch (error) {
     console.error("Error occurred while fetching post statistics:", error);
@@ -450,27 +528,117 @@ export const GetMostPostion = async ({
   }
 };
 
-
 export const GetPostById = async (id: string) => {
   const post = await prisma.post.findUniqueOrThrow({
     where: {
       id,
       isActive: true,
     },
+
     include: {
-      postCourse: true,
-      postMajor: true,
-      postEducationLevel: true,
-      postEducationInstitution: true,
-      postJobPositionDetail: {
-        include: {
-          postJobPositionDetailSkill: true,
+      company: {
+        select: {
+          name: true,
+          province: true,
+          district: true,
+          village: true,
+          member: {
+            select: {
+              profile: true
+            }
+          },
+          bm: {
+            select: {
+              name: true
+            }
+          }
         },
+      },
+      postCourse: {
+        select: {
+          cr: {
+            select: { name: true }
+          }
+        }
+      },
+      postMajor: {
+        select: {
+          major: {
+            select: {
+              name: true
+            }
+          }
+        }
+      },
+      postEducationLevel: {
+        select: {
+          educationLevel: {
+            select: {
+              name: true
+            }
+          }
+        }
+      },
+      postEducationInstitution: {
+        select: {
+          ei: {
+            select: {
+              name: true
+            }
+          }
+        }
+      },
+      postJobPositionDetail: {
+        select: {
+          jp: {
+            select: {
+              name: true
+            }
+          },
+          amount: true,
+          description: true,
+          postJobPositionDetailSkill: {
+            select: {
+              sk: {
+                select: {
+                  name: true
+                }
+              }
+            }
+          }
+
+        }
       },
     },
   });
+  const result = {
+    id: post.id,
+    title: post.title,
+    company: post.company,
+    imageUrls: post.image,
+    workDay: post.workday,
+    minSalary: formatNumberWithComma(Number(post.minSalary ?? 0)),
+    maxSalary: formatNumberWithComma(Number(post.maxSalary)),
+    currency: post.currency,
+    workTime: `${post.checkInTime} - ${post.checkOutTime}`,
+    gpa: post.gpa,
+    endDate: new Date(post.endDate).toLocaleDateString("th-TH"),
+    welfare: post.welfare,
+    more: post.more,
+    educationLevels: post.postEducationLevel.map(e => e.educationLevel.name),
+    institutions: post.postEducationInstitution.map(i => i.ei.name),
+    majors: post.postMajor.map(m => m.major.name),
+    courses: post.postCourse.map(c => c.cr.name),
+    jobPositions: post.postJobPositionDetail.map(pos => ({
+      name: pos.jp.name,
+      amount: pos.amount,
+      description: pos.description,
+      skills: pos.postJobPositionDetailSkill.map(s => s.sk.name)
+    })),
+  };
+  console.log('result :>> ', result);
 
-  return post;
+  return result;
 };
 export const GetStatsPost = async () => {
   try {
@@ -566,6 +734,7 @@ export const GetPostUpdate = async (id: string) => {
     educationLevelIds: post.postEducationLevel.map((pel) => pel.elId),
     educationInstitutionIds: post.postEducationInstitution.map((pei) => pei.eiId),
     jobPositions: post.postJobPositionDetail.map((jp) => ({
+      id: jp.id,
       jpId: jp.jpId,
       description: jp.description,
       amount: jp.amount,
@@ -581,6 +750,7 @@ export const GetPostByCompanyId = async (id: string) => {
     const select: Prisma.PostSelect = {
       id: true,
       title: true,
+      cId: true,
       minSalary: true,
       maxSalary: true,
       endDate: true,
@@ -590,6 +760,12 @@ export const GetPostByCompanyId = async (id: string) => {
           province: true,
           district: true,
           village: true,
+          member: {
+            select: {
+              id: true,
+              profile: true
+            }
+          },
           bm: {
             select: {
               name: true
