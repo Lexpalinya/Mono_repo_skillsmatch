@@ -31,7 +31,7 @@ const PostBaseFields = {
   title: z.string().min(1, { message: "Title is required" }),
   image: z
     .array(z.string().url({ message: "Each image must be a valid URL" }))
-    .min(1, { message: "At least one image is required" }),
+  ,
   minSalary: z.number({ message: "Minimum salary is required" }).min(1),
   maxSalary: z.number({ message: "Maximum salary is required" }).min(1),
   checkInTime: TimeString,
@@ -40,8 +40,8 @@ const PostBaseFields = {
   currency: CurrencyEnum,
   workday: z.array(z.string()).min(1),
   endDate: z.coerce.date({ message: "End date is required" }),
-  welfare: z.string().min(1),
-  more: z.string().min(1),
+  welfare: z.string(),
+  more: z.string(),
   courseIds: z
     .array(z.string().uuid({ message: "Each course ID must be valid UUID" }))
     .optional(),
