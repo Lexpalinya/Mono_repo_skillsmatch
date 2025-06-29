@@ -1,5 +1,6 @@
 import {
   IPostCreateDtoType,
+  IPostDto,
   IPostPaginationDtoType,
   IPostUpdateDtoType,
 } from "@skillsmatch/dto";
@@ -753,6 +754,7 @@ export const GetPostByCompanyId = async (id: string) => {
       cId: true,
       minSalary: true,
       maxSalary: true,
+      currency: true,
       endDate: true,
       company: {
         select: {
@@ -807,9 +809,8 @@ export const GetPostByCompanyId = async (id: string) => {
         createdAt: "desc",
       },
     });
-    console.log('items.data :>> ', items.data);
 
-    return items.data;
+    return items.data
   } catch (error) {
     console.error("Error occurred while fetching post by company ID:", error);
     throw error; // Rethrow the error after logging
@@ -909,4 +910,178 @@ export const GetPosts = async ({
     throw error; // Rethrow the error after logging
 
   }
+
+
 }
+
+export const GetPostList = async ({
+  cIds,
+  crIds,
+  eiIds,
+  elIds,
+  jpIds,
+  mIds,
+  maxSalary,
+  minSalary,
+  search,
+  skillIds,
+  workDays,
+}: IPostDto) => {
+  try {
+    let where: Prisma.PostWhereInput = {
+      isActive: true,
+    };
+
+    if (cIds?.length) {
+      where.cId = { in: cIds };
+    }
+
+    if (crIds?.length) {
+      where.postCourse = {
+        some: {
+          crId: { in: crIds },
+        },
+      };
+    }
+
+    if (eiIds?.length) {
+      where.postEducationInstitution = {
+        some: {
+          eiId: { in: eiIds },
+        },
+      };
+    }
+
+    if (elIds?.length) {
+      where.postEducationLevel = {
+        some: {
+          elId: { in: elIds },
+        },
+      };
+    }
+
+    if (jpIds?.length) {
+      where.postJobPositionDetail = {
+        some: {
+          jpId: { in: jpIds },
+        },
+      };
+    }
+
+    if (mIds?.length) {
+      where.company = {
+        member: {
+          id: { in: mIds },
+        },
+      };
+    }
+
+    if (minSalary != null) {
+      where.minSalary = { gte: minSalary };
+    }
+
+    if (maxSalary != null) {
+      where.maxSalary = { lte: maxSalary };
+    }
+
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: "insensitive" } },
+        { company: { name: { contains: search, mode: "insensitive" } } },
+        {
+          postJobPositionDetail: {
+            some: {
+              jp: {
+                name: { contains: search, mode: "insensitive" },
+              },
+            },
+          },
+        },
+      ];
+    }
+
+    if (skillIds?.length) {
+      where.postJobPositionDetail = {
+        some: {
+          postJobPositionDetailSkill: {
+            some: {
+              skId: { in: skillIds },
+            },
+          },
+        },
+      };
+    }
+
+    if (workDays?.length) {
+      where.workday = {
+        equals: workDays
+      }
+    }
+
+    const select: Prisma.PostSelect = {
+      id: true,
+      title: true,
+      cId: true,
+      minSalary: true,
+      maxSalary: true,
+      currency: true,
+      endDate: true,
+      company: {
+        select: {
+          name: true,
+          province: true,
+          district: true,
+          village: true,
+          member: {
+            select: {
+              id: true,
+              profile: true,
+            },
+          },
+          bm: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      postJobPositionDetail: {
+        select: {
+          id: true,
+          amount: true,
+          jp: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          postJobPositionDetailSkill: {
+            select: {
+              sk: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const items = await queryTable("post", {
+      limit: 1000,
+      where,
+      select,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    console.log('items.data :>> ', items.data);
+    return items.data;
+  } catch (error) {
+    console.error("Error occurred while fetching post list:", error);
+    throw error;
+  }
+};

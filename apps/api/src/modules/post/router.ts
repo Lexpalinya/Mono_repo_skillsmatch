@@ -4,6 +4,7 @@ import {
   IIdDtoType,
   IPostCreateDtoType,
   PostCreateDto,
+  PostDto,
   PostPaginationDto,
   PostUpdateDto,
 } from "@skillsmatch/dto";
@@ -19,6 +20,7 @@ import {
   GetPostUpdate,
   GetPostByCompanyId,
   GetPosts,
+  GetPostList,
 } from "./service";
 
 export const postRouter = t.router({
@@ -69,5 +71,8 @@ export const postRouter = t.router({
   getPosts: t.procedure.input(PostPaginationDto).query(async ({ input }) => {
     return GetPosts(input);
   }
-  )
+  ),
+  getPostList: t.procedure.input(PostDto).query(({ input }) => {
+    return GetPostList(input);
+  })
 });

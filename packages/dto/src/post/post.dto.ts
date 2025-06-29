@@ -269,12 +269,30 @@ export const PostJobSchema = z.object({
   title: z.string(),
   minSalary: z.number().min(0),
   maxSalary: z.number().min(0),
-  endDate: z.coerce.date(), // รับ ISO string ได้ด้วย
+  currency: z.string(),
+  endDate: z.string(), // รับ ISO string ได้ด้วย
   company: CompanySchema,
   postJobPositionDetail: z.array(PostJobPositionDetailSchema),
 
 });
 
+
+
+export const PostDto = z.object({
+  search: z.string().optional(),
+  cIds: z.array(z.string()).optional(),
+  minSalary: z.number().optional(),
+  maxSalary: z.number().optional(),
+  crIds: z.array(z.string()).optional(),
+  mIds: z.array(z.string()).optional(),
+  elIds: z.array(z.string()).optional(),
+  eiIds: z.array(z.string()).optional(),
+  jpIds: z.array(z.string()).optional(),
+  skillIds: z.array(z.string()).optional(),
+  workDays: z.array(z.string()).optional(),
+})
+
+export type IPostDto = z.infer<typeof PostDto>
 // Array schema สำหรับหลายรายการ
 export const PostJobListSchema = z.array(PostJobSchema);
 
