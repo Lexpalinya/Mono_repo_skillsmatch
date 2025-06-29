@@ -13,10 +13,12 @@ import {
   GetCompany,
   GetCompanyById,
   GetCompanyByMemberId,
+  GetCompanyCard,
   GetCompanyCombobox,
   GetStatsCompany,
   UpdateCompany,
 } from "./service";
+import { z } from "zod";
 
 export const companyRouter = t.router({
   getAll: t.procedure.input(CompanyPaginationDto).query(async ({ input }) => {
@@ -59,4 +61,9 @@ export const companyRouter = t.router({
     .query(async ({ input }) => {
       return GetCompanyCombobox(input);
     }),
+  getCompanyCard: t.procedure.input(z.object({
+    search: z.string()
+  })).query(async ({ input }) => {
+    return GetCompanyCard(input)
+  })
 });

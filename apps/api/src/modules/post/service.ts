@@ -900,9 +900,9 @@ export const GetPosts = async ({
         [sortBy]: sortOrder,
       },
     });
-    console.log('items :>> ', items);
 
-    return items;
+
+    return items.data;
 
 
   } catch (error) {

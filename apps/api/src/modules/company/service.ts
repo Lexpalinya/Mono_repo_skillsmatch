@@ -392,3 +392,45 @@ export const GetCompanyCombobox = async (
     throw error;
   }
 };
+
+
+
+export const GetCompanyCard = async ({ search }: Omit<ICompanyPaginationDtoType, "sortOrder" | "sortBy">) => {
+  try {
+    const select: Prisma.CompanySelect = {
+      id: true,
+      name: true,
+      province: true,
+      district: true,
+      village: true,
+      member: {
+        select: {
+          profile: true
+        }
+      },
+      bm: {
+        select: {
+          name: true
+        }
+      }
+    }
+    const items = await queryTable("company", {
+      page: 1,
+      limit: 1000,
+      where: {
+        name: {
+          contains: search,
+          mode: "insensitive",
+        },
+      },
+      select,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    console.log('items.data :>> ', items.data);
+    return items.data
+  } catch (error) {
+
+  }
+}

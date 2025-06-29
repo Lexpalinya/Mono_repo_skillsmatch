@@ -247,7 +247,8 @@ export const PostJobPositionDetailSchema = z.object({
 });
 
 // Company schema
-const CompanySchema = z.object({
+const CompanySchemaDto = z.object({
+  id: z.string(),
   name: z.string(),
   province: z.string(),
   district: z.string(),
@@ -271,7 +272,7 @@ export const PostJobSchema = z.object({
   maxSalary: z.number().min(0),
   currency: z.string(),
   endDate: z.string(), // รับ ISO string ได้ด้วย
-  company: CompanySchema,
+  company: CompanySchemaDto,
   postJobPositionDetail: z.array(PostJobPositionDetailSchema),
 
 });
@@ -292,6 +293,7 @@ export const PostDto = z.object({
   workDays: z.array(z.string()).optional(),
 })
 
+export type ICompanySchemaDto = z.infer<typeof CompanySchemaDto>
 export type IPostDto = z.infer<typeof PostDto>
 // Array schema สำหรับหลายรายการ
 export const PostJobListSchema = z.array(PostJobSchema);
