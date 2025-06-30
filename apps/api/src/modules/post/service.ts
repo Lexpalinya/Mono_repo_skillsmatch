@@ -759,6 +759,7 @@ export const GetPostByCompanyId = async (id: string) => {
       company: {
         select: {
           name: true,
+          isVerify: true,
           province: true,
           district: true,
           village: true,
@@ -915,7 +916,6 @@ export const GetPosts = async ({
 }
 
 export const GetPostList = async ({
-  cIds,
   crIds,
   eiIds,
   elIds,
@@ -925,16 +925,12 @@ export const GetPostList = async ({
   minSalary,
   search,
   skillIds,
-  workDays,
 }: IPostDto) => {
   try {
     let where: Prisma.PostWhereInput = {
       isActive: true,
+      endDate: { gte: new Date() }
     };
-
-    if (cIds?.length) {
-      where.cId = { in: cIds };
-    }
 
     if (crIds?.length) {
       where.postCourse = {
@@ -960,10 +956,17 @@ export const GetPostList = async ({
       };
     }
 
-    if (jpIds?.length) {
+    if (jpIds?.length || skillIds?.length) {
       where.postJobPositionDetail = {
         some: {
-          jpId: { in: jpIds },
+          ...(jpIds?.length && { jpId: { in: jpIds } }),
+          ...(skillIds?.length && {
+            postJobPositionDetailSkill: {
+              some: {
+                skId: { in: skillIds },
+              },
+            },
+          }),
         },
       };
     }
@@ -976,11 +979,12 @@ export const GetPostList = async ({
       };
     }
 
-    if (minSalary != null) {
+    if (minSalary != null && maxSalary != null) {
       where.minSalary = { gte: minSalary };
-    }
-
-    if (maxSalary != null) {
+      where.maxSalary = { lte: maxSalary };
+    } else if (minSalary != null) {
+      where.minSalary = { gte: minSalary };
+    } else if (maxSalary != null) {
       where.maxSalary = { lte: maxSalary };
     }
 
@@ -1000,24 +1004,6 @@ export const GetPostList = async ({
       ];
     }
 
-    if (skillIds?.length) {
-      where.postJobPositionDetail = {
-        some: {
-          postJobPositionDetailSkill: {
-            some: {
-              skId: { in: skillIds },
-            },
-          },
-        },
-      };
-    }
-
-    if (workDays?.length) {
-      where.workday = {
-        equals: workDays
-      }
-    }
-
     const select: Prisma.PostSelect = {
       id: true,
       title: true,
@@ -1029,8 +1015,10 @@ export const GetPostList = async ({
       company: {
         select: {
           name: true,
+          isVerify: true,
           province: true,
           district: true,
+
           village: true,
           member: {
             select: {
@@ -1078,7 +1066,6 @@ export const GetPostList = async ({
       },
     });
 
-    console.log('items.data :>> ', items.data);
     return items.data;
   } catch (error) {
     console.error("Error occurred while fetching post list:", error);

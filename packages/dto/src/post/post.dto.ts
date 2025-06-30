@@ -257,6 +257,7 @@ const CompanySchemaDto = z.object({
   member: z.object({
     id: z.string(),
     profile: z.string(),
+    background: z.string()
   }),
   bm: z.object({
     name: z.string()
@@ -281,7 +282,6 @@ export const PostJobSchema = z.object({
 
 export const PostDto = z.object({
   search: z.string().optional(),
-  cIds: z.array(z.string()).optional(),
   minSalary: z.number().optional(),
   maxSalary: z.number().optional(),
   crIds: z.array(z.string()).optional(),
@@ -290,7 +290,6 @@ export const PostDto = z.object({
   eiIds: z.array(z.string()).optional(),
   jpIds: z.array(z.string()).optional(),
   skillIds: z.array(z.string()).optional(),
-  workDays: z.array(z.string()).optional(),
 })
 
 export type ICompanySchemaDto = z.infer<typeof CompanySchemaDto>

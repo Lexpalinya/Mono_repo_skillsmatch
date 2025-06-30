@@ -400,12 +400,14 @@ export const GetCompanyCard = async ({ search }: Omit<ICompanyPaginationDtoType,
     const select: Prisma.CompanySelect = {
       id: true,
       name: true,
+      isVerify: true,
       province: true,
       district: true,
       village: true,
       member: {
         select: {
-          profile: true
+          profile: true,
+          background: true,
         }
       },
       bm: {

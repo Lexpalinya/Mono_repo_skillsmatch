@@ -34,22 +34,6 @@ export const DeleteApplyForJob = async (id: string) => {
     return apply;
 };
 
-export const GetApplyForJob = async ({
-    where = { isActive: true },
-    page = 1,
-    pageSize = 10,
-    orderBy,
-    include,
-}: QueryOptions<ApplyForJob>) => {
-    return queryTable("applyForJob", {
-        where,
-        page,
-        pageSize,
-        orderBy,
-        include,
-    });
-};
-
 export const GetApplyForJobById = async (id: string) => {
     const apply = await prisma.applyForJob.findUniqueOrThrow({
         where: {
