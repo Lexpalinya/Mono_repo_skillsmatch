@@ -2,13 +2,8 @@ import { z } from "zod";
 
 export const fileSchema = z
   .custom<File>()
-  .refine((file) => file instanceof File, { message: "Invalid file" })
-  .refine((file) => file.size < 100 * 1024 * 1024, {
-    message: "File must be < 5MB",
+  .refine((file) => file instanceof File, { message: "ບໍ່ພົບໄຟສທີ່ບໍ່ຕ້ອງ" })
+  .refine((file) => file.size < 20 * 1024 * 1024, {
+    message: "ຂະໜາດຕ້ອງນ້ອຍກ່ວາ 20MB",
   })
-  .refine(
-    (file) => ["image/jpeg", "image/png", "image/webp"].includes(file.type),
-    {
-      message: "Invalid file type",
-    }
-  );
+

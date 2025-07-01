@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { fileSchema } from "../file.dto";
 
 export const ECurrencyEnum = z.enum(["KIP", "THB", "USD"], {
     errorMap: () => ({ message: "ສະກຸນເງິນບໍ່ຖືກຕ້ອງ" }),
@@ -22,7 +23,7 @@ export const JobberProfileCreateDto = z.object({
 
     drivingCardType: z.string({ message: "ປ້ອນປະເພດໃບຂັບຂີ່" }).optional().nullable(),
 
-    more: z.string({ message: "ກະລຸນາປ້ອນຂໍ້ມູນເພີ່ມເຕີມ" }).min(1, { message: "ຂໍ້ມູນເພີ່ມເຕີມຕ້ອງບໍ່ວ່າງເປົ່າ" }),
+
 
     startSalary: z.number({ message: "ກະລຸນາປ້ອນເງິນເດືອນ" }).optional().nullable(),
 
@@ -39,6 +40,7 @@ export const JobberProfileCreateDto = z.object({
         .optional(),
     jobPositionIds: z.array(z.string().uuid({ message: "ID ຂອງຕຳແໜ່ງງານບໍ່ຖືກຕ້ອງ" }),)
         .optional(),
+    cv: z.array(z.string()).optional()
 });
 
 

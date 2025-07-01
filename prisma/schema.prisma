@@ -185,7 +185,7 @@ model JobberProfile {
   mId                     String
   cId                     String
   gpa                     Float
-  more                    String                  @db.Text
+  cv                      String[]
   startSalary             Float?
   currency                ECurrency               @default(KIP)
   workDay                 String[]

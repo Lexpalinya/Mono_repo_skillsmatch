@@ -13,6 +13,7 @@ export const CreateJobberProfile = async (data: IJobberProfileCreateDtoType) => 
     await ensureRecordExists({ table: "educationalInstitution", column: "id", value: data.eiId })
     await ensureRecordExists({ table: "major", column: "id", value: data.mId })
     await ensureRecordExists({ table: "course", column: "id", value: data.cId })
+    console.log('data.cv :>> ', data.cv);
     return await prisma.$transaction(async (tx) => {
 
         const profile = await tx.jobberProfile.create({
@@ -23,7 +24,7 @@ export const CreateJobberProfile = async (data: IJobberProfileCreateDtoType) => 
                 mId: data.mId,
                 cId: data.cId,
                 gpa: data.gpa,
-                more: data.more,
+                cv: data.cv ?? [],
                 startSalary: data.startSalary,
                 currency: data.currency,
                 workDay: data.workDay,
@@ -86,9 +87,8 @@ export const UpdateJobberProfile = async (
                     elId: data.elId,
                     eiId: data.eiId,
                     mId: data.mId,
-                    cId: data.cId,
+                    cId: data.cId, cv: data.cv ?? [],
                     gpa: data.gpa,
-                    more: data.more,
                     startSalary: data.startSalary,
                     currency: data.currency,
                     workDay: data.workDay,
@@ -105,11 +105,9 @@ export const UpdateJobberProfile = async (
                 select: { jPId: true },
             });
 
-            // 2. ลบข้อมูลเดิม
             await tx.jobberProfileSkill.deleteMany({ where: { jpId: id } });
             await tx.jobberProfilePosition.deleteMany({ where: { jpId: id } });
 
-            // 3. เพิ่มข้อมูลใหม่
             if (data.skillIds) {
                 const profileSkills = data.skillIds.map((item) => ({
                     jpId: id,
