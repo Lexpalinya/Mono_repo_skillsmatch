@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PostJobSchema } from '../post/post.dto';
 
 const ApplyForJobCreateDTO = z.object({
   isActive: z.boolean().optional(), // optional since it defaults to true in DB
@@ -16,6 +17,13 @@ const ApplyForJobUpdateDTO
     status: z.string().optional(),
   });
 
+
+const ApplyForJobGetJobberDTO = z.object({
+  id: z.string(),
+  pId: z.string(),
+  status: z.string(),
+  post: PostJobSchema
+})
 export {
   ApplyForJobCreateDTO,
   ApplyForJobUpdateDTO,
@@ -23,3 +31,4 @@ export {
 
 export type IApplyForJobCreateDTOType = z.infer<typeof ApplyForJobCreateDTO>;
 export type IApplyForJobUpdateDTOType = z.infer<typeof ApplyForJobUpdateDTO>;
+export type IApplyForJobGetJobberDTO = z.infer<typeof ApplyForJobGetJobberDTO>

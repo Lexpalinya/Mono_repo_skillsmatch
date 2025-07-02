@@ -1,6 +1,6 @@
 import { router, t } from "@lib/trpc";
 import { ApplyForJobCreateDTO, ApplyForJobUpdateDTO, idDto } from "@skillsmatch/dto";
-import { CreateApplyForJob, DeleteApplyForJob, UpdateApplyForJob } from "./service";
+import { CreateApplyForJob, DeleteApplyForJob, GetApplyForJobberByJobberId, UpdateApplyForJob } from "./service";
 
 
 
@@ -13,6 +13,8 @@ export const applyForJobRouter = router({
     }),
     delete: t.procedure.input(idDto).mutation(({ input }) => {
         return DeleteApplyForJob(input.id)
+    }),
+    getByJobberId: t.procedure.input(idDto).query(({ input }) => {
+        return GetApplyForJobberByJobberId(input.id)
     })
-
 })

@@ -267,6 +267,7 @@ model Post {
   postEducationLevel       PostEducationLevel[]
   postEducationInstitution PostEducationInstitution[]
   postJobPositionDetail    PostJobPositionDetail[]
+  ApplyForJob              ApplyForJob[]
 }
 
 model PostCourse {
@@ -334,6 +335,7 @@ model ApplyForJob {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   jobber          Jobber            @relation(fields: [jId], references: [id])
+  post            Post              @relation(fields: [pId], references: [id])
   AttendInterView AttendInterView[]
 }
 
