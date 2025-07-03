@@ -125,13 +125,76 @@ export const GetApplyForCompanyId = async (id: string) => {
     try {
         const apply = await prisma.applyForJob.findMany({
             where: {
-
                 isActive: true,
                 post: {
-                    cId: id
-                }
+                    cId: id,
+                },
             },
             include: {
+                jobber: {
+                    include: {
+                        member: {
+                            select: {
+                                id: true,
+                                username: true,
+                                phoneNumber: true,
+                                email: true,
+                                profile: true,
+                                background: true
+                            },
+                        },
+                        status: {
+                            select: {
+                                name: true,
+                            },
+                        },
+                        JobberProfile: {
+                            include: {
+                                jobber: false,
+                                major: {
+                                    select: {
+                                        name: true,
+                                    },
+                                },
+                                course: {
+                                    select: {
+                                        name: true,
+                                    },
+                                },
+                                educationalInstitutions: {
+                                    select: {
+                                        name: true,
+                                    },
+                                },
+                                educationLevels: {
+                                    select: {
+                                        name: true,
+                                    },
+                                },
+                                JobberProfileSkill: {
+                                    select: {
+                                        skill: {
+                                            select: {
+                                                id: true,
+                                                name: true,
+                                            },
+                                        },
+                                    },
+                                },
+                                JobberProfilePosition: {
+                                    select: {
+                                        jP: {
+                                            select: {
+                                                id: true,
+                                                name: true,
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
                 post: {
                     select: {
                         id: true,
@@ -155,14 +218,14 @@ export const GetApplyForCompanyId = async (id: string) => {
                                 isVerify: true,
                                 member: {
                                     select: {
-                                        profile: true
-                                    }
+                                        profile: true,
+                                    },
                                 },
                                 bm: {
                                     select: {
-                                        name: true
-                                    }
-                                }
+                                        name: true,
+                                    },
+                                },
                             },
                         },
                         postJobPositionDetail: {
@@ -172,7 +235,6 @@ export const GetApplyForCompanyId = async (id: string) => {
                                     select: {
                                         id: true,
                                         name: true,
-
                                     },
                                 },
                                 postJobPositionDetailSkill: {
@@ -187,14 +249,14 @@ export const GetApplyForCompanyId = async (id: string) => {
                                 },
                             },
                         },
-                    }
-                }
-            }
-
-        })
-
-        return apply
+                    },
+                },
+            },
+        });
+        console.log('apply :>> ', apply);
+        return apply;
     } catch (error) {
-        console.log('error :>> ', error);
+        console.error("GetApplyForCompanyId error: ", error);
+        throw error;
     }
-}
+};
