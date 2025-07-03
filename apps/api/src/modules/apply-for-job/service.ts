@@ -87,10 +87,12 @@ export const GetApplyForJobberByJobberId = async (id: string) => {
                         },
                         postJobPositionDetail: {
                             select: {
+                                amount: true,
                                 jp: {
                                     select: {
                                         id: true,
                                         name: true,
+
                                     },
                                 },
                                 postJobPositionDetailSkill: {
@@ -110,7 +112,87 @@ export const GetApplyForJobberByJobberId = async (id: string) => {
             }
 
         })
-        console.log('apply[0] :>> ', apply[0]);
+
+        return apply
+    } catch (error) {
+        console.log('error :>> ', error);
+    }
+}
+
+
+
+export const GetApplyForCompanyId = async (id: string) => {
+    try {
+        const apply = await prisma.applyForJob.findMany({
+            where: {
+
+                isActive: true,
+                post: {
+                    cId: id
+                }
+            },
+            include: {
+                post: {
+                    select: {
+                        id: true,
+                        title: true,
+                        gpa: true,
+                        workday: true,
+                        currency: true,
+                        minSalary: true,
+                        maxSalary: true,
+                        checkInTime: true,
+                        checkOutTime: true,
+                        endDate: true,
+                        createdAt: true,
+                        isActive: true,
+                        company: {
+                            select: {
+                                name: true,
+                                province: true,
+                                district: true,
+                                village: true,
+                                isVerify: true,
+                                member: {
+                                    select: {
+                                        profile: true
+                                    }
+                                },
+                                bm: {
+                                    select: {
+                                        name: true
+                                    }
+                                }
+                            },
+                        },
+                        postJobPositionDetail: {
+                            select: {
+                                amount: true,
+                                jp: {
+                                    select: {
+                                        id: true,
+                                        name: true,
+
+                                    },
+                                },
+                                postJobPositionDetailSkill: {
+                                    select: {
+                                        sk: {
+                                            select: {
+                                                id: true,
+                                                name: true,
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    }
+                }
+            }
+
+        })
+
         return apply
     } catch (error) {
         console.log('error :>> ', error);
