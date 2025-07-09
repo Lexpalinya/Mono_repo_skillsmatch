@@ -33,3 +33,4 @@ export const fetchAllCompany = async ({
   const result = await trpcClient.company.getAll.query(queryParams);
   return { data: result.data, total: result.total };
 };
+

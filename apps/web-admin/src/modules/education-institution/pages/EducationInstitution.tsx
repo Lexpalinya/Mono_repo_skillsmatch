@@ -20,11 +20,9 @@ export const EducationalInstitutionContent = () => (
   <Main>
     <div className="flex items-center justify-between ">
       <div>
-        <h1 className="text-2xl font-semibold">
-          Educational Institutions Management
-        </h1>
+        <h1 className="text-2xl font-semibold">Institutions Management</h1>
         <p className="text-sm text-muted-foreground">
-          Create and manage educational institutions
+          Create and manage institutions
         </p>
       </div>
       <AddButton />
@@ -40,7 +38,7 @@ const AddButton = () => {
   return (
     <Button onClick={() => setOpen("add")} className="mt-4">
       <PlusCircle className="mr-2 h-4 w-4" />
-      Add New Educational Institution
+      Add New Institution
     </Button>
   );
 };

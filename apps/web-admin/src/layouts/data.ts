@@ -14,11 +14,11 @@ export function getSidebarData(): ISidebarData {
       title: "Manage",
       url: "#",
       items: [
-        { title: "Business Model", url: "/business-model" },
+        { title: "Business Type", url: "/business-model" },
         { title: "Company", url: "/company" },
         { title: "Course", url: "/course" },
-        { title: "Education Institution", url: "/education-institution" },
-        { title: "Education Level", url: "/education-level" },
+        { title: "Institution", url: "/education-institution" },
+        { title: "Degree", url: "/education-level" },
         { title: "Job Position", url: "/job-position" },
         { title: "Jobber", url: "/jobber" },
         { title: "Jobber Status", url: "/jobber-status" },
@@ -26,7 +26,6 @@ export function getSidebarData(): ISidebarData {
         { title: "Member", url: "/member" },
         { title: "Post", url: "/post" },
         { title: "Skill", url: "/skill" },
-        { title: "Review Application", url: "/review-application" },
       ].sort((a, b) => a.title.localeCompare(b.title)),
     },
     {
@@ -38,6 +37,7 @@ export function getSidebarData(): ISidebarData {
         { title: "Member", url: "/report-member" },
         { title: "Post", url: "/report-post" },
         { title: "Skills", url: "/report-skill" },
+        { title: "Review ", url: "/review-application" },
       ].sort((a, b) => a.title.localeCompare(b.title)),
     },
   ];

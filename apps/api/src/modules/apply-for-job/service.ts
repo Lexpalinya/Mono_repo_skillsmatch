@@ -51,6 +51,7 @@ export const GetApplyForJobberByJobberId = async (id: string) => {
                 jId: id,
                 isActive: true
             },
+            orderBy: { createdAt: "desc", updatedAt: "desc" },
             include: {
                 post: {
                     select: {

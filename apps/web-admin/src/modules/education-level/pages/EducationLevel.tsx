@@ -20,9 +20,9 @@ export const EducationLevelContent = () => (
   <Main>
     <div className="flex items-center justify-between">
       <div>
-        <h1 className="text-2xl font-semibold">Education Levels Management</h1>
+        <h1 className="text-2xl font-semibold">Degree Management</h1>
         <p className="text-sm text-muted-foreground">
-          Create and manage education levels for training
+          Create and manage Degree for training
         </p>
       </div>
       <AddButton />
@@ -38,7 +38,7 @@ const AddButton = () => {
   return (
     <Button onClick={() => setOpen("add")} className="mt-4">
       <PlusCircle className="mr-2 h-4 w-4" />
-      Add New Education Level
+      Add New Degree Level
     </Button>
   );
 };

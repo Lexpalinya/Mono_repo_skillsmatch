@@ -94,14 +94,14 @@ export default function LoginForm({
                 <Form.InputGroup.PasswordInput />
               </Form.Field>
             </div>
-            <div className="flex items-center ">
+            {/* <div className="flex items-center ">
               <Link
                 to={"auth/forgot-password"}
                 className="ml-auto text-sm underline-offset-2 hover:underline"
               >
                 Forgot your password?
               </Link>
-            </div>
+            </div> */}
             <Button className="w-full mt-3">Login</Button>
           </Form>
           <div className="relative hidden bg-muted md:block">
