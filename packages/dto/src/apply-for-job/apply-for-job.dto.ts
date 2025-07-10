@@ -104,24 +104,7 @@ const JobberProfilePositionSchema = z.object({
 
 
 
-// Post (job post)
-const PostSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  gpa: z.number().optional().nullable(),
-  workday: z.union([z.string(), z.array(z.string())]).optional(),
-  currency: z.string(),
-  minSalary: z.number(),
-  maxSalary: z.number(),
-  checkInTime: z.string().optional(),
-  checkOutTime: z.string().optional(),
-  endDate: z.string(), // ISO date string
-  createdAt: z.string().optional(),
-  isActive: z.boolean(),
-  cId: z.string(),
-  company: CompanySchema.optional(),
-  postJobPositionDetail: z.array(PostJobPositionDetailSchema).optional(),
-});
+
 
 // JobberProfile (เพิ่ม field ใหม่ทั้งหมดที่ขาด)
 const JobberProfileSchema = z.object({
@@ -176,18 +159,35 @@ const JobberSchema = z.object({
   status: JobberStatusSchema.optional(),
   JobberProfile: JobberProfileSchema.optional(),
 });
-
-// Final DTO for component
-export const ApplyForJobGetCompanyDTO = z.object({
+const ApplyForJobSchema = z.object({
   id: z.string(),
-  pId: z.string(),
   status: z.string(),
-  post: PostSchema,
+  createdAt: z.string(),
   jobber: JobberSchema.optional().nullable(),
 });
 
-// Export inferred types
-export type IApplyForJobGetCompanyDTO = z.infer<typeof ApplyForJobGetCompanyDTO>;
+// 🧱 สร้าง Schema ของโพสต์ที่มีผู้สมัคร
+export const PostWithApplicantsSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  gpa: z.number().nullable().optional(),
+  workday: z.union([z.string(), z.array(z.string())]).optional(),
+  currency: z.string(),
+  minSalary: z.number(),
+  maxSalary: z.number(),
+  checkInTime: z.string().optional(),
+  checkOutTime: z.string().optional(),
+  endDate: z.string(), // ISO
+  createdAt: z.string().optional(),
+  isActive: z.boolean(),
+  company: CompanySchema.optional(),
+  postJobPositionDetail: z.array(PostJobPositionDetailSchema).optional(),
+  ApplyForJob: z.array(ApplyForJobSchema).optional(), // 👈 ผู้สมัครทั้งหมดของโพสต์
+});
+
+export type IPostWithApplicants = z.infer<typeof PostWithApplicantsSchema>;
+export type IApplyForJobSchema = z.infer<typeof ApplyForJobSchema>
+export type ICompanyApplyForJobSchema = z.infer<typeof CompanySchema>
 export type IPostJobPositionDetailSchema = z.infer<typeof PostJobPositionDetailSchema>;
 export type IJobberDetailApplyForJobDTO = z.infer<typeof JobberSchema>
 

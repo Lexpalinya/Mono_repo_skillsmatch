@@ -50,8 +50,13 @@ export const GetApplyForJobberByJobberId = async (id: string) => {
             where: {
                 jId: id,
                 isActive: true
+
             },
-            orderBy: { createdAt: "desc", updatedAt: "desc" },
+            orderBy: [
+                { createdAt: 'desc' },
+                { updatedAt: 'desc' },
+            ]
+            ,
             include: {
                 post: {
                     select: {
@@ -113,7 +118,7 @@ export const GetApplyForJobberByJobberId = async (id: string) => {
             }
 
         })
-
+        console.log('apply :>> ', apply);
         return apply
     } catch (error) {
         console.log('error :>> ', error);
@@ -121,129 +126,128 @@ export const GetApplyForJobberByJobberId = async (id: string) => {
 }
 
 
-
 export const GetApplyForCompanyId = async (id: string) => {
     try {
-        const apply = await prisma.applyForJob.findMany({
+        const posts = await prisma.post.findMany({
             where: {
                 isActive: true,
-                post: {
-                    cId: id,
-                },
+                cId: id,
             },
-            include: {
-                jobber: {
-                    include: {
+            select: {
+                id: true,
+                title: true,
+                gpa: true,
+                workday: true,
+                currency: true,
+                minSalary: true,
+                maxSalary: true,
+                checkInTime: true,
+                checkOutTime: true,
+                endDate: true,
+                createdAt: true,
+                isActive: true,
+                company: {
+                    select: {
+                        name: true,
+                        province: true,
+                        district: true,
+                        village: true,
+                        isVerify: true,
                         member: {
                             select: {
-                                id: true,
-                                username: true,
-                                phoneNumber: true,
-                                email: true,
                                 profile: true,
-                                background: true
                             },
                         },
-                        status: {
+                        bm: {
                             select: {
                                 name: true,
                             },
                         },
-                        JobberProfile: {
-                            include: {
-                                jobber: false,
-                                major: {
+                    },
+                },
+                postJobPositionDetail: {
+                    select: {
+                        amount: true,
+                        jp: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                        postJobPositionDetailSkill: {
+                            select: {
+                                sk: {
                                     select: {
+                                        id: true,
                                         name: true,
-                                    },
-                                },
-                                course: {
-                                    select: {
-                                        name: true,
-                                    },
-                                },
-                                educationalInstitutions: {
-                                    select: {
-                                        name: true,
-                                    },
-                                },
-                                educationLevels: {
-                                    select: {
-                                        name: true,
-                                    },
-                                },
-                                JobberProfileSkill: {
-                                    select: {
-                                        skill: {
-                                            select: {
-                                                id: true,
-                                                name: true,
-                                            },
-                                        },
-                                    },
-                                },
-                                JobberProfilePosition: {
-                                    select: {
-                                        jP: {
-                                            select: {
-                                                id: true,
-                                                name: true,
-                                            },
-                                        },
                                     },
                                 },
                             },
                         },
                     },
                 },
-                post: {
-                    select: {
-                        id: true,
-                        title: true,
-                        gpa: true,
-                        workday: true,
-                        currency: true,
-                        minSalary: true,
-                        maxSalary: true,
-                        checkInTime: true,
-                        checkOutTime: true,
-                        endDate: true,
-                        createdAt: true,
+                ApplyForJob: {
+                    where: {
                         isActive: true,
-                        company: {
-                            select: {
-                                name: true,
-                                province: true,
-                                district: true,
-                                village: true,
-                                isVerify: true,
+                    },
+                    include: {
+                        jobber: {
+                            include: {
                                 member: {
                                     select: {
-                                        profile: true,
-                                    },
-                                },
-                                bm: {
-                                    select: {
-                                        name: true,
-                                    },
-                                },
-                            },
-                        },
-                        postJobPositionDetail: {
-                            select: {
-                                amount: true,
-                                jp: {
-                                    select: {
                                         id: true,
+                                        username: true,
+                                        phoneNumber: true,
+                                        email: true,
+                                        profile: true,
+                                        background: true,
+                                    },
+                                },
+                                status: {
+                                    select: {
                                         name: true,
                                     },
                                 },
-                                postJobPositionDetailSkill: {
-                                    select: {
-                                        sk: {
+                                JobberProfile: {
+                                    include: {
+                                        major: {
                                             select: {
-                                                id: true,
                                                 name: true,
+                                            },
+                                        },
+                                        course: {
+                                            select: {
+                                                name: true,
+                                            },
+                                        },
+                                        educationalInstitutions: {
+                                            select: {
+                                                name: true,
+                                            },
+                                        },
+                                        educationLevels: {
+                                            select: {
+                                                name: true,
+                                            },
+                                        },
+                                        JobberProfileSkill: {
+                                            select: {
+                                                skill: {
+                                                    select: {
+                                                        id: true,
+                                                        name: true,
+                                                    },
+                                                },
+                                            },
+                                        },
+                                        JobberProfilePosition: {
+                                            select: {
+                                                jP: {
+                                                    select: {
+                                                        id: true,
+                                                        name: true,
+                                                    },
+                                                },
                                             },
                                         },
                                     },
@@ -254,8 +258,9 @@ export const GetApplyForCompanyId = async (id: string) => {
                 },
             },
         });
-        console.log('apply :>> ', apply);
-        return apply;
+
+        console.log("posts with applicants:>>", posts);
+        return posts;
     } catch (error) {
         console.error("GetApplyForCompanyId error: ", error);
         throw error;
