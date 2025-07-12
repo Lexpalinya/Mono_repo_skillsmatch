@@ -1,29 +1,29 @@
 {
-  "cId": "84616e19-d5a2-4930-a4b3-f7ac2bcb6a0d",
   "checkInTime": "08:00",
-  "checkOutTime": "08:00",
-  "courseIds": [],
+  "checkOutTime": "17:30",
+  "company": {
+    "bm": { "name": "ຕົວແທນປະກັນໄພ" },
+    "district": "test",
+    "isVerify": true,
+    "member": {
+      "profile e": "https://res.cloudinary.com/dq3d5qshp/image/upload/v1750992185/a5kcmilepwkzmufcu3te.jpg"
+    },
+    "name": "ບໍລິສັດ insing ການພິມ",
+    "province": "test",
+    "village": "test"
+  },
+  "createdAt": "2025-07-12T13:46:14.418Z",
   "currency": "KIP",
-  "educationInstitutionIds": [],
-  "educationLevelIds": [],
-  "endDate": "2025-06-17T18:24:00.000Z",
-  "gpa": 2,
-  "image": [
-    "https://res.cloudinary.com/dq3d5qshp/image/upload/v1750962285/jngvekye1lnqunnaqz75.jpg"
+  "endDate": "2025-07-31T13:44:00.000Z",
+  "gpa": 2.5,
+  "id": "8d62571c-5504-4b15-94ec-432edd47fffa",
+  "isActive": true,
+  "maxSalary": "18000000",
+  "minSalary": "7000000",
+  "postJobPositionDetail": [
+    { "amount": 2, "jp": [], "postJobPositionDetailSkill": [] },
+    { "amount": 1, "jp": [], "postJobPositionDetailSkill": [] }
   ],
-  "jobPositions": [
-    {
-      "amount": 1,
-      "description": "",
-      "jpId": "20e8c672-2390-49e6-b88b-51c18dc9dd47",
-      "skillIds": []
-    }
-  ],
-  "majorIds": [],
-  "maxSalary": 1000000,
-  "minSalary": 1000000,
-  "more": "d",
-  "title": "dfdfdf",
-  "welfare": "ddd",
+  "title": "test",
   "workday": ["MO", "TU", "WE", "TH", "FR"]
 }

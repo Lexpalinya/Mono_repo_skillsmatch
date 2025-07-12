@@ -1,35 +1,30 @@
-import { z, type TypeOf } from 'zod';
-import { PostJobSchema } from '../post/post.dto';
+import { z, type TypeOf } from "zod";
+import { PostJobSchema } from "../post/post.dto";
 
 const ApplyForJobCreateDTO = z.object({
   isActive: z.boolean().optional(), // optional since it defaults to true in DB
-  pId: z.string().min(1, 'Project ID is required'),
-  jId: z.string().uuid({ message: 'Invalid Jobber ID' }),
-  status: z.string().min(1, 'Status is required'),
+  pId: z.string().min(1, "Project ID is required"),
+  jId: z.string().uuid({ message: "Invalid Jobber ID" }),
+  status: z.string().min(1, "Status is required"),
+  jp: z.string(),
 });
 
-const ApplyForJobUpdateDTO
-  = z.object({
-    id: z.string().uuid({ message: 'Invalid ApplyForJob ID' }),
-    isActive: z.boolean().optional(),
-    pId: z.string().optional(),
-    jId: z.string().uuid().optional(),
-    status: z.string().optional(),
-  });
-
+const ApplyForJobUpdateDTO = z.object({
+  id: z.string().uuid({ message: "Invalid ApplyForJob ID" }),
+  isActive: z.boolean().optional(),
+  pId: z.string().optional(),
+  jId: z.string().uuid().optional(),
+  status: z.string().optional(),
+});
 
 const ApplyForJobGetJobberDTO = z.object({
   id: z.string(),
   pId: z.string(),
+  jp: z.string(),
   status: z.string(),
-  post: PostJobSchema
-})
-export {
-  ApplyForJobCreateDTO,
-  ApplyForJobUpdateDTO,
-};
-
-
+  post: PostJobSchema,
+});
+export { ApplyForJobCreateDTO, ApplyForJobUpdateDTO };
 
 // Skill
 const SkillSchema = z.object({
@@ -56,7 +51,9 @@ const JobPositionSchema = z.object({
 const PostJobPositionDetailSchema = z.object({
   amount: z.number(),
   jp: JobPositionSchema,
-  postJobPositionDetailSkill: z.array(PostJobPositionDetailSkillSchema).optional(),
+  postJobPositionDetailSkill: z
+    .array(PostJobPositionDetailSkillSchema)
+    .optional(),
 });
 
 // BusinessType (bm)
@@ -102,10 +99,6 @@ const JobberProfilePositionSchema = z.object({
   jP: JobProfileSchema,
 });
 
-
-
-
-
 // JobberProfile (เพิ่ม field ใหม่ทั้งหมดที่ขาด)
 const JobberProfileSchema = z.object({
   id: z.string().optional(),
@@ -118,7 +111,9 @@ const JobberProfileSchema = z.object({
   cv: z.array(z.string().url()).optional(),
   startSalary: z.number().optional().nullable(),
   currency: z.string().optional(),
-  workDay: z.array(z.enum(["MO", "TU", "WE", "TH", "FR", "SA", "SU"])).optional(),
+  workDay: z
+    .array(z.enum(["MO", "TU", "WE", "TH", "FR", "SA", "SU"]))
+    .optional(),
   checkInTime: z.string().optional(),
   checkOutTime: z.string().optional(),
   createdAt: z.string().optional(),
@@ -179,18 +174,20 @@ export const PostWithApplicantsSchema = z.object({
   checkOutTime: z.string().optional(),
   endDate: z.string(), // ISO
   createdAt: z.string().optional(),
-  isActive: z.boolean(),
+  // isActive: z.boolean(),
   company: CompanySchema.optional(),
   postJobPositionDetail: z.array(PostJobPositionDetailSchema).optional(),
   ApplyForJob: z.array(ApplyForJobSchema).optional(), // 👈 ผู้สมัครทั้งหมดของโพสต์
 });
 
 export type IPostWithApplicants = z.infer<typeof PostWithApplicantsSchema>;
-export type IApplyForJobSchema = z.infer<typeof ApplyForJobSchema>
-export type ICompanyApplyForJobSchema = z.infer<typeof CompanySchema>
-export type IPostJobPositionDetailSchema = z.infer<typeof PostJobPositionDetailSchema>;
-export type IJobberDetailApplyForJobDTO = z.infer<typeof JobberSchema>
+export type IApplyForJobSchema = z.infer<typeof ApplyForJobSchema>;
+export type ICompanyApplyForJobSchema = z.infer<typeof CompanySchema>;
+export type IPostJobPositionDetailSchema = z.infer<
+  typeof PostJobPositionDetailSchema
+>;
+export type IJobberDetailApplyForJobDTO = z.infer<typeof JobberSchema>;
 
 export type IApplyForJobCreateDTOType = z.infer<typeof ApplyForJobCreateDTO>;
 export type IApplyForJobUpdateDTOType = z.infer<typeof ApplyForJobUpdateDTO>;
-export type IApplyForJobGetJobberDTO = z.infer<typeof ApplyForJobGetJobberDTO>
+export type IApplyForJobGetJobberDTO = z.infer<typeof ApplyForJobGetJobberDTO>;

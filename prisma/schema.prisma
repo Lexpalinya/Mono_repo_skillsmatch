@@ -331,6 +331,7 @@ model ApplyForJob {
   isActive        Boolean           @default(true)
   pId             String
   jId             String
+  jp              String            @default("ການຕະຫຼາດ")
   status          String
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
