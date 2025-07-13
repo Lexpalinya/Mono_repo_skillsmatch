@@ -130,6 +130,9 @@ export const GetApplyForCompanyId = async (id: string) => {
         isActive: true,
         cId: id,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
       select: {
         id: true,
         title: true,
