@@ -69,6 +69,7 @@ export const JobberAdminDto = z.object({
   lastName: z.string(),
   birthday: z.string(),
   isVerify: z.boolean(),
+  isActive: z.boolean(),
   nationality: z.string(),
   createdAt: z.string(),
   statusId: z.string(),
@@ -76,16 +77,51 @@ export const JobberAdminDto = z.object({
   status: z.object({
     name: z.string(),
   }),
+  ApplyForJob: z.object({
+    jp: z.string(),
+  }),
   member: z.object({
     username: z.string(),
     profile: z.string(),
     email: z.string(),
+    phoneNumber: z.string(),
   }),
+  JobberSkill:z.object({
+    skill: z.object({
+      name: z.string()
+    })
+  }),
+  JobberProfile: z.object({
+    gpa: z.string(),
+    startSalary: z.string(),
+    checkInTime: z.string(),
+    checkOutTime: z.string(),
+    workDay: z.string(),
+    eductaionalInstitutions: z.object({
+      name: z.string(),
+    }),
+    educationLevels: z.object({
+      name: z.string(),
+    }),
+    major: z.object({
+      name: z.string(),
+    }),
+    course: z.object({
+      name: z.string(),
+    }),
+  }),
+
+  bProvince: z.string(),
+  bDistrict: z.string(),
+  bVillage: z.string(),
+  cProvince: z.string(),
+  cDistrict: z.string(),
+  cVillage: z.string(),
 });
 export const JobberPaginationDto = QueryDto.extend({
   visible: z.boolean().optional(),
   status: z.string().optional(),
-    statusVerify: z.string().optional(),
+  statusVerify: z.string().optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional(),
 });

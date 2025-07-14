@@ -36,134 +36,155 @@ export const ReportjobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "firstName",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
-    ),
+    id: "jobberDetail",
+    header: () => <div className="text-left">Jobber Profile</div>,
     cell: ({ row }) => {
       const data = row.original;
+
       return (
-        <div className="flex items-center gap-2">
-          <FullImageViewer
-            width={35}
-            height={35}
-            src={data.member?.profile || "/placeholder.svg?height=80&width=80"}
-            alt={`${data.firstName} ${data.lastName}`}
-          />
-          <div>
-            <div className="font-medium">
-              {data.firstName} {data.lastName}
+        <div className="border-3 rounded p-3 w-full text-sm space-y-2">
+          {/* Row 1 */}
+          <div className="grid grid-cols-[auto_1fr] gap-4 items-start">
+            {/* รูปภาพ */}
+            <div className="flex justify-center">
+              <FullImageViewer
+                width={90}
+                height={90}
+                src={data.member?.profile || "/placeholder.svg"}
+                alt={`${data.firstName} ${data.lastName}`}
+                className="rounded object-cover"
+              />
             </div>
-            <div className="text-xs text-muted-foreground">
-              {data.member?.username}
+
+            {/* ข้อมูลฝั่งขวา */}
+            <div className="space-y-2 pl-2 border-l">
+              {/* Row 1: Name, Surname, Age */}
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  {data.firstName}
+                  {"    "}
+                  {data.lastName}
+                  {"    ,"}
+                  {calculateAge(data.birthday)}
+                </div>
+              </div>
+
+              {/* Row 2: Email */}
+              <div className="grid grid-cols-3 gap-2">
+                <div className="col-span-3">
+                  Email: {data.member?.username || "-"}
+                </div>
+              </div>
+
+              {/* Row 3: Phone */}
+              <div className="grid grid-cols-3 gap-2">
+                <div className="col-span-3">
+                  ເບີໂທ: {data.member?.phoneNumber || "-"}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <div className="col-span-3">
+                  {data.isActive ? "ກຳລັງຫາວຽກ" : "ບໍ່ໄດ້ຫາວຽກ"}
+                </div>
+              </div>
             </div>
+          </div>
+
+          {/* Row 4 */}
+
+          {/* Row 5: Current Address */}
+          <div className="grid grid-cols-4 items-center gap-2 border-b pb-1">
+            <div className="font-semibold">ທີ່ຢູ່ປັດຈຸບັນ</div>
+            <div>ບ້ານ: {data.cVillage || "-"}</div>
+            <div>ເມືອງ: {data.cDistrict || "-"}</div>
+            <div>ແຂວງ: {data.cProvince || "-"}</div>
+          </div>
+
+          {/* Row 6: Hometown */}
+          <div className="grid grid-cols-4 items-center gap-2 border-b">
+            <div className="font-semibold">ບ້ານເກີດ</div>
+            <div>ບ້ານ: {data.bVillage || "-"}</div>
+            <div>ເມືອງ: {data.bDistrict || "-"}</div>
+            <div>ແຂວງ: {data.bProvince || "-"}</div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-2">
+            <div className="font-semibold">ຂໍ້ມູນນັກສຶກສາ</div>
+            <div>ສະຖາບັນ: </div>
+            <div>
+              {data.JobberProfile?.eductaionalInstitutions?.name || "-"}
+            </div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-2">
+            <div className="font-semibold"></div>
+            <div>ລະດັບ: </div>
+            <div>{data.JobberProfile?.educationLevels?.name || "-"}</div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-2">
+            <div className="font-semibold"></div>
+            <div>ຄະນະ: </div>
+            <div>{data.JobberProfile?.major?.name || "-"}</div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-2">
+            <div className="font-semibold"></div>
+            <div>ສາຂາ: </div>
+            <div>{data.JobberProfile?.course?.name || "-"}</div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-2">
+            <div className="font-semibold"></div>
+            <div>GPA: </div>
+            <div>{data.JobberProfile?.gpa || "-"}</div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-2">
+            <div className="font-semibold"></div>
+            <div>ເງິນເດືອນເລີ່ມຕົ້ນ: </div>
+            <div>{data.JobberProfile?.startSalary || "-"}</div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-2 ">
+            <div className="font-semibold"></div>
+            <div>ເວລາເຮັດວຽກ: </div>
+            <div>
+              {(data.JobberProfile?.checkInTime || "N/A") +
+                " - " +
+                (data.JobberProfile?.checkOutTime || "N/A")}
+            </div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-2 border-b">
+            <div className="font-semibold"></div>
+            <div>ວັນເຮັດວຽກ: </div>
+            <div>
+              {" "}
+              {Array.isArray(data.JobberProfile?.workDay) &&
+              data.JobberProfile.workDay.length > 0
+                ? data.JobberProfile.workDay.join(", ")
+                : "-"}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-4 items-center gap-2 border-b">
+            <div className="font-semibold">ຕຳແໜ່ງທີ່ສົນໃຈ</div>
+            <div>
+              {" "}
+              {Array.isArray(data.ApplyForJob?.jp) &&
+              data.ApplyForJob?.jp.length > 0
+                ? data.ApplyForJob?.jp.join(", ")
+                : "-"}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-4 items-center gap-2">
+            <div className="font-semibold">ທັກສະ</div>
+            <div>  {" "}
+              {Array.isArray(data.JobberSkill?.skill?.name) &&
+             data.JobberSkill?.skill?.name.length > 0
+                ? data.JobberSkill?.skill?.name.join(", ")
+                : "-"}</div>
           </div>
         </div>
       );
     },
-    filterFn: (row, value) => {
-      const data = row.original;
-      const search = value.toLowerCase();
-      return (
-        `${data.firstName} ${data.lastName}`.toLowerCase().includes(search) ||
-        (data.member?.username?.toLowerCase().includes(search) ?? false)
-      );
-    },
-  },
-  {
-    accessorKey: "gender",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Gender" />
-    ),
-    cell: ({ row }) => <div>{row.getValue("gender")}</div>,
-  },
-  {
-    accessorKey: "birthday",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Age" />
-    ),
-    cell: ({ row }) => {
-      const birthday = row.getValue("birthday") as Date;
-
-      const age = calculateAge(birthday);
-      return <div>{age}</div>;
-    },
-  },
-  {
-    accessorKey: "nationality",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nationality" />
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
-    cell: ({ row }) => {
-      const status = row.original.status?.name ?? "Unknown";
-      function getStatusBadgeColor({
-        status,
-      }: {
-        status: string;
-      }):
-        | "default"
-        | "secondary"
-        | "destructive"
-        | "outline"
-        | null
-        | undefined {
-        if (status === "Active") {
-          return "default";
-        } else if (status === "Pending") {
-          return "outline";
-        } else if (status === "Suspended") {
-          return "destructive";
-        } else {
-          return "secondary";
-        }
-      }
-      const variant = getStatusBadgeColor({ status });
-
-      return <Badge variant={variant}>{status}</Badge>;
-    },
-    filterFn: (row, value) => {
-      if (value === "all") return true;
-      return row.original.status?.name === value;
-    },
-  },
-  {
-    accessorKey: "isVerify",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Verification" />
-    ),
-    cell: ({ row }) => {
-      const isVerified = row.getValue("isVerify");
-      return (
-        <div className="flex items-center">
-          {isVerified ? (
-            <Badge variant="default" className="flex items-center gap-1">
-              <CheckCircle className="h-3 w-3" />
-              Verified
-            </Badge>
-          ) : (
-            <Badge variant="outline" className="flex items-center gap-1">
-              <XCircle className="h-3 w-3" />
-              Unverified
-            </Badge>
-          )}
-        </div>
-      );
-    },
   },
 
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Joined" />
-    ),
-    cell: ({ row }) => format(row.getValue("createdAt"), "MMM d, yyyy"),
-  },
   {
     id: "actions",
     cell: JobberAction,

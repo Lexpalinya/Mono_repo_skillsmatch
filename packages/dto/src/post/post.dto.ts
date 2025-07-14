@@ -147,6 +147,7 @@ export const PostJobPositionDetailDto = z.object({
   jp: z.object({
     id: z.string(),
     name: z.string(),
+    amount: z.string()
   }),
   PostJobPositionDetailSkill: z.array(PostJobPositionDetailSkillDto),
 });

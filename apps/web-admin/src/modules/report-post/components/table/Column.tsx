@@ -10,7 +10,7 @@ import { format } from "date-fns";
 import type { ColumnDef } from "@tanstack/react-table";
 
 import type { IPostAdminDtoType } from "@skillsmatch/dto";
-import { formatDate, formatTime } from "@/utils/formatDateTime";
+import { formatDate, formatTime2 } from "@/utils/formatDateTime";
 import PostAction from "./Action";
 
 export const reportpostColumns: ColumnDef<IPostAdminDtoType>[] = [
@@ -39,143 +39,95 @@ export const reportpostColumns: ColumnDef<IPostAdminDtoType>[] = [
   {
     accessorKey: "title",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Company Name" />
+      <DataTableColumnHeader column={column} title="Company" />
     ),
     cell: ({ row }) => {
       const post = row.original;
       return (
-        <div className="max-w-[200px]">
-          <div className="font-medium truncate">{post.title}</div>
-          <div className="text-sm text-muted-foreground">
-            GPA: {post.gpa} • {post.workday.length} days/week
-          </div>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "company.name",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Owner Name" />
-    ),
-    cell: ({ row }) => {
-      const company = row.original.company;
-      return (
-        <div className="max-w-[150px]">
-          <div className="font-medium truncate">{company?.name}</div>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "salary",
-    header: "Salary & Schedule",
-    cell: ({ row }) => {
-      const post = row.original;
-      const checkIn = formatTime(post.checkInTime);
-      const checkOut = formatTime(post.checkOutTime);
+        <div className="w-full border border-gray-300 rounded shadow text-sm">
+          {/* Header */}
 
-      return (
-        <div className="text-sm space-y-1">
-          <div className="font-medium">
-            {post.currency} {post.minSalary.toLocaleString()} -{" "}
-            {post.maxSalary.toLocaleString()}
-          </div>
-          <div className="flex items-center text-muted-foreground">
-            <Clock className="h-3 w-3 mr-1" />
-            {checkIn} - {checkOut}
-          </div>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "positions",
-    header: "Positions & Skills",
-    cell: ({ row }) => {
-      const post = row.original;
-      const positions = post.postJobPositionDetail ?? [];
-      return (
-        <div className="max-w-[200px]">
-          {positions.length > 0 ? (
-            <div className="space-y-1">
-              {positions.slice(0, 2).map((position, index) => (
-                <div key={index} className="text-sm">
-                  <div className="font-medium truncate">{position.jp.name}</div>
-                  <div className="text-muted-foreground text-xs">
-                    {position?.PostJobPositionDetailSkill?.length ?? 0}{" "}
-                    skills
+          <div className="grid grid-cols-[auto_1fr] items-start">
+            <div className="flex flex-col items-center justify-center font-semibold pl-5 pr-5 h-full">
+              <p>{post.company?.name ?? "-"}</p>
+              <p>/ {post.title}</p>
+            </div>
+            <div className="space-y-2 border-l">
+              {/* Position Header */}
+              <div className="grid grid-cols-4 bg-gray-200 px-4 py-1 font-semibold text-gray-700 border-b text-center">
+                <div>ຕຳແໜ່ງ</div>
+                <div>ຈຳນວນ</div>
+                <div className="col-span-2">ທັກສະທີ່ຕ້ອງການ</div>
+              </div>
+
+              {/* Positions */}
+              {post.postJobPositionDetail?.map((pos, idx) => (
+                <div
+                  key={idx}
+                  className="grid grid-cols-4 px-4 py-1 border-b text-center"
+                >
+                  <div>{pos.jp?.name || "-"}</div>
+                  <div>{pos.jp?.amount || "-"}</div>
+                  <div className="col-span-2">
+                    {pos.PostJobPositionDetailSkill?.length > 0
+                      ? pos.PostJobPositionDetailSkill.map((skill, i) => (
+                          <span key={i} className="inline-block mr-1">
+                            {"skill.skill?.name"}
+                            {i < pos.PostJobPositionDetailSkill.length - 1
+                              ? ","
+                              : ""}
+                          </span>
+                        ))
+                      : "-"}
                   </div>
                 </div>
               ))}
-              {positions.length > 2 && (
-                <div className="text-xs text-muted-foreground">
-                  +{positions.length - 2} more positions
-                </div>
-              )}
             </div>
-          ) : (
-            <span className="text-muted-foreground text-sm">No positions</span>
-          )}
-
-        </div>
-      );
-    },
-  },
-
-  {
-    accessorKey: "endDate",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          End Date
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const endDate = new Date(row.original.endDate);
-      const isExpired = endDate < new Date();
-
-      return (
-        <div className="max-w-[200px]">
-          <div className={isExpired ? "text-red-600" : ""}>
-            {new Date(row.original.endDate).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })}
           </div>
-          {isExpired && (
-            <Badge variant="destructive" className="text-xs">
-              Expired
-            </Badge>
-          )}
+
+          {/* Detail Section */}
+          <div className="px-4 py-2 grid grid-cols-2 gap-2 border-t text-sm">
+            <div className="font-semibold">Post Title:</div>
+            <div>{post.title}</div>
+
+            <div className="font-semibold">Salary:</div>
+            <div>
+              {post.currency} {post.minSalary?.toLocaleString()} -{" "}
+              {post.maxSalary?.toLocaleString()}
+            </div>
+
+            <div className="font-semibold">Work Time:</div>
+            <div>
+              {formatTime2(post.checkInTime)} - {formatTime2(post.checkOutTime)}
+            </div>
+
+            <div className="font-semibold">Required GPA:</div>
+            <div>{post.gpa ?? "-"}</div>
+
+            <div className="font-semibold">Work Days:</div>
+            <div>{post.workday?.join(", ") || "-"}</div>
+
+            <div className="font-semibold">Education Level:</div>
+            <div>
+              {("post.educationLevels?.map((e) => e.name).join(", ")" || "-")}
+            </div>
+
+            <div className="font-semibold">Institution:</div>
+            <div>
+              {("post.institutions?.map((i) => i.name).join(", ")" || "-")}
+            </div>
+
+            <div className="font-semibold">Course:</div>
+            <div>{("post.courses?.map((c) => c.name).join(", ")" || "-")}</div>
+
+            <div className="font-semibold">Welfare:</div>
+            <div>{post.welfare || "-"}</div>
+
+            <div className="font-semibold">Additional Info:</div>
+            <div>{post.more || "-"}</div>
+          </div>
         </div>
       );
-    },
-  },
-
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Joined
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => {
-      const rawDate = row.getValue("createdAt") as string | number | Date;
-      const date = new Date(rawDate);
-      return isNaN(date.getTime())
-        ? "Invalid date"
-        : format(date, "MMM d, yyyy");
     },
   },
   {

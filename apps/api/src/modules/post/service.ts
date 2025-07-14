@@ -405,6 +405,7 @@ export const GetPost = async ({
             select: {
               id: true,
               name: true,
+              a
             },
           },
           postJobPositionDetailSkill: {

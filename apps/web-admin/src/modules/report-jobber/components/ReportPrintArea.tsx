@@ -1,5 +1,7 @@
 import React from "react";
 import { useReportJobber } from "../context/useReportJobber";
+import { calculateAge } from "@/utils/extractChangedFields";
+import { FullImageViewer } from "@skillsmatch/ui";
 
 export const ReportPrintArea = React.forwardRef<HTMLDivElement>(
   (props, ref) => {
@@ -20,34 +22,70 @@ export const ReportPrintArea = React.forwardRef<HTMLDivElement>(
     if (statsError || tableError) return <p>Error loading report data</p>;
 
     return (
-      <div ref={ref} className="p-6 bg-white text-black max-w-full">
+      <div
+        ref={ref}
+        style={{
+          padding: "24px",
+          backgroundColor: "white",
+          color: "black",
+          maxWidth: "100%",
+        }}
+      >
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold mb-2">Jobber Report</h1>
-          <p className="text-gray-600">
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <h1
+            style={{
+              fontSize: "24px",
+              fontWeight: "bold",
+              marginBottom: "8px",
+            }}
+          >
+            Jobber Report
+          </h1>
+          <p style={{ color: "#4B5563" }}>
             Generated on {new Date().toLocaleDateString()}
           </p>
         </div>
 
         {/* Stats Summary */}
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-4 border-b pb-2">
+        <div>
+          <h2
+            style={{
+              fontSize: "18px",
+              fontWeight: "600",
+              marginBottom: "8px",
+              borderBottom: "1px solid #E5E7EB",
+            }}
+          >
             Summary Statistics
           </h2>
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="text-gray-700 font-medium">
+          <div
+            style={{
+              backgroundColor: "#F9FAFB",
+              padding: "8px",
+              borderRadius: "8px",
+            }}
+          >
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: "24px",
+                textAlign: "center",
+              }}
+            >
+              <div>
+                <div style={{ color: "#374151", fontWeight: "500" }}>
                   Total Jobber: {statsData.total ?? 0}
                 </div>
               </div>
-              <div className="text-center">
-                <div className="text-gray-700 font-medium">
+              <div>
+                <div style={{ color: "#374151", fontWeight: "500" }}>
                   Verified Jobber: {statsData.verified ?? 0}
                 </div>
               </div>
-              <div className="text-center">
-                <div className="text-gray-700 font-medium">
+              <div>
+                <div style={{ color: "#374151", fontWeight: "500" }}>
                   Unverified Jobber: {statsData.notverified ?? 0}
                 </div>
               </div>
@@ -55,79 +93,272 @@ export const ReportPrintArea = React.forwardRef<HTMLDivElement>(
           </div>
         </div>
 
-        {/* Companies Table */}
+        {/* Jobber Profiles */}
         <div>
-          <h2 className="text-lg font-semibold mb-4 border-b pb-2">
-            Companies Directory
+          <h2
+            style={{
+              fontSize: "18px",
+              fontWeight: "600",
+              marginBottom: "8px",
+              paddingBottom: "4px",
+              borderBottom: "1px solid #E5E7EB",
+            }}
+          >
+            Jobber Profiles
           </h2>
-          <div className="overflow-x-auto shadow-sm border rounded-lg">
-            <table className="w-full border-collapse bg-white">
-              <thead>
-                <tr className="bg-gray-100 border-b-2 border-gray-200">
-                  <th className="p-4 text-left text-gray-700">Name</th>
-                  <th className="p-4 text-left text-gray-700">Gender</th>
-                  <th className="p-4 text-left text-gray-700">birthday</th>
-                  <th className="p-4 text-left text-gray-700">nationality</th>
-                  <th className="p-4 text-center text-gray-700">
-                    Verification Status
-                  </th>
-                  <th className="p-4 text-left text-gray-700">Date Joined</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tableData?.data.map((jobber, idx) => (
-                  <tr
-                    key={idx}
-                    className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+          <div>
+            {tableData?.data.map((data, idx) => (
+              <div
+                key={idx}
+                style={{
+                  border: "1px solid #D1D5DB",
+                  borderRadius: "8px",
+                  padding: "6px",
+                  fontSize: "14px",
+                  marginBottom: "16px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "auto 1fr",
+                    gap: "16px",
+                    alignItems: "start",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <FullImageViewer
+                      width={90}
+                      height={90}
+                      src={data.member?.profile || "/placeholder.svg"}
+                      alt={`${data.firstName} ${data.lastName}`}
+                      className="rounded object-cover"
+                    />
+                  </div>
+                  <div
+                    style={{
+                      paddingLeft: "8px",
+                      borderLeft: "1px solid #E5E7EB",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "8px",
+                    }}
                   >
-                    <td className="p-4 font-medium text-gray-900">
-                      {jobber.firstName} {jobber.lastName}
-                    </td>
-                    <td className="p-4 text-gray-700">{jobber.gender}</td>
-                    <td className="p-4 text-gray-700">
-                      {" "}
-                      {new Date(jobber.birthday).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </td>
-                    <td className="p-4 text-gray-700">
-                      {jobber.nationality}
-                    </td>
-                    <td className="p-4 text-center">
-                      <span
-                        className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
-                          jobber.isVerify
-                            ? "bg-green-100 text-green-800 border border-green-200"
-                            : "bg-red-100 text-red-800 border border-red-200"
-                        }`}
-                      >
-                        {jobber.isVerify ? "✓ Verified" : "✗ Unverified"}
-                      </span>
-                    </td>
-                    <td className="p-4 text-gray-700">
-                      {new Date(jobber.createdAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(3, 1fr)",
+                        gap: "8px",
+                      }}
+                    >
+                      <div>
+                        {data.firstName} {data.lastName},{" "}
+                        {calculateAge(data.birthday)}
+                      </div>
+                    </div>
+                    <div>Email: {data.member?.username || "-"}</div>
+                    <div>ເບີໂທ: {data.member?.phoneNumber || "-"}</div>
+                    <div>{data.isActive ? "ກຳລັງຫາວຽກ" : "ບໍ່ໄດ້ຫາວຽກ"}</div>
+                  </div>
+                </div>
 
-          {(!tableData?.data || tableData.data.length === 0) && (
-            <div className="text-center py-8 text-gray-500">
-              <p>No companies found in the database.</p>
-            </div>
-          )}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)",
+                    alignItems: "center",
+                    gap: "8px",
+                    paddingBottom: "8px",
+                    borderBottom: "1px solid #E5E7EB",
+                    marginTop: "12px",
+                  }}
+                >
+                  <div style={{ fontWeight: "600" }}>ທີ່ຢູ່ປັດຈຸບັນ</div>
+                  <div>ບ້ານ: {data.cVillage || "-"}</div>
+                  <div>ເມືອງ: {data.cDistrict || "-"}</div>
+                  <div>ແຂວງ: {data.cProvince || "-"}</div>
+                </div>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginTop: "8px",
+                  }}
+                >
+                  <div style={{ fontWeight: "600" }}>ບ້ານເກີດ</div>
+                  <div>ບ້ານ: {data.bVillage || "-"}</div>
+                  <div>ເມືອງ: {data.bDistrict || "-"}</div>
+                  <div>ແຂວງ: {data.bProvince || "-"}</div>
+                </div>
+
+                {/* Educational Details */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginTop: "8px",
+                  }}
+                >
+                  <div style={{ fontWeight: "600" }}>ຂໍ້ມູນນັກສຶກສາ</div>
+                  <div>ສະຖາບັນ: </div>
+                  <div>
+                    {data.JobberProfile?.eductaionalInstitutions?.name || "-"}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)",
+                    gap: "8px",
+                  }}
+                >
+                  <div></div>
+                  <div>ລະດັບ: </div>
+                  <div>{data.JobberProfile?.educationLevels?.name || "-"}</div>
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)",
+                    gap: "8px",
+                  }}
+                >
+                  <div></div>
+                  <div>ຄະນະ: </div>
+                  <div>{data.JobberProfile?.major?.name || "-"}</div>
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)",
+                    gap: "8px",
+                  }}
+                >
+                  <div></div>
+                  <div>ສາຂາ: </div>
+                  <div>{data.JobberProfile?.course?.name || "-"}</div>
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)",
+                    gap: "8px",
+                  }}
+                >
+                  <div></div>
+                  <div>GPA: </div>
+                  <div>{data.JobberProfile?.gpa || "-"}</div>
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)",
+                    gap: "8px",
+                  }}
+                >
+                  <div></div>
+                  <div>ເງິນເດືອນເລີ່ມຕົ້ນ: </div>
+                  <div>{data.JobberProfile?.startSalary || "-"}</div>
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)",
+                    gap: "8px",
+                  }}
+                >
+                  <div></div>
+                  <div>ເວລາເຮັດວຽກ: </div>
+                  <div>
+                    {(data.JobberProfile?.checkInTime || "N/A") +
+                      " - " +
+                      (data.JobberProfile?.checkOutTime || "N/A")}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)",
+                    gap: "8px",
+                    borderBottom: "1px solid #E5E7EB",
+                  }}
+                >
+                  <div></div>
+                  <div>ວັນເຮັດວຽກ: </div>
+                  <div>
+                    {Array.isArray(data.JobberProfile?.workDay) &&
+                    data.JobberProfile.workDay.length > 0
+                      ? data.JobberProfile.workDay.join(", ")
+                      : "-"}
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)",
+                    gap: "8px",
+                    borderBottom: "1px solid #E5E7EB",
+                    marginTop: "8px",
+                  }}
+                >
+                  <div style={{ fontWeight: "600" }}>ຕຳແໜ່ງທີ່ສົນໃຈ</div>
+                  <div>
+                    {Array.isArray(data.ApplyForJob?.jp) &&
+                    data.ApplyForJob?.jp.length > 0
+                      ? data.ApplyForJob?.jp.join(", ")
+                      : "-"}
+                  </div>
+                </div>
+
+                {/* Skills */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)",
+                    gap: "8px",
+                    marginTop: "8px",
+                  }}
+                >
+                  <div style={{ fontWeight: "600" }}>ທັກສະ</div>
+                  <div>
+                    {Array.isArray(data.JobberSkill?.skill?.name) &&
+                    data.JobberSkill?.skill?.name.length > 0
+                      ? data.JobberSkill?.skill?.name.join(", ")
+                      : "-"}
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {(!tableData?.data || tableData.data.length === 0) && (
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "32px 0",
+                  color: "#6B7280",
+                }}
+              >
+                <p>No jobbers found in the database.</p>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Footer */}
-        <div className="mt-8 text-center text-sm text-gray-500">
+        <div
+          style={{
+            marginTop: "32px",
+            textAlign: "center",
+            fontSize: "14px",
+            color: "#6B7280",
+          }}
+        >
           <p>End of Report</p>
         </div>
       </div>
