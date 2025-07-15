@@ -44,30 +44,30 @@ export const reportpostColumns: ColumnDef<IPostAdminDtoType>[] = [
     cell: ({ row }) => {
       const post = row.original;
       return (
-        <div className="w-full border border-gray-300 rounded shadow text-sm">
+        <div className="border-2 rounded p-3 w-full text-sm space-y-2">
           {/* Header */}
 
           <div className="grid grid-cols-[auto_1fr] items-start">
-            <div className="flex flex-col items-center justify-center font-semibold pl-5 pr-5 h-full">
+            <div className="flex flex-col items-center justify-center font-semibold pr-3 h-full">
               <p>{post.company?.name ?? "-"}</p>
               <p>/ {post.title}</p>
             </div>
             <div className="space-y-2 border-l">
               {/* Position Header */}
-              <div className="grid grid-cols-4 bg-gray-200 px-4 py-1 font-semibold text-gray-700 border-b text-center">
+              <div className="grid grid-cols-3 bg-gray-200 px-4 py-1 font-semibold text-gray-700 border-b text-center">
                 <div>ຕຳແໜ່ງ</div>
                 <div>ຈຳນວນ</div>
-                <div className="col-span-2">ທັກສະທີ່ຕ້ອງການ</div>
+                <div>ທັກສະທີ່ຕ້ອງການ</div>
               </div>
 
               {/* Positions */}
               {post.postJobPositionDetail?.map((pos, idx) => (
                 <div
                   key={idx}
-                  className="grid grid-cols-4 px-4 py-1 border-b text-center"
+                  className="grid grid-cols-3 px-4 py-1 text-center"
                 >
                   <div>{pos.jp?.name || "-"}</div>
-                  <div>{pos.jp?.amount || "-"}</div>
+                  <div>{pos.amount || "-"}</div>
                   <div className="col-span-2">
                     {pos.PostJobPositionDetailSkill?.length > 0
                       ? pos.PostJobPositionDetailSkill.map((skill, i) => (
@@ -86,44 +86,62 @@ export const reportpostColumns: ColumnDef<IPostAdminDtoType>[] = [
           </div>
 
           {/* Detail Section */}
-          <div className="px-4 py-2 grid grid-cols-2 gap-2 border-t text-sm">
-            <div className="font-semibold">Post Title:</div>
-            <div>{post.title}</div>
-
-            <div className="font-semibold">Salary:</div>
+          <div className="grid grid-cols-4 items-center gap-20 border-t pt-5 pr-5">
+            <div className="font-semibold">ລາຍລະອຽດ:</div>
+            <div>ເງຶນເດືອນ: </div>
             <div>
               {post.currency} {post.minSalary?.toLocaleString()} -{" "}
               {post.maxSalary?.toLocaleString()}
             </div>
-
-            <div className="font-semibold">Work Time:</div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-15">
+            <div className="font-semibold"></div>
+            <div>ເວລາເຮັດວຽກ: </div>
             <div>
-              {formatTime2(post.checkInTime)} - {formatTime2(post.checkOutTime)}
+              {post.checkInTime} - {post.checkOutTime}
             </div>
-
-            <div className="font-semibold">Required GPA:</div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-15">
+            <div className="font-semibold"></div>
+            <div>GPA ຂັ້ນຕ່ຳ: </div>
             <div>{post.gpa ?? "-"}</div>
-
-            <div className="font-semibold">Work Days:</div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-15">
+            <div className="font-semibold"></div>
+            <div>ວັນເຮັດວຽກ: </div>
             <div>{post.workday?.join(", ") || "-"}</div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-15">
+            <div className="font-semibold"></div>
+            <div>ລະດັບການສຶກສາ: </div>
+            {post.postEducationLevel
+              ?.map((e) => e?.educationLevel?.name)
+              .join(", ") || "-"}
+          </div>
 
-            <div className="font-semibold">Education Level:</div>
-            <div>
-              {("post.educationLevels?.map((e) => e.name).join(", ")" || "-")}
-            </div>
+          <div className="grid grid-cols-4 items-center gap-15">
+            <div className="font-semibold"></div>
+            <div>ສະຖາບັນ: </div>
+            {post.postEducationInstitution
+              ?.map((i) => i?.ei?.name)
+              .join(", ") || "-"}
+          </div>
 
-            <div className="font-semibold">Institution:</div>
-            <div>
-              {("post.institutions?.map((i) => i.name).join(", ")" || "-")}
-            </div>
+          <div className="grid grid-cols-4 items-center gap-15">
+            <div className="font-semibold"></div>
+            <div>ຫຼັກສູດ: </div>
+            {post.postCourse?.map((c) => c?.cr?.name).join(", ") || "-"}
+          </div>
 
-            <div className="font-semibold">Course:</div>
-            <div>{("post.courses?.map((c) => c.name).join(", ")" || "-")}</div>
+          <div className="grid grid-cols-4 items-center gap-15">
+            <div className="font-semibold"></div>
+            <div>ສະຫວັດດີການ: </div>
+            <div>{post?.welfare || "-"}</div>
+          </div>
 
-            <div className="font-semibold">Welfare:</div>
-            <div>{post.welfare || "-"}</div>
-
-            <div className="font-semibold">Additional Info:</div>
+          <div className="grid grid-cols-4 items-center gap-15">
+            <div className="font-semibold"></div>
+            <div>ລາຍລະອຽດເພີ່ມເຕີມ: </div>
             <div>{post.more || "-"}</div>
           </div>
         </div>

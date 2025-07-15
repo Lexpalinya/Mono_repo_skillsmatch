@@ -88,7 +88,7 @@ model Skill {
   jobberUsageCount           Int                          @default(0)
   createdAt                  DateTime                     @default(now())
   updatedAt                  DateTime                     @updatedAt
-  JobberSkill                JobberSkill[]
+  JobberProfileSkill         JobberProfileSkill[]
   PostJobPositionDetailSkill PostJobPositionDetailSkill[]
 }
 
@@ -101,6 +101,7 @@ model JobPosition {
   jobberUsageCount      Int                     @default(0)
   createdAt             DateTime                @default(now())
   updatedAt             DateTime                @updatedAt
+  JobberProfilePosition JobberProfilePosition[]
   PostJobPositionDetail PostJobPositionDetail[]
 }
 
@@ -153,31 +154,49 @@ model Jobber {
   member        Member         @relation(fields: [memberId], references: [id])
   status        JobberStatus   @relation(fields: [statusId], references: [id])
   JobberProfile JobberProfile?
-  JobberSkill   JobberSkill[]
 }
 
 model JobberProfile {
-  id                      String                 @id @default(uuid()) @db.VarChar(36)
-  jId                     String                 @unique
+  id                      String                  @id @default(uuid()) @db.VarChar(36)
+  jId                     String                  @unique
   elId                    String
   eiId                    String
   mId                     String
   cId                     String
   gpa                     Float
-  drivingCardType         String?
-  more                    String
   startSalary             Float?
-  currency                ECurrency              @default(KIP)
+  currency                ECurrency               @default(KIP)
   workDay                 String[]
-  checkInTime             DateTime?              @db.Time(6)
-  checkOutTime            DateTime?              @db.Time(6)
-  createdAt               DateTime               @default(now())
-  updatedAt               DateTime               @updatedAt
-  course                  Course                 @relation(fields: [cId], references: [id])
-  educationalInstitutions EducationalInstitution @relation(fields: [eiId], references: [id])
-  educationLevels         EducationLevel         @relation(fields: [elId], references: [id])
-  jobber                  Jobber                 @relation(fields: [jId], references: [id])
-  major                   Major                  @relation(fields: [mId], references: [id])
+  checkInTime             String
+  checkOutTime            String
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+  cv                      String[]
+  course                  Course                  @relation(fields: [cId], references: [id])
+  educationalInstitutions EducationalInstitution  @relation(fields: [eiId], references: [id])
+  educationLevels         EducationLevel          @relation(fields: [elId], references: [id])
+  jobber                  Jobber                  @relation(fields: [jId], references: [id])
+  major                   Major                   @relation(fields: [mId], references: [id])
+  JobberProfilePosition   JobberProfilePosition[]
+  JobberProfileSkill      JobberProfileSkill[]
+}
+
+model JobberProfileSkill {
+  jpId  String
+  sId   String
+  jp    JobberProfile @relation(fields: [jpId], references: [id])
+  skill Skill         @relation(fields: [sId], references: [id])
+
+  @@id([jpId, sId])
+}
+
+model JobberProfilePosition {
+  jpId String
+  jPId String
+  jP   JobPosition   @relation(fields: [jPId], references: [id])
+  jp   JobberProfile @relation(fields: [jpId], references: [id])
+
+  @@id([jpId, jPId])
 }
 
 model Company {
@@ -211,8 +230,8 @@ model Post {
   image                    String[]
   minSalary                Decimal
   maxSalary                Decimal
-  checkInTime              DateTime
-  checkOutTime             DateTime
+  checkInTime              String
+  checkOutTime             String
   gpa                      Float
   currency                 ECurrency
   workday                  String[]
@@ -221,6 +240,7 @@ model Post {
   more                     String
   createdAt                DateTime                   @default(now())
   updatedAt                DateTime                   @updatedAt
+  ApplyForJob              ApplyForJob[]
   company                  Company                    @relation(fields: [cId], references: [id])
   postCourse               PostCourse[]
   postEducationInstitution PostEducationInstitution[]
@@ -290,10 +310,12 @@ model ApplyForJob {
   isActive        Boolean           @default(true)
   pId             String
   jId             String
+  jp              String
   status          String
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   jobber          Jobber            @relation(fields: [jId], references: [id])
+  post            Post              @relation(fields: [pId], references: [id])
   AttendInterView AttendInterView[]
 }
 
@@ -318,15 +340,6 @@ model Review {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   member    Member   @relation(fields: [memberId], references: [id])
-}
-
-model JobberSkill {
-  jId    String
-  sId    String
-  Jobber Jobber @relation(fields: [jId], references: [id])
-  Skill  Skill  @relation(fields: [sId], references: [id])
-
-  @@id([jId, sId])
 }
 
 enum ECurrency {

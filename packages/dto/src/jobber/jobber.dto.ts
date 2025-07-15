@@ -77,19 +77,16 @@ export const JobberAdminDto = z.object({
   status: z.object({
     name: z.string(),
   }),
-  ApplyForJob: z.object({
-    jp: z.string(),
-  }),
+  ApplyForJob: z.array(
+    z.object({
+      jp: z.string(),
+    })
+  ),
   member: z.object({
     username: z.string(),
     profile: z.string(),
     email: z.string(),
     phoneNumber: z.string(),
-  }),
-  JobberSkill:z.object({
-    skill: z.object({
-      name: z.string()
-    })
   }),
   JobberProfile: z.object({
     gpa: z.string(),
@@ -97,7 +94,15 @@ export const JobberAdminDto = z.object({
     checkInTime: z.string(),
     checkOutTime: z.string(),
     workDay: z.string(),
-    eductaionalInstitutions: z.object({
+    JobberProfileSkill: z.array(
+      z.object({
+        skill: z.object({
+          name: z.string()
+        })
+      })
+    ),
+
+    educationalInstitutions: z.object({
       name: z.string(),
     }),
     educationLevels: z.object({

@@ -147,10 +147,31 @@ export const PostJobPositionDetailDto = z.object({
   jp: z.object({
     id: z.string(),
     name: z.string(),
-    amount: z.string()
   }),
+   amount: z.string(),
   PostJobPositionDetailSkill: z.array(PostJobPositionDetailSkillDto),
 });
+
+export const PostEducationInstitutionDto = z.object({
+  ei: z.object({
+    id: z.string(),
+    name: z.string(),
+  }),
+});
+
+export const PostEducationLevelDto = z.object({
+  educationLevel: z.object({
+    name: z.string(),
+  }),
+});
+
+export const PostCourseDto = z.object({
+  cr: z.object({
+    id: z.string(),
+    name: z.string(),
+  }),
+});
+
 
 export const PostAdminDto = z.object({
   id: z.string(),
@@ -170,6 +191,9 @@ export const PostAdminDto = z.object({
   welfare: z.string(),
   more: z.string(),
   postJobPositionDetail: z.array(PostJobPositionDetailDto),
+  postEducationInstitution: z.array(PostEducationInstitutionDto),
+  postEducationLevel: z.array(PostEducationLevelDto),
+  postCourse: z.array(PostCourseDto),
   createdAt: z.string(),
   currency: z.string(),
   minSalary: z.number(),

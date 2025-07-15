@@ -43,12 +43,12 @@ app.route("/api", memberRoute);
 async function start() {
   await checkConnectionDATABASE();
   console.log("🚀 Server Status: RUNNING");
-  console.log("🌍 Base URL: http://localhost:3000");
+  console.log("🌍 Base URL: http://localhost:3333");
 }
 
 start();
 
 export default {
-  port: 3000,
+  port: 3333,
   fetch: app.fetch,
 };

@@ -108,11 +108,12 @@ export const ReportjobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
             <div>ເມືອງ: {data.bDistrict || "-"}</div>
             <div>ແຂວງ: {data.bProvince || "-"}</div>
           </div>
+
           <div className="grid grid-cols-4 items-center gap-2">
             <div className="font-semibold">ຂໍ້ມູນນັກສຶກສາ</div>
             <div>ສະຖາບັນ: </div>
             <div>
-              {data.JobberProfile?.eductaionalInstitutions?.name || "-"}
+              {data.JobberProfile?.educationalInstitutions?.name || "-"}
             </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-2">
@@ -165,20 +166,24 @@ export const ReportjobberColumns: ColumnDef<IJobberAdminDtoType>[] = [
             <div className="font-semibold">ຕຳແໜ່ງທີ່ສົນໃຈ</div>
             <div>
               {" "}
-              {Array.isArray(data.ApplyForJob?.jp) &&
-              data.ApplyForJob?.jp.length > 0
-                ? data.ApplyForJob?.jp.join(", ")
+              {Array.isArray(data.ApplyForJob) && data.ApplyForJob.length > 0
+                ? data.ApplyForJob.map((item) => item.jp).join(", ")
                 : "-"}
             </div>
           </div>
 
           <div className="grid grid-cols-4 items-center gap-2">
             <div className="font-semibold">ທັກສະ</div>
-            <div>  {" "}
-              {Array.isArray(data.JobberSkill?.skill?.name) &&
-             data.JobberSkill?.skill?.name.length > 0
-                ? data.JobberSkill?.skill?.name.join(", ")
-                : "-"}</div>
+            <div>
+              {" "}
+              {data?.JobberProfile?.JobberProfileSkill?.length > 0
+                ? data.JobberProfile.JobberProfileSkill.map(
+                    (item) => item?.skill?.name ?? ""
+                  )
+                    .filter((name) => name !== "")
+                    .join(", ")
+                : "-"}
+            </div>
           </div>
         </div>
       );

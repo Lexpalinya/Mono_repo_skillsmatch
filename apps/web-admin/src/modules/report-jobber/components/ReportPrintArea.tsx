@@ -207,7 +207,7 @@ export const ReportPrintArea = React.forwardRef<HTMLDivElement>(
                   <div style={{ fontWeight: "600" }}>ຂໍ້ມູນນັກສຶກສາ</div>
                   <div>ສະຖາບັນ: </div>
                   <div>
-                    {data.JobberProfile?.eductaionalInstitutions?.name || "-"}
+                    {data.JobberProfile?.educationalInstitutions?.name || "-"}
                   </div>
                 </div>
                 <div
@@ -309,9 +309,9 @@ export const ReportPrintArea = React.forwardRef<HTMLDivElement>(
                 >
                   <div style={{ fontWeight: "600" }}>ຕຳແໜ່ງທີ່ສົນໃຈ</div>
                   <div>
-                    {Array.isArray(data.ApplyForJob?.jp) &&
-                    data.ApplyForJob?.jp.length > 0
-                      ? data.ApplyForJob?.jp.join(", ")
+                    {Array.isArray(data.ApplyForJob) &&
+                    data.ApplyForJob.length > 0
+                      ? data.ApplyForJob.map((item) => item.jp).join(", ")
                       : "-"}
                   </div>
                 </div>
@@ -327,9 +327,12 @@ export const ReportPrintArea = React.forwardRef<HTMLDivElement>(
                 >
                   <div style={{ fontWeight: "600" }}>ທັກສະ</div>
                   <div>
-                    {Array.isArray(data.JobberSkill?.skill?.name) &&
-                    data.JobberSkill?.skill?.name.length > 0
-                      ? data.JobberSkill?.skill?.name.join(", ")
+                    {data?.JobberProfile?.JobberProfileSkill?.length > 0
+                      ? data.JobberProfile.JobberProfileSkill.map(
+                          (item) => item?.skill?.name ?? ""
+                        )
+                          .filter((name) => name !== "")
+                          .join(", ")
                       : "-"}
                   </div>
                 </div>

@@ -247,49 +247,48 @@ export const GetJobbers = async ({
           username: true,
           profile: true,
           email: true,
-          phoneNumber:true
+          phoneNumber: true
         },
       },
-      JobberSkill:{
-        select:{
-          Skill:{
-            select:{
-              name:true
-            }
-          },
-        }
+      ApplyForJob: {
+        select: {
+          jp: true
+        },
       },
-      ApplyForJob:{
-        select:{
-          jp:true
-        }
-      },
-      JobberProfile:{
-        select:{
-          gpa:true,
-          startSalary:true,
-          checkInTime:true,
-          checkOutTime:true,
-          workDay:true,
-
-          educationalInstitutions:{
-            select:{
-              name:true
+      JobberProfile: {
+        select: {
+          gpa: true,
+          startSalary: true,
+          checkInTime: true,
+          checkOutTime: true,
+          workDay: true,
+          JobberProfileSkill: {
+            select: {
+              skill: {
+                select: {
+                  name: true
+                }
+              }
             }
           },
-          educationLevels:{
-            select:{
-              name:true
+          educationalInstitutions: {
+            select: {
+              name: true
             }
           },
-          major:{
-            select:{
-              name:true
+          educationLevels: {
+            select: {
+              name: true
             }
           },
-          course:{
-            select:{
-              name:true
+          major: {
+            select: {
+              name: true
+            }
+          },
+          course: {
+            select: {
+              name: true
             }
           }
         }
