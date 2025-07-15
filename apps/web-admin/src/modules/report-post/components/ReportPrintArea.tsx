@@ -253,8 +253,7 @@ export const ReportPrintArea = React.forwardRef<HTMLDivElement>(
                   <div></div>
                   <div>ເວລາເຮັດວຽກ:</div>
                   <div>
-                    {formatTime2(post.checkInTime)} -{" "}
-                    {formatTime2(post.checkOutTime)}
+                    {post.checkInTime} - {post.checkOutTime}
                   </div>
                 </div>
 
