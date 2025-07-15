@@ -14,19 +14,19 @@ export default function ReportJobberStatsCard() {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <StatsCard
-        name="Total Companies"
+        name="Total Jobber"
         icon={Building2}
         value={data?.total ?? 0}
         description="All companies registered on the platform"
       />
       <StatsCard
-        name="Verified Companies"
+        name="Verified Jobber"
         icon={ShieldCheck}
         value={data?.verified ?? 0}
-        description="Companies that have been verified"
+        description="Jobber that have been verified"
       />
       <StatsCard
-        name="Not Verified Companies"
+        name="Not Verified Jobber"
         icon={ShieldOff}
         value={data?.notverified ?? 0}
         description="Companies that had not verified"
