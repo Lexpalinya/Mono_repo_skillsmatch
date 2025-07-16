@@ -70,6 +70,7 @@ export const GetReviews = async ({
         id: true,
         comment: true,
         score: true,
+
         createdAt: true,
         member: {
           select: {
