@@ -17,5 +17,6 @@ export * from "./attend-interview/attend-interview.dto";
 export * from "./company/company.dto";
 export * from "./post/post.dto";
 export * from "./review-application/review-application.dto";
-export * from "./jobber-profile"
-export * from "./jobber-skill"
+export * from "./jobber-profile";
+export * from "./jobber-skill";
+export * from "./post/post.detail.dto";

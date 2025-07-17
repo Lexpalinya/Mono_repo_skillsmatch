@@ -32,8 +32,10 @@ const PostProvider = ({ children }: PropsWithChildren) => {
   const queryClient = useQueryClient();
   const handleResetCache = (id?: string) => {
     queryClient.invalidateQueries({ queryKey: ["statsPost"] });
-    if (typeof id === "string")
+    if (typeof id === "string") {
       queryClient.invalidateQueries({ queryKey: ["postDetail", id] });
+      queryClient.invalidateQueries({ queryKey: ["postDetailView", id] });
+    }
   };
 
   const resetPostState = (id?: string) => {
@@ -64,8 +66,6 @@ const PostProvider = ({ children }: PropsWithChildren) => {
     initialData: { data: [], total: 0 },
     placeholderData: keepPreviousData,
   });
-
-
 
   const statsQuery = useQuery({
     queryKey: ["statsPost"],

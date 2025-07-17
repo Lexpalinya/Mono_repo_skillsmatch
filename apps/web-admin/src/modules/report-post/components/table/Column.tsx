@@ -1,17 +1,16 @@
-import { ArrowUpDown, Clock } from "lucide-react";
 import {
-  Badge,
-  Button,
-  Calendar,
   Checkbox,
   DataTableColumnHeader,
+  FullImageViewer,
 } from "@skillsmatch/ui";
-import { format } from "date-fns";
+
 import type { ColumnDef } from "@tanstack/react-table";
 
 import type { IPostAdminDtoType } from "@skillsmatch/dto";
-import { formatDate, formatTime2 } from "@/utils/formatDateTime";
+
 import PostAction from "./Action";
+import { formatDate } from "@/utils/formatDateTime";
+import { Calendar } from "lucide-react";
 
 export const reportpostColumns: ColumnDef<IPostAdminDtoType>[] = [
   {
@@ -43,45 +42,68 @@ export const reportpostColumns: ColumnDef<IPostAdminDtoType>[] = [
     ),
     cell: ({ row }) => {
       const post = row.original;
+
       return (
         <div className="border-2 rounded p-3 w-full text-sm space-y-2">
           {/* Header */}
 
           <div className="grid grid-cols-[auto_1fr] items-start">
             <div className="flex flex-col items-center justify-center font-semibold pr-3 h-full">
-              <p>{post.company?.name ?? "-"}</p>
-              <p>/ {post.title}</p>
+              <FullImageViewer
+                width={100}
+                height={100}
+                className="max-h-[100px]"
+                src={
+                  post.company.member.profile ||
+                  "/placeholder.svg?height=80&width=80"
+                }
+                alt={row.original.company.name}
+              />
             </div>
-            <div className="space-y-2 border-l">
-              {/* Position Header */}
-              <div className="grid grid-cols-3 bg-gray-200 px-4 py-1 font-semibold text-gray-700 border-b text-center">
-                <div>ຕຳແໜ່ງ</div>
-                <div>ຈຳນວນ</div>
-                <div>ທັກສະທີ່ຕ້ອງການ</div>
-              </div>
-
-              {/* Positions */}
-              {post.postJobPositionDetail?.map((pos, idx) => (
-                <div
-                  key={idx}
-                  className="grid grid-cols-3 px-4 py-1 text-center"
-                >
-                  <div>{pos.jp?.name || "-"}</div>
-                  <div>{pos.amount || "-"}</div>
-                  <div className="col-span-2">
-                    {pos.PostJobPositionDetailSkill?.length > 0
-                      ? pos.PostJobPositionDetailSkill.map((skill, i) => (
-                          <span key={i} className="inline-block mr-1">
-                            {"skill.skill?.name"}
-                            {i < pos.PostJobPositionDetailSkill.length - 1
-                              ? ","
-                              : ""}
-                          </span>
-                        ))
-                      : "-"}
-                  </div>
+            <div>
+              <div className="flex flex-row  justify-between items-center">
+                <div className="space-y-1 mb-2">
+                  <p className="text-2xl">
+                    ບໍລິສັດ:{post.company?.name ?? "-"}
+                  </p>
+                  <p>{post.title}</p>
                 </div>
-              ))}
+                <div className="mx-4 text-xl flex flex-row">
+                  <Calendar className="mx-2" />
+                  <p>{formatDate(post.endDate)}</p>
+                </div>
+              </div>
+              <div className="space-y-2 border-l">
+                {/* Position Header */}
+                <div className="grid grid-cols-3 bg-gray-200 px-4 py-1 font-semibold text-gray-700 border-b text-center">
+                  <div>ຕຳແໜ່ງ</div>
+                  <div>ຈຳນວນ</div>
+                  <div>ທັກສະທີ່ຕ້ອງການ</div>
+                </div>
+
+                {/* Positions */}
+                {post.postJobPositionDetail?.map((pos, idx) => (
+                  <div
+                    key={idx}
+                    className="grid grid-cols-3 px-4 py-1 text-center"
+                  >
+                    <div>{pos.jp?.name || "-"}</div>
+                    <div>{pos.amount || "-"}</div>
+                    <div className="col-span-2">
+                      {pos.PostJobPositionDetailSkill?.length > 0
+                        ? pos.PostJobPositionDetailSkill.map((skill, i) => (
+                            <span key={i} className="inline-block mr-1">
+                              {"skill.skill?.name"}
+                              {i < pos.PostJobPositionDetailSkill.length - 1
+                                ? ","
+                                : ""}
+                            </span>
+                          ))
+                        : "-"}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 

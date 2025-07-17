@@ -32,9 +32,7 @@ const PostBaseFields = {
   isActive: z.boolean().optional(),
   cId: z.string().uuid({ message: "Invalid company ID" }),
   title: z.string().min(1, { message: "Title is required" }),
-  image: z
-    .array(z.string().url({ message: "Each image must be a valid URL" }))
-  ,
+  image: z.array(z.string().url({ message: "Each image must be a valid URL" })),
   minSalary: z.number({ message: "Minimum salary is required" }).min(1),
   maxSalary: z.number({ message: "Maximum salary is required" }).min(1),
   checkInTime: TimeString,
@@ -148,7 +146,7 @@ export const PostJobPositionDetailDto = z.object({
     id: z.string(),
     name: z.string(),
   }),
-   amount: z.string(),
+  amount: z.string(),
   PostJobPositionDetailSkill: z.array(PostJobPositionDetailSkillDto),
 });
 
@@ -172,7 +170,6 @@ export const PostCourseDto = z.object({
   }),
 });
 
-
 export const PostAdminDto = z.object({
   id: z.string(),
   title: z.string(),
@@ -183,6 +180,9 @@ export const PostAdminDto = z.object({
     province: z.string().optional(),
     district: z.string().optional(),
     village: z.string().optional(),
+    member: z.object({
+      profile: z.string(),
+    }),
     bm: z.object({
       name: z.string(),
     }),
@@ -236,7 +236,6 @@ export const PostAdminViewDto = z.object({
   postJobPositionDetail: z.array(PostJobPositionDetailDto),
 });
 
-
 export const MostPostionAdminDto = z.object({
   jpId: z.string(),
   name: z.string(),
@@ -282,11 +281,11 @@ const CompanySchemaDto = z.object({
   member: z.object({
     id: z.string(),
     profile: z.string(),
-    background: z.string()
+    background: z.string(),
   }),
   bm: z.object({
-    name: z.string()
-  })
+    name: z.string(),
+  }),
 });
 
 // Main PostJob schema
@@ -300,10 +299,7 @@ export const PostJobSchema = z.object({
   endDate: z.string(), // รับ ISO string ได้ด้วย
   company: CompanySchemaDto,
   postJobPositionDetail: z.array(PostJobPositionDetailSchema),
-
 });
-
-
 
 export const PostDto = z.object({
   search: z.string().optional(),
@@ -315,10 +311,10 @@ export const PostDto = z.object({
   eiIds: z.array(z.string()).optional(),
   jpIds: z.array(z.string()).optional(),
   skillIds: z.array(z.string()).optional(),
-})
+});
 
-export type ICompanySchemaDto = z.infer<typeof CompanySchemaDto>
-export type IPostDto = z.infer<typeof PostDto>
+export type ICompanySchemaDto = z.infer<typeof CompanySchemaDto>;
+export type IPostDto = z.infer<typeof PostDto>;
 // Array schema สำหรับหลายรายการ
 export const PostJobListSchema = z.array(PostJobSchema);
 
@@ -336,4 +332,6 @@ export type IPostAdminDtoType = z.infer<typeof PostAdminDto>;
 export type IMostPostionDtoType = z.infer<typeof MostPostionAdminDto>;
 export type IPostPaginationDtoType = z.infer<typeof PostPaginationDto>;
 export type IPostAdminViewDtoType = z.infer<typeof PostAdminViewDto>;
-export type IPostJobPositionDetailSchema = z.infer<typeof PostJobPositionDetailSchema>
+// export type IPostJobPositionDetailSchema = z.infer<
+//   typeof PostJobPositionDetailSchema
+// >;

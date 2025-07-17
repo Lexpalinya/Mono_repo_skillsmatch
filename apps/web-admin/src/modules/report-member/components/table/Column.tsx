@@ -51,6 +51,7 @@ export const MemberColumn: ColumnDef<IMemberAdminDtoType>[] = [
         <FullImageViewer
           width={35}
           height={35}
+          className="max-h-[35px]"
           src={row.original.profile || "/placeholder.svg?height=80&width=80"}
           alt={row.original.username}
         />

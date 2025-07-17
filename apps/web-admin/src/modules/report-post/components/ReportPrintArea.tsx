@@ -1,8 +1,8 @@
 import React from "react";
 import { useReportPost } from "../context/useReportPost";
-import { formatTime, formatTime2 } from "@/utils/formatDateTime";
-import { Clock } from "lucide-react";
-import { Badge } from "@skillsmatch/ui";
+import { formatDate, formatTime, formatTime2 } from "@/utils/formatDateTime";
+import { Calendar, Clock } from "lucide-react";
+import { Badge, FullImageViewer } from "@skillsmatch/ui";
 
 export const ReportPrintArea = React.forwardRef<HTMLDivElement>(
   (props, ref) => {
@@ -126,19 +126,17 @@ export const ReportPrintArea = React.forwardRef<HTMLDivElement>(
                     alignItems: "start",
                   }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: "600",
-                      paddingRight: 12,
-                      height: "100%",
-                    }}
-                  >
-                    <p style={{ margin: 0 }}>{post.company?.name ?? "-"}</p>
-                    <p style={{ margin: 0 }}>/ {post.title}</p>
+                  <div className="flex flex-col items-center justify-center font-semibold pr-3 h-full">
+                    <FullImageViewer
+                      width={100}
+                      height={100}
+                      className="max-h-[100px]"
+                      src={
+                        post.company.member.profile ||
+                        "/placeholder.svg?height=80&width=80"
+                      }
+                      alt={post.company.name}
+                    />
                   </div>
 
                   {/* Positions sub-table */}
@@ -152,6 +150,33 @@ export const ReportPrintArea = React.forwardRef<HTMLDivElement>(
                       gap: 4,
                     }}
                   >
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div style={{ marginBottom: "2px" }}>
+                        <p style={{ fontSize: "24px" }}>
+                          ບໍລິສັດ:{post.company?.name ?? "-"}
+                        </p>
+                        <p>{post.title}</p>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          fontSize: "20px",
+                          flexDirection: "row",
+                          marginBottom: "16px",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Calendar style={{ marginRight: "8px" }} />
+                        <p>{formatDate(post.endDate)}</p>
+                      </div>
+                    </div>
                     {/* Positions Header */}
                     <div
                       style={{

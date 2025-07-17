@@ -1,8 +1,7 @@
-import { ArrowUpDown, Clock } from "lucide-react";
+import { ArrowUpDown, Calendar, Clock } from "lucide-react";
 import {
   Badge,
   Button,
-  Calendar,
   Checkbox,
   DataTableColumnHeader,
 } from "@skillsmatch/ui";
@@ -10,7 +9,7 @@ import { format } from "date-fns";
 import type { ColumnDef } from "@tanstack/react-table";
 
 import type { IPostAdminDtoType } from "@skillsmatch/dto";
-import { formatDate, formatTime } from "@/utils/formatDateTime";
+import { formatDate } from "@/utils/formatDateTime";
 import PostAction from "./Action";
 
 export const companyColumns: ColumnDef<IPostAdminDtoType>[] = [
@@ -64,7 +63,7 @@ export const companyColumns: ColumnDef<IPostAdminDtoType>[] = [
         <div className="max-w-[150px]">
           <div className="font-medium truncate">{company?.name}</div>
           <div className="text-sm text-muted-foreground truncate">
-            {company?.address}
+            {company?.village} {company?.district} {company?.province}
           </div>
         </div>
       );
@@ -75,8 +74,8 @@ export const companyColumns: ColumnDef<IPostAdminDtoType>[] = [
     header: "Salary & Schedule",
     cell: ({ row }) => {
       const post = row.original;
-      const checkIn = formatTime(post.checkInTime);
-      const checkOut = formatTime(post.checkOutTime);
+      // const checkIn = formatTime(post.checkInTime);
+      // const checkOut = formatTime(post.checkOutTime);
 
       return (
         <div className="text-sm space-y-1">
@@ -86,7 +85,7 @@ export const companyColumns: ColumnDef<IPostAdminDtoType>[] = [
           </div>
           <div className="flex items-center text-muted-foreground">
             <Clock className="h-3 w-3 mr-1" />
-            {checkIn} - {checkOut}
+            {post.checkInTime} - {post.checkOutTime}
           </div>
         </div>
       );
@@ -97,7 +96,7 @@ export const companyColumns: ColumnDef<IPostAdminDtoType>[] = [
     header: "Positions & Skills",
     cell: ({ row }) => {
       const post = row.original;
-      const positions = post.PostJobPositionDetail ?? [];
+      const positions = post.postJobPositionDetail ?? [];
 
       return (
         <div className="max-w-[200px]">
@@ -107,7 +106,7 @@ export const companyColumns: ColumnDef<IPostAdminDtoType>[] = [
                 <div key={index} className="text-sm">
                   <div className="font-medium truncate">{position.jp.name}</div>
                   <div className="text-muted-foreground text-xs">
-                    {position.PostJobPositionDetailSkill.length} skills
+                    {(position.PostJobPositionDetailSkill ?? []).length} skills
                   </div>
                 </div>
               ))}

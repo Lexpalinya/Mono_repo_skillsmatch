@@ -97,27 +97,6 @@ export default function PostAction({
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-          onClick={() => {
-            setOpen("verified");
-            setCurrentRow(row.original);
-          }}
-        >
-          {row.original.isActive ? (
-            <>
-              <XCircle className="mr-2 h-4 w-4" />
-              Unpublish Post
-            </>
-          ) : (
-            <>
-              <CheckCircle className="mr-2 h-4 w-4" />
-              Publish Post
-            </>
-          )}
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem
           onClick={async () => {
             const next = await confirm({
               title: "Are you sure?",
