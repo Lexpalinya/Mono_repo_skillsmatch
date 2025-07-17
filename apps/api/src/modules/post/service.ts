@@ -382,6 +382,7 @@ export const GetPost = async ({
       endDate: true,
       createdAt: true,
       isActive: true,
+      welfare:true,
       company: {
         select: {
           name: true,
@@ -398,9 +399,9 @@ export const GetPost = async ({
         },
 
       },
-
       postJobPositionDetail: {
         select: {
+          amount:true,
           jp: {
             select: {
               id: true,
@@ -419,6 +420,33 @@ export const GetPost = async ({
           },
         },
       },
+      postEducationLevel:{
+        select:{
+          educationLevel:{
+            select:{
+              name:true
+            }
+          }
+        }
+      },
+      postEducationInstitution:{
+        select:{
+          ei:{
+            select:{
+              name:true
+            }
+          }
+        }
+      },
+      postCourse:{
+        select:{
+          cr:{
+          select:{
+            name:true
+          }
+          }
+        }
+      }
     };
 
     const items = await queryTable("post", {

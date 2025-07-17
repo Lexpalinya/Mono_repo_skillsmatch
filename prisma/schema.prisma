@@ -7,27 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum ECurrency {
-  KIP
-  USD
-  THB
-  CNY
-}
-
-enum EGender {
-  male
-  female
-  transgender
-}
-
-enum EUserRole {
-  company
-  admin
-  jobber
-}
-
-//-----------Account-----------------------------
-
 model Member {
   id           String    @id @default(uuid()) @db.VarChar(36)
   isActive     Boolean   @default(true)
@@ -43,8 +22,8 @@ model Member {
   loginVersion Int       @default(1)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-  Jobber       Jobber[]
   Company      Company[]
+  Jobber       Jobber[]
   Review       Review[]
 }
 
@@ -57,8 +36,8 @@ model Course {
   jobberUsageCount Int             @default(0)
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
-  PostCourse       PostCourse[]
   JobberProfile    JobberProfile[]
+  PostCourse       PostCourse[]
 }
 
 model Major {
@@ -70,8 +49,8 @@ model Major {
   jobberUsageCount Int             @default(0)
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
-  PostMajor        PostMajor[]
   JobberProfile    JobberProfile[]
+  PostMajor        PostMajor[]
 }
 
 model EducationalInstitution {
@@ -83,8 +62,8 @@ model EducationalInstitution {
   jobberUsageCount         Int                        @default(0)
   createdAt                DateTime                   @default(now())
   updatedAt                DateTime                   @updatedAt
-  PostEducationInstitution PostEducationInstitution[]
   JobberProfile            JobberProfile[]
+  PostEducationInstitution PostEducationInstitution[]
 }
 
 model EducationLevel {
@@ -96,8 +75,8 @@ model EducationLevel {
   jobberUsageCount   Int                  @default(0)
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
-  PostEducationLevel PostEducationLevel[]
   JobberProfile      JobberProfile[]
+  PostEducationLevel PostEducationLevel[]
 }
 
 model Skill {
@@ -109,8 +88,8 @@ model Skill {
   jobberUsageCount           Int                          @default(0)
   createdAt                  DateTime                     @default(now())
   updatedAt                  DateTime                     @updatedAt
-  PostJobPositionDetailSkill PostJobPositionDetailSkill[]
   JobberProfileSkill         JobberProfileSkill[]
+  PostJobPositionDetailSkill PostJobPositionDetailSkill[]
 }
 
 model JobPosition {
@@ -122,8 +101,8 @@ model JobPosition {
   jobberUsageCount      Int                     @default(0)
   createdAt             DateTime                @default(now())
   updatedAt             DateTime                @updatedAt
-  PostJobPositionDetail PostJobPositionDetail[]
   JobberProfilePosition JobberProfilePosition[]
+  PostJobPositionDetail PostJobPositionDetail[]
 }
 
 model BusinessModel {
@@ -153,9 +132,7 @@ model Jobber {
   isVerify      Boolean        @default(false)
   isActive      Boolean        @default(true)
   statusId      String
-  status        JobberStatus   @relation(fields: [statusId], references: [id])
   memberId      String
-  member        Member         @relation(fields: [memberId], references: [id])
   gender        EGender
   firstName     String
   lastName      String
@@ -170,10 +147,12 @@ model Jobber {
   cDistrict     String
   cVillage      String
   docImage      String[]
-  reason        String?        @db.Text
+  reason        String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   ApplyForJob   ApplyForJob[]
+  member        Member         @relation(fields: [memberId], references: [id])
+  status        JobberStatus   @relation(fields: [statusId], references: [id])
   JobberProfile JobberProfile?
 }
 
@@ -185,7 +164,6 @@ model JobberProfile {
   mId                     String
   cId                     String
   gpa                     Float
-  cv                      String[]
   startSalary             Float?
   currency                ECurrency               @default(KIP)
   workDay                 String[]
@@ -193,13 +171,14 @@ model JobberProfile {
   checkOutTime            String
   createdAt               DateTime                @default(now())
   updatedAt               DateTime                @updatedAt
-  educationLevels         EducationLevel          @relation(fields: [elId], references: [id])
-  educationalInstitutions EducationalInstitution  @relation(fields: [eiId], references: [id])
-  major                   Major                   @relation(fields: [mId], references: [id])
+  cv                      String[]
   course                  Course                  @relation(fields: [cId], references: [id])
+  educationalInstitutions EducationalInstitution  @relation(fields: [eiId], references: [id])
+  educationLevels         EducationLevel          @relation(fields: [elId], references: [id])
   jobber                  Jobber                  @relation(fields: [jId], references: [id])
-  JobberProfileSkill      JobberProfileSkill[]
+  major                   Major                   @relation(fields: [mId], references: [id])
   JobberProfilePosition   JobberProfilePosition[]
+  JobberProfileSkill      JobberProfileSkill[]
 }
 
 model JobberProfileSkill {
@@ -214,8 +193,8 @@ model JobberProfileSkill {
 model JobberProfilePosition {
   jpId String
   jPId String
-  jp   JobberProfile @relation(fields: [jpId], references: [id])
   jP   JobPosition   @relation(fields: [jPId], references: [id])
+  jp   JobberProfile @relation(fields: [jpId], references: [id])
 
   @@id([jpId, jPId])
 }
@@ -234,12 +213,12 @@ model Company {
   district        String
   village         String
   docImage        String[]
-  reason          String?       @db.Text
+  reason          String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   memberId        String
-  member          Member        @relation(fields: [memberId], references: [id])
   bm              BusinessModel @relation(fields: [bmId], references: [id])
+  member          Member        @relation(fields: [memberId], references: [id])
   Post            Post[]
 }
 
@@ -257,24 +236,24 @@ model Post {
   currency                 ECurrency
   workday                  String[]
   endDate                  DateTime
-  welfare                  String                     @db.Text()
-  more                     String                     @db.Text()
+  welfare                  String
+  more                     String
   createdAt                DateTime                   @default(now())
   updatedAt                DateTime                   @updatedAt
+  ApplyForJob              ApplyForJob[]
   company                  Company                    @relation(fields: [cId], references: [id])
   postCourse               PostCourse[]
-  postMajor                PostMajor[]
-  postEducationLevel       PostEducationLevel[]
   postEducationInstitution PostEducationInstitution[]
+  postEducationLevel       PostEducationLevel[]
   postJobPositionDetail    PostJobPositionDetail[]
-  ApplyForJob              ApplyForJob[]
+  postMajor                PostMajor[]
 }
 
 model PostCourse {
   pId  String
   crId String
-  post Post   @relation(fields: [pId], references: [id])
   cr   Course @relation(fields: [crId], references: [id])
+  post Post   @relation(fields: [pId], references: [id])
 
   @@id([pId, crId])
 }
@@ -282,8 +261,8 @@ model PostCourse {
 model PostMajor {
   pId   String
   mId   String
-  post  Post   @relation(fields: [pId], references: [id])
   major Major  @relation(fields: [mId], references: [id])
+  post  Post   @relation(fields: [pId], references: [id])
 
   @@id([pId, mId])
 }
@@ -291,8 +270,8 @@ model PostMajor {
 model PostEducationLevel {
   pId            String
   elId           String
-  post           Post           @relation(fields: [pId], references: [id])
   educationLevel EducationLevel @relation(fields: [elId], references: [id])
+  post           Post           @relation(fields: [pId], references: [id])
 
   @@id([pId, elId])
 }
@@ -300,8 +279,8 @@ model PostEducationLevel {
 model PostEducationInstitution {
   pId  String
   eiId String
-  post Post                   @relation(fields: [pId], references: [id])
   ei   EducationalInstitution @relation(fields: [eiId], references: [id])
+  post Post                   @relation(fields: [pId], references: [id])
 
   @@id([pId, eiId])
 }
@@ -311,9 +290,9 @@ model PostJobPositionDetail {
   amount                     Int                          @default(1)
   pId                        String
   jpId                       String
-  description                String                       @db.Text()
-  post                       Post                         @relation(fields: [pId], references: [id])
+  description                String
   jp                         JobPosition                  @relation(fields: [jpId], references: [id])
+  post                       Post                         @relation(fields: [pId], references: [id])
   postJobPositionDetailSkill PostJobPositionDetailSkill[]
 }
 
@@ -331,7 +310,7 @@ model ApplyForJob {
   isActive        Boolean           @default(true)
   pId             String
   jId             String
-  jp              String            @default("ການຕະຫຼາດ")
+  jp              String
   status          String
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
@@ -346,8 +325,8 @@ model AttendInterView {
   status    String
   ajId      String
   data      DateTime
-  result    String      @db.Text()
-  more      String      @db.Text()
+  result    String
+  more      String
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   aj        ApplyForJob @relation(fields: [ajId], references: [id])
@@ -358,7 +337,26 @@ model Review {
   memberId  String
   comment   String
   score     Int
-  member    Member   @relation(fields: [memberId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  member    Member   @relation(fields: [memberId], references: [id])
+}
+
+enum ECurrency {
+  KIP
+  USD
+  THB
+  CNY
+}
+
+enum EGender {
+  male
+  female
+  transgender
+}
+
+enum EUserRole {
+  company
+  admin
+  jobber
 }

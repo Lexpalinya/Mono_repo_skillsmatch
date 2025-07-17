@@ -13,6 +13,13 @@ export function formatTime(date: Date | string): string {
   return format(date, "h:mm:ss a");
 }
 
+export function formatTime2(value: string | Date) {
+  if (!value) return "-";
+  const date = typeof value === "string" ? new Date(value) : value;
+  if (isNaN(date.getTime())) return "-";
+  return format(date, "HH:mm");
+}
+
 export function formatDateOnly(date?: Date): string | undefined {
   if (!date) return undefined;
   const yyyy = date.getFullYear();

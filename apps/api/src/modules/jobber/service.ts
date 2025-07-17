@@ -230,6 +230,13 @@ export const GetJobbers = async ({
       createdAt: true,
       statusId: true,
       reason: true,
+      isActive: true,
+      bProvince: true,
+      bDistrict: true,
+      bVillage: true,
+      cProvince: true,
+      cDistrict: true,
+      cVillage: true,
       status: {
         select: {
           name: true,
@@ -240,8 +247,53 @@ export const GetJobbers = async ({
           username: true,
           profile: true,
           email: true,
+          phoneNumber: true
         },
       },
+      ApplyForJob: {
+        select: {
+          jp: true
+        },
+      },
+      JobberProfile: {
+        select: {
+          gpa: true,
+          startSalary: true,
+          checkInTime: true,
+          checkOutTime: true,
+          workDay: true,
+          JobberProfileSkill: {
+            select: {
+              skill: {
+                select: {
+                  name: true
+                }
+              }
+            }
+          },
+          educationalInstitutions: {
+            select: {
+              name: true
+            }
+          },
+          educationLevels: {
+            select: {
+              name: true
+            }
+          },
+          major: {
+            select: {
+              name: true
+            }
+          },
+          course: {
+            select: {
+              name: true
+            }
+          }
+        }
+      }
+
     };
 
     const items = await queryTable("jobber", {
