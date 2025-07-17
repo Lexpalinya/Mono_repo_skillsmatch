@@ -15,8 +15,8 @@ export default function LoginForm({
   const nav = useNavigate();
   const form = useForm<IMemberLoginDtoType>({
     defaultValues: {
-      phoneNumber: "+8562012345678",
-      password: "password",
+      phoneNumber: "",
+      password: "",
     },
     resolver: zodResolver(MemberLoginDtoType),
   });
@@ -30,31 +30,34 @@ export default function LoginForm({
       credentials: "include",
       body: JSON.stringify(dataInput),
     });
+    console.log("res.ok :>> ", res.ok);
 
     const data = await res.json();
-
+    console.log(!res.ok || data?.role !== "admin");
     if (!res.ok) {
-      throw new Error(data.message ?? "Login failed");
+      throw new Error(data.message);
     }
+
+    if (data?.data?.role !== "admin") throw new Error("Account Admin Only");
     return data;
   };
-  const onSubmit = async () => {
+  const onSubmit = async (data: IMemberLoginDtoType) => {
     try {
-      await login(form.watch());
-      nav({ to: "/app" });
+      await login(data);
+      nav({ to: "/app/member" });
 
-      toast.success("Course created successfully!", {
+      toast.success("Login successful!", {
         icon: <CheckCircle className="text-success size-4" />,
       });
     } catch (error) {
       const errorMessage =
         error instanceof Error
           ? error.message
-          : "An error occurred while creating the course. Please try again.";
+          : "An error occurred while logging in. Please try again.";
 
       confirm({
         actionText: "Retry",
-        title: "Failed to Create Course",
+        title: "Login Failed",
         description: errorMessage,
         CancelProps: { className: "hidden" },
       });
@@ -68,7 +71,7 @@ export default function LoginForm({
             showButton={false}
             className="p-6 md:p-8"
             formInstance={form} // Replace with a valid form instance
-            onSubmit={() => onSubmit()}
+            onSubmit={onSubmit}
           >
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
@@ -83,7 +86,7 @@ export default function LoginForm({
                 label="Phone Number"
                 defaultValue={"+8562012345678"}
               >
-                <Form.InputGroup.Input placeholder="+8562012345678 " />
+                <Form.InputGroup.Input placeholder="02012345678 " />
               </Form.Field>
 
               <Form.Field
@@ -94,14 +97,7 @@ export default function LoginForm({
                 <Form.InputGroup.PasswordInput />
               </Form.Field>
             </div>
-            {/* <div className="flex items-center ">
-              <Link
-                to={"auth/forgot-password"}
-                className="ml-auto text-sm underline-offset-2 hover:underline"
-              >
-                Forgot your password?
-              </Link>
-            </div> */}
+
             <Button className="w-full mt-3">Login</Button>
           </Form>
           <div className="relative hidden bg-muted md:block">

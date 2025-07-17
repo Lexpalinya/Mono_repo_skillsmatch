@@ -1,9 +1,6 @@
 import { formatDateTime } from "@/utils/formatDateTime";
 import type { IMemberAdminDtoType } from "@skillsmatch/dto";
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
   Badge,
   Checkbox,
   cn,
@@ -12,7 +9,6 @@ import {
 } from "@skillsmatch/ui";
 import type { ColumnDef } from "@tanstack/react-table";
 import MemberAction from "./Action";
-import { UserRound } from "lucide-react";
 
 export const MemberColumn: ColumnDef<IMemberAdminDtoType>[] = [
   {
@@ -55,6 +51,7 @@ export const MemberColumn: ColumnDef<IMemberAdminDtoType>[] = [
         <FullImageViewer
           width={35}
           height={35}
+          className="max-h-[35px]  "
           src={row.original.profile || "/placeholder.svg?height=80&width=80"}
           alt={row.original.username}
         />

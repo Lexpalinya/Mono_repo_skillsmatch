@@ -50,6 +50,7 @@ export const companyColumns: ColumnDef<ICompanyAdminDataType>[] = [
           <FullImageViewer
             width={35}
             height={35}
+            className="max-h-[35px]"
             src={data.member?.profile ?? "/placeholder.svg?height=80&width=80"}
             alt={`${data.member.username} `}
           />
