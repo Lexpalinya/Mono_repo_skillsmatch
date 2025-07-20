@@ -25,14 +25,14 @@ export const fetchAllReportCompany = async ({
   bmIds,
   status,
   startDate,
-  endDate
+  endDate,
 }: FetchAllJobberParams) => {
   const queryParams: ICompanyPaginationDtoType = {
     search: globalFilter || "",
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
     sortBy: sorting[0]?.id,
-    sortOrder: sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
+    sortOrder: !sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
     bmIds: Array.isArray(bmIds) && bmIds.length === 0 ? undefined : bmIds,
     status: status || "",
     startDate: startDate || "",

@@ -158,6 +158,7 @@ const ApplyForJobSchema = z.object({
   id: z.string(),
   status: z.string(),
   createdAt: z.string(),
+  jp: z.string(),
   jobber: JobberSchema.optional().nullable(),
 });
 

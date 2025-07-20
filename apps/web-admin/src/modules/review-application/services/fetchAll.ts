@@ -30,7 +30,7 @@ export const fetchAllReviewApplication = async ({
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
     sortBy: sorting[0]?.id,
-    sortOrder: sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
+    sortOrder: !sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
     status: status === "" ? undefined : status,
     visible: visible === "" ? undefined : visible === "true",
   };

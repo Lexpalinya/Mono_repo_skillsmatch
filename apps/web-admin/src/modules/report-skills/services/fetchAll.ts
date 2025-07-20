@@ -21,7 +21,7 @@ export const fetchAllSkill = async ({
   sorting,
   statusVisibility,
   startDate,
-  endDate
+  endDate,
 }: FetchAllSkillParams) => {
   const getColumnFilterValue = (id: string, defaultValue: string) =>
     (columnFilters.find((filter) => filter.id === id)?.value as string) ||
@@ -33,7 +33,7 @@ export const fetchAllSkill = async ({
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
     sortBy: sorting[0]?.id,
-    sortOrder: sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
+    sortOrder: !sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
     visible: visible === "" ? undefined : visible === "true",
     statusVisibility: statusVisibility || "",
     startDate: startDate || "",

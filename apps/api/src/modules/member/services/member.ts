@@ -55,10 +55,11 @@ export const UpdateMember = async (
   data: IMemberUpdateDtoType & { id: string }
 ) => {
   try {
-
     if (data.password) {
       data.password = await HashedPassword(data.password);
-      console.log('first----------------------------------------------------------',)
+      console.log(
+        "first----------------------------------------------------------"
+      );
     }
     const member = await prisma.member.update({
       where: { id: data.id },
@@ -136,11 +137,11 @@ export const GetMembers = async ({
   page,
   limit,
   search,
-  sortOrder = "asc",
+  sortOrder = "desc",
   sortBy,
   role,
   startDate,
-  endDate
+  endDate,
 }: IMemberPaginationDtoType) => {
   try {
     let where: Prisma.MemberWhereInput = { isActive: true };
@@ -177,7 +178,9 @@ export const GetMembers = async ({
         createdAt: {
           ...(startDate && { gte: new Date(startDate) }),
           ...(endDate && {
-            lt: new Date(new Date(endDate).setDate(new Date(endDate).getDate() + 1))
+            lt: new Date(
+              new Date(endDate).setDate(new Date(endDate).getDate() + 1)
+            ),
           }),
         },
       };

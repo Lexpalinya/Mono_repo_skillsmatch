@@ -68,7 +68,7 @@ export const GetEducationalInstitution = async ({
   page,
   limit,
   search,
-  sortOrder = "asc",
+  sortOrder = "desc",
   sortBy,
   visible,
 }: IEducationalInstitutionPaginationDtoType) => {

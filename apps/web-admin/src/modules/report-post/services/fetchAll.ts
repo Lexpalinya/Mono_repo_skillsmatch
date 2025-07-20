@@ -22,7 +22,7 @@ export const fetchAllJobber = async ({
   sorting,
   statusVerify,
   startDate,
-  endDate
+  endDate,
 }: FetchAllJobberParams) => {
   const getColumnFilterValue = (id: string, defaultValue: string) =>
     (columnFilters.find((filter) => filter.id === id)?.value as string) ||
@@ -34,7 +34,7 @@ export const fetchAllJobber = async ({
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
     sortBy: sorting[0]?.id,
-    sortOrder: sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
+    sortOrder: !sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
     status,
     statusVerify: statusVerify || "",
     startDate: startDate || "",

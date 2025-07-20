@@ -17,7 +17,6 @@ interface FetchAllJobberParams {
 export const fetchAllCompany = async ({
   pagination,
   globalFilter,
-
   sorting,
   bmIds,
 }: FetchAllJobberParams) => {
@@ -26,11 +25,10 @@ export const fetchAllCompany = async ({
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
     sortBy: sorting[0]?.id,
-    sortOrder: sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
+    sortOrder: !sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
     bmIds: Array.isArray(bmIds) && bmIds.length === 0 ? undefined : bmIds,
   };
 
   const result = await trpcClient.company.getAll.query(queryParams);
   return { data: result.data, total: result.total };
 };
-

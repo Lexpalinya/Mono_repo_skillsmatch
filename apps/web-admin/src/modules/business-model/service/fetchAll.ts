@@ -27,7 +27,7 @@ export const fetchAllBusinessModel = async ({
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
     sortBy: sorting[0]?.id,
-    sortOrder: sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
+    sortOrder: !sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
     visible: visible === "" ? undefined : visible === "true" ? true : false,
   };
 

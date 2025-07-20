@@ -21,7 +21,7 @@ export const fetchAllMember = async ({
   columnFilters,
   sorting,
   startDate,
-  endDate
+  endDate,
 }: FetchAllMemberParams) => {
   const getColumnFilterValue = (id: string, defaultValue: string) =>
     (columnFilters.find((filter) => filter.id === id)?.value as string) ||
@@ -37,7 +37,7 @@ export const fetchAllMember = async ({
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
     sortBy: sorting[0]?.id,
-    sortOrder: sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
+    sortOrder: !sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
     role: role === "all" ? undefined : role,
     startDate: startDate || "",
     endDate: endDate || "",

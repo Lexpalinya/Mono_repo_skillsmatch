@@ -68,7 +68,7 @@ export const GetEducationLevel = async ({
   page,
   limit,
   search,
-  sortOrder = "asc",
+  sortOrder = "desc",
   sortBy,
   visible,
 }: IEducationLevelPaginationDtoType) => {

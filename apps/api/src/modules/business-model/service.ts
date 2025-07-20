@@ -60,7 +60,7 @@ export const GetBusinessModel = async ({
   page,
   limit,
   search,
-  sortOrder = "asc",
+  sortOrder = "desc",
   sortBy,
   visible,
 }: IBusinessModelPaginationDto) => {

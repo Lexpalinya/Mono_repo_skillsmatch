@@ -28,11 +28,12 @@ export const fetchAllEducationalInstitution = async ({
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
     sortBy: sorting[0]?.id,
-    sortOrder: sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
+    sortOrder: !sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
     visible: visible === "" ? undefined : visible === "true" ? true : false,
   };
 
   // เรียก API ของ educationalInstitution แทน course
-  const result = await trpcClient.educationInstitution.getAll.query(queryParams);
+  const result =
+    await trpcClient.educationInstitution.getAll.query(queryParams);
   return { data: result.data, total: result.total };
 };

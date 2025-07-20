@@ -52,7 +52,7 @@ export const GetJobberStatus = async ({
   page,
   limit,
   search,
-  sortOrder = "asc",
+  sortOrder = "desc",
   sortBy,
   visible,
 }: IJobberStatusPaginationDtoType) => {

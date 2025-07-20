@@ -22,20 +22,20 @@ export const CreateCompany = async (data: ICompanyCreateDtoType) => {
     column: "taxPayId",
     value: data.taxPayId,
   });
-  const company = await
-    prisma.$transaction(async (tx) => {
-      const companyData = await tx.company.create({
-        data,
-      })
+  const company = await prisma.$transaction(async (tx) => {
+    const companyData = await tx.company.create({
+      data,
+    });
 
-
-      await updateUsageCount({
-        tx, model: "businessModel",
-        countField: "companyUsageCount", foreignKeyId: companyData.bmId, companyField: "bmId"
-      })
-      return companyData
-
-    })
+    await updateUsageCount({
+      tx,
+      model: "businessModel",
+      countField: "companyUsageCount",
+      foreignKeyId: companyData.bmId,
+      companyField: "bmId",
+    });
+    return companyData;
+  });
 
   return company;
 };
@@ -59,25 +59,34 @@ export const UpdateCompany = async (
     });
   }
 
-  const oldCompany = await ensureRecordExists({ table: "company", column: "id", value: id });
+  const oldCompany = await ensureRecordExists({
+    table: "company",
+    column: "id",
+    value: id,
+  });
 
   const company = await prisma.$transaction(async (tx) => {
-
     const companyData = await tx.company.update({
       where: { id },
       data,
     });
 
     await updateUsageCount({
-      tx, model: "businessModel",
-      countField: "companyUsageCount", foreignKeyId: companyData.bmId, companyField: "bmId"
-    })
+      tx,
+      model: "businessModel",
+      countField: "companyUsageCount",
+      foreignKeyId: companyData.bmId,
+      companyField: "bmId",
+    });
     await updateUsageCount({
-      tx, model: "businessModel",
-      countField: "companyUsageCount", foreignKeyId: oldCompany.bmId, companyField: "bmId"
-    })
-    return companyData
-  })
+      tx,
+      model: "businessModel",
+      countField: "companyUsageCount",
+      foreignKeyId: oldCompany.bmId,
+      companyField: "bmId",
+    });
+    return companyData;
+  });
   return company;
 };
 
@@ -95,13 +104,13 @@ export const GetCompany = async ({
   page,
   limit,
   search,
-  sortOrder = "asc",
+  sortOrder = "desc",
   sortBy,
   bmIds,
   verified,
   status,
   startDate,
-  endDate
+  endDate,
 }: ICompanyPaginationDtoType) => {
   try {
     let where: Prisma.CompanyWhereInput = { isActive: true };
@@ -167,14 +176,13 @@ export const GetCompany = async ({
         where = {
           ...where,
           isVerify: true,
-        }
+        };
       } else if (status == "2") {
         where = {
           ...where,
           isVerify: false,
-        }
+        };
       }
-
     }
 
     if (startDate || endDate) {
@@ -183,7 +191,9 @@ export const GetCompany = async ({
         createdAt: {
           ...(startDate && { gte: new Date(startDate) }),
           ...(endDate && {
-            lt: new Date(new Date(endDate).setDate(new Date(endDate).getDate() + 1))
+            lt: new Date(
+              new Date(endDate).setDate(new Date(endDate).getDate() + 1)
+            ),
           }),
         },
       };
@@ -217,9 +227,9 @@ export const GetCompany = async ({
       },
       _count: {
         select: {
-          Post: true
-        }
-      }
+          Post: true,
+        },
+      },
     };
 
     const items = await queryTable("company", {
@@ -227,9 +237,12 @@ export const GetCompany = async ({
       limit,
       where,
       select,
-      orderBy: sortBy === "Postamont" ? undefined : {
-        [sortBy ?? "createdAt"]: sortOrder,
-      },
+      orderBy:
+        sortBy === "Postamont"
+          ? undefined
+          : {
+              [sortBy ?? "createdAt"]: sortOrder,
+            },
     });
 
     items.data = items.data.map((company: any) => ({
@@ -239,10 +252,10 @@ export const GetCompany = async ({
 
     if (sortBy === "Postamont") {
       const multiplier = sortOrder === "desc" ? -1 : 1;
-      items.data.sort((a: any, b: any) => (a.Postamont - b.Postamont) * multiplier);
+      items.data.sort(
+        (a: any, b: any) => (a.Postamont - b.Postamont) * multiplier
+      );
     }
-
-
 
     return items;
   } catch (error) {
@@ -310,19 +323,17 @@ export const GetCompanyByMemberId = async (id: string) => {
       },
       include: {
         bm: {
-          select:
-          {
+          select: {
             id: true,
-            name: true
-          }
-        }
-      }
-
+            name: true,
+          },
+        },
+      },
     });
 
-    return company
+    return company;
   } catch (error) {
-    console.log('error', error)
+    console.log("error", error);
   }
 };
 export const GetStatsCompany = async (): Promise<ICompanyStatusDtoType> => {
@@ -393,9 +404,9 @@ export const GetCompanyCombobox = async (
   }
 };
 
-
-
-export const GetCompanyCard = async ({ search }: Omit<ICompanyPaginationDtoType, "sortOrder" | "sortBy">) => {
+export const GetCompanyCard = async ({
+  search,
+}: Omit<ICompanyPaginationDtoType, "sortOrder" | "sortBy">) => {
   try {
     const select: Prisma.CompanySelect = {
       id: true,
@@ -408,14 +419,14 @@ export const GetCompanyCard = async ({ search }: Omit<ICompanyPaginationDtoType,
         select: {
           profile: true,
           background: true,
-        }
+        },
       },
       bm: {
         select: {
-          name: true
-        }
-      }
-    }
+          name: true,
+        },
+      },
+    };
     const items = await queryTable("company", {
       page: 1,
       limit: 1000,
@@ -430,9 +441,7 @@ export const GetCompanyCard = async ({ search }: Omit<ICompanyPaginationDtoType,
         createdAt: "desc",
       },
     });
-    console.log('items.data :>> ', items.data);
-    return items.data
-  } catch (error) {
-
-  }
-}
+    console.log("items.data :>> ", items.data);
+    return items.data;
+  } catch (error) {}
+};

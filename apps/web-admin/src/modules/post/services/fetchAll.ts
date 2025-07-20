@@ -20,14 +20,14 @@ export const fetchAllPost = async ({
   sorting,
   cIds,
   startDate,
-  endDate
+  endDate,
 }: FetchAllPostParams) => {
   const queryParams: IPostPaginationDtoType = {
     search: globalFilter || "",
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
     sortBy: sorting[0]?.id,
-    sortOrder: sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
+    sortOrder: !sorting[0]?.desc ? ("desc" as const) : ("asc" as const),
     cIds: Array.isArray(cIds) && cIds.length === 0 ? undefined : cIds,
     startDate: startDate || "",
     endDate: endDate || "",

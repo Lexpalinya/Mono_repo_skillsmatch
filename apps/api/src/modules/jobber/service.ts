@@ -14,7 +14,6 @@ import { updateUsageCount } from "./utils/updateUsageCount";
 
 export const CreateJobber = async (data: IJobberCreateDtoType) => {
   try {
-
     await ensureUniqueRecord({
       table: "company",
       column: "memberId",
@@ -26,45 +25,38 @@ export const CreateJobber = async (data: IJobberCreateDtoType) => {
       value: data.memberId,
     });
 
-    const jobber = await
-      prisma.$transaction(async (tx) => {
-        const jobberData = await tx.jobber.create({
-          data,
-        })
+    const jobber = await prisma.$transaction(async (tx) => {
+      const jobberData = await tx.jobber.create({
+        data,
+      });
 
-
-        await updateUsageCount({
-          tx, model: "jobberStatus",
-          countField: "jobberUsageCount", foreignKeyId: jobberData.statusId, jobberField: "statusId"
-        })
-        return jobberData
-
-      })
+      await updateUsageCount({
+        tx,
+        model: "jobberStatus",
+        countField: "jobberUsageCount",
+        foreignKeyId: jobberData.statusId,
+        jobberField: "statusId",
+      });
+      return jobberData;
+    });
 
     return jobber;
   } catch (error) {
-
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002") {
-
         throw new TRPCError({
           code: "CONFLICT",
           message: "memberId already exists in jobber or company",
-
         });
       }
       if (error.code === "P2003") {
-
         throw new TRPCError({
           code: "CONFLICT",
           message: "memberId not found in the system",
-
         });
       }
-
     }
     throw error;
-
   }
 };
 
@@ -77,27 +69,35 @@ export const UpdateJobber = async (id: string, data: IJobberUpdateDtoType) => {
     });
   }
 
-  const oldJobber = await ensureRecordExists({ table: "jobber", column: "id", value: id });
+  const oldJobber = await ensureRecordExists({
+    table: "jobber",
+    column: "id",
+    value: id,
+  });
 
   const jobber = await prisma.$transaction(async (tx) => {
-
     const jobberData = await tx.jobber.update({
       where: { id },
       data,
     });
     await updateUsageCount({
-      tx, model: "jobberStatus",
-      countField: "jobberUsageCount", foreignKeyId: jobberData.statusId, jobberField: "statusId"
-    })
+      tx,
+      model: "jobberStatus",
+      countField: "jobberUsageCount",
+      foreignKeyId: jobberData.statusId,
+      jobberField: "statusId",
+    });
 
     await updateUsageCount({
-      tx, model: "jobberStatus",
-      countField: "jobberUsageCount", foreignKeyId: oldJobber.statusId, jobberField: "statusId"
-    })
+      tx,
+      model: "jobberStatus",
+      countField: "jobberUsageCount",
+      foreignKeyId: oldJobber.statusId,
+      jobberField: "statusId",
+    });
 
-
-    return jobberData
-  })
+    return jobberData;
+  });
 
   return jobber;
 };
@@ -164,12 +164,12 @@ export const GetJobbers = async ({
   page,
   limit,
   search,
-  sortOrder = "asc",
+  sortOrder = "desc",
   sortBy,
   status,
   statusVerify,
   startDate,
-  endDate
+  endDate,
 }: IJobberPaginationDtoType) => {
   try {
     let where: Prisma.JobberWhereInput = { isActive: true };
@@ -196,14 +196,13 @@ export const GetJobbers = async ({
         where = {
           ...where,
           isVerify: true,
-        }
+        };
       } else if (statusVerify == "2") {
         where = {
           ...where,
           isVerify: false,
-        }
+        };
       }
-
     }
 
     if (startDate || endDate) {
@@ -212,7 +211,9 @@ export const GetJobbers = async ({
         createdAt: {
           ...(startDate && { gte: new Date(startDate) }),
           ...(endDate && {
-            lt: new Date(new Date(endDate).setDate(new Date(endDate).getDate() + 1))
+            lt: new Date(
+              new Date(endDate).setDate(new Date(endDate).getDate() + 1)
+            ),
           }),
         },
       };
@@ -247,12 +248,12 @@ export const GetJobbers = async ({
           username: true,
           profile: true,
           email: true,
-          phoneNumber: true
+          phoneNumber: true,
         },
       },
       ApplyForJob: {
         select: {
-          jp: true
+          jp: true,
         },
       },
       JobberProfile: {
@@ -266,34 +267,33 @@ export const GetJobbers = async ({
             select: {
               skill: {
                 select: {
-                  name: true
-                }
-              }
-            }
+                  name: true,
+                },
+              },
+            },
           },
           educationalInstitutions: {
             select: {
-              name: true
-            }
+              name: true,
+            },
           },
           educationLevels: {
             select: {
-              name: true
-            }
+              name: true,
+            },
           },
           major: {
             select: {
-              name: true
-            }
+              name: true,
+            },
           },
           course: {
             select: {
-              name: true
-            }
-          }
-        }
-      }
-
+              name: true,
+            },
+          },
+        },
+      },
     };
 
     const items = await queryTable("jobber", {
@@ -316,8 +316,7 @@ export const GetJobbers = async ({
 export const GetStatsJobber = async (): Promise<IJobberStatsDtoType> => {
   try {
     const [total, active, verified, status, notverified] = await Promise.all([
-      prisma.jobber.count(
-      ),
+      prisma.jobber.count(),
       prisma.jobber.count({
         where: {
           isActive: true,

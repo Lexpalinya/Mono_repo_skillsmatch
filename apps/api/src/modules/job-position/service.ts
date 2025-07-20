@@ -52,7 +52,7 @@ export const GetJobPosition = async ({
   page,
   limit,
   search,
-  sortOrder = "asc",
+  sortOrder = "desc",
   sortBy,
   visible,
 }: IJobPositionPaginationDtoType) => {
@@ -162,4 +162,3 @@ export const GetJobPositionCombobox = async (
     throw error;
   }
 };
-
