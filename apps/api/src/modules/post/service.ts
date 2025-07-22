@@ -393,6 +393,7 @@ export const GetPost = async ({
       createdAt: true,
       isActive: true,
       welfare: true,
+      more: true,
       company: {
         select: {
           name: true,
